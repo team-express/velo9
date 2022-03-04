@@ -78,10 +78,12 @@ public class Post {
 	@JsonIgnore
 	private List<ReadPost> readPosts = new ArrayList<>();
 
-	public Post(PostDTO postDTO){
+	public Post(PostDTO postDTO) {
 		this.id = postDTO.getId();
 		this.title = postDTO.getTitle();
 		this.introduce = postDTO.getIntroduce();
 		this.content = postDTO.getContent();
+
+		this.status = postDTO.getStatus();
 	}
 }
