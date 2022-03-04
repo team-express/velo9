@@ -1,4 +1,4 @@
-package teamexpress.velo9.post.domain;
+package teamexpress.velo9.common.domain;
 
 import java.time.LocalDateTime;
 
@@ -12,10 +12,11 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import lombok.Getter;
 
+@EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
-@EntityListeners(value = {AuditingEntityListener.class})
 @Getter
-abstract class BaseEntity {
+public class BaseEntity {
+
 	@CreatedDate
 	@Column(name = "created_date", updatable = false)
 	private LocalDateTime createdDate;

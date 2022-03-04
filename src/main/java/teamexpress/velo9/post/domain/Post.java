@@ -1,23 +1,42 @@
 package teamexpress.velo9.post.domain;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+import teamexpress.velo9.member.domain.Member;
+import teamexpress.velo9.member.domain.ReadPost;
+import teamexpress.velo9.post.dto.PostDTO;
 
 @Entity
 @Getter
-@ToString
-@NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Post extends BaseEntity{
+@NoArgsConstructor
+@EntityListeners(value = {AuditingEntityListener.class})
+public class Post {
 
 	@Id
 	@GeneratedValue
@@ -26,11 +45,43 @@ public class Post extends BaseEntity{
 	private String title;
 	private String introduce;
 	private String content;
+	private int likeCount;
+	private int replyCount;
+	private int viewCount;
 
-	//private Long member_id;
-	//private Long series_id;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "member_id")
+	private Member member;
 
-	//private int likeCount;
-	//private int replyCount;
-	//private int viewCount;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "series_id")
+	private Series series;
+
+	@OneToOne(mappedBy = "post")
+	private PostThumbnail postThumbnail;
+
+	@ManyToMany(mappedBy = "posts")
+	private List<Tag> tags = new ArrayList<>();
+
+	@Enumerated(EnumType.STRING)
+	private PostStatus status;
+
+	@CreatedDate
+	@Column(name = "created_date")
+	private LocalDateTime createdDate;
+
+	@LastModifiedDate
+	@Column(name = "updated_date")
+	private LocalDateTime updatedDate;
+
+	@OneToMany(mappedBy = "post")
+	@JsonIgnore
+	private List<ReadPost> readPosts = new ArrayList<>();
+
+	public Post(PostDTO postDTO){
+		this.id = postDTO.getId();
+		this.title = postDTO.getTitle();
+		this.introduce = postDTO.getIntroduce();
+		this.content = postDTO.getContent();
+	}
 }
