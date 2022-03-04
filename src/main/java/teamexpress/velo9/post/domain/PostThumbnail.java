@@ -10,14 +10,12 @@ import javax.persistence.OneToOne;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import teamexpress.velo9.common.domain.BaseEntity;
 
 @Entity(name = "post_thumbnail")
 @Getter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostThumbnail extends BaseEntity {

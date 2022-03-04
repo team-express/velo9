@@ -14,24 +14,26 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import teamexpress.velo9.member.domain.Member;
+import teamexpress.velo9.member.domain.ReadPost;
 
 @Entity
 @Getter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Post{
+public class Post {
 
 	@Id
 	@GeneratedValue
@@ -68,4 +70,8 @@ public class Post{
 	@LastModifiedDate
 	@Column(name = "updated_date")
 	private LocalDateTime updatedDate;
+
+	@OneToMany(mappedBy = "post")
+	@JsonIgnore
+	private List<ReadPost> readPosts = new ArrayList<>();
 }

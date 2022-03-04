@@ -14,7 +14,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import teamexpress.velo9.common.domain.BaseEntity;
@@ -22,7 +21,6 @@ import teamexpress.velo9.post.domain.Post;
 
 @Entity
 @Getter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
@@ -47,8 +45,12 @@ public class Member extends BaseEntity {
 	@OneToMany(mappedBy = "member")
 	@JsonIgnore
 	private List<Post> posts = new ArrayList<>();
-	;
 
 	@OneToOne(mappedBy = "member")
 	private MemberThumbnail memberThumbnail;
+
+	@OneToMany(mappedBy = "member")
+	@JsonIgnore
+	private List<ReadPost> readPosts = new ArrayList<>();
+
 }
