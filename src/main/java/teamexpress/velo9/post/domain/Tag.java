@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -22,7 +23,7 @@ import teamexpress.velo9.common.domain.BaseEntity;
 @Entity
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Tag extends BaseEntity {
 
 	@Id
@@ -31,10 +32,7 @@ public class Tag extends BaseEntity {
 	private Long id;
 	private String name;
 
-	@ManyToMany
-	@JoinTable(name = "post_tag",
-		joinColumns = @JoinColumn(name = "tag_id"),
-		inverseJoinColumns = @JoinColumn(name = "post_id"))
+	@OneToMany(mappedBy = "tag")
 	@JsonIgnore
-	private List<Post> posts = new ArrayList<>();
+	private List<PostTag> postTags = new ArrayList<>();
 }

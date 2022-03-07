@@ -12,7 +12,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -27,12 +26,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import teamexpress.velo9.member.domain.Member;
-import teamexpress.velo9.member.domain.ReadPost;
 
 @Entity
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Post {
 
 	@Id
@@ -57,8 +55,9 @@ public class Post {
 	@OneToOne(mappedBy = "post")
 	private PostThumbnail postThumbnail;
 
-	@ManyToMany(mappedBy = "posts")
-	private List<Tag> tags = new ArrayList<>();
+	@OneToMany(mappedBy = "post")
+	@JsonIgnore
+	private List<PostTag> postTags = new ArrayList<>();
 
 	@Enumerated(EnumType.STRING)
 	private PostStatus status;
@@ -70,8 +69,4 @@ public class Post {
 	@LastModifiedDate
 	@Column(name = "updated_date")
 	private LocalDateTime updatedDate;
-
-	@OneToMany(mappedBy = "post")
-	@JsonIgnore
-	private List<ReadPost> readPosts = new ArrayList<>();
 }

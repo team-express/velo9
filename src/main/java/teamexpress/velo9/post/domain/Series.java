@@ -20,7 +20,7 @@ import teamexpress.velo9.common.domain.BaseEntity;
 @Entity
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Series extends BaseEntity {
 
 	@Id
@@ -32,5 +32,4 @@ public class Series extends BaseEntity {
 	@OneToMany(mappedBy = "series")
 	@JsonIgnore
 	private List<Post> posts = new ArrayList<>();
-	;
 }

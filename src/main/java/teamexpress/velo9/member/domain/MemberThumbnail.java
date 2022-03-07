@@ -19,7 +19,7 @@ import teamexpress.velo9.common.domain.BaseEntity;
 @Entity(name = "member_thumbnail")
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class MemberThumbnail extends BaseEntity {
 
 	@Id
