@@ -49,6 +49,5 @@ public class Member extends BaseEntity {
 
 	@OneToMany(mappedBy = "member")
 	@JsonIgnore
-	private List<ReadPost> readPosts = new ArrayList<>();
-
+	private List<Refer> refers = new ArrayList<>();
 }

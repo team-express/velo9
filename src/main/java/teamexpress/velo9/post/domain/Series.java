@@ -28,5 +28,4 @@ public class Series extends BaseEntity {
 	@OneToMany(mappedBy = "series")
 	@JsonIgnore
 	private List<Post> posts = new ArrayList<>();
-	;
 }

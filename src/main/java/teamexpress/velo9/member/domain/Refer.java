@@ -16,7 +16,7 @@ import teamexpress.velo9.post.domain.Post;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReadPost {
+public class Refer {
 
 	@Id
 	@GeneratedValue
