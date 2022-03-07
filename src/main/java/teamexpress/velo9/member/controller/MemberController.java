@@ -1,6 +1,7 @@
 package teamexpress.velo9.member.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +20,7 @@ public class MemberController {
 	}
 
 	@PostMapping("/signup")
-	public String addMember(@RequestBody MemberSignupDTO memberSignupDTO) {
+	public String addMember(@Validated @RequestBody MemberSignupDTO memberSignupDTO) {
 		memberService.save(memberSignupDTO);
 		return "ok";
 	}
