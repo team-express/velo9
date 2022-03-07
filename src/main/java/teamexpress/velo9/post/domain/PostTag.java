@@ -1,4 +1,4 @@
-package teamexpress.velo9.member.domain;
+package teamexpress.velo9.post.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,21 +8,18 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import teamexpress.velo9.post.domain.Post;
 
-@Entity
+@Entity(name = "post_tag")
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ReadPost {
-
+@NoArgsConstructor
+public class PostTag {
 	@Id
 	@GeneratedValue
-	@Column(name = "read_id")
+	@Column(name = "post_tag_id")
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -30,6 +27,6 @@ public class ReadPost {
 	private Post post;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "member_id")
-	private Member member;
+	@JoinColumn(name = "tag_id")
+	private Tag tag;
 }

@@ -6,30 +6,29 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.persistence.ManyToOne;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import teamexpress.velo9.common.domain.BaseEntity;
+import teamexpress.velo9.post.domain.Post;
 
-@Entity(name = "member_thumbnail")
+@Entity
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MemberThumbnail extends BaseEntity {
+public class Refer {
 
 	@Id
 	@GeneratedValue
-	@Column(name = "member_thumbnail_id")
+	@Column(name = "read_id")
 	private Long id;
-	private String uuid;
-	private String name;
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "post_id")
+	private Post post;
+
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
-	@JsonIgnore
 	private Member member;
 }
