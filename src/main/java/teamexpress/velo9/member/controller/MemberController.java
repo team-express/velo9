@@ -21,7 +21,7 @@ public class MemberController {
 
 	@PostMapping("/signup")
 	public String addMember(@Validated @RequestBody MemberSignupDTO memberSignupDTO) {
-		memberService.save(memberSignupDTO);
+		memberService.join(memberSignupDTO);
 		return "ok";
 	}
 }

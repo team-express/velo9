@@ -17,26 +17,30 @@ public class MemberService {
 	private final MemberRepository memberRepository;
 
 	@Transactional
-	public void save(MemberSignupDTO memberSignupDTO) {
-		Member joinMember = new Member();
-		Optional<Member> findMember = validateDuplicateMember(memberSignupDTO.getUsername());
-		if (findMember.isEmpty()) {
-			joinMember = Member.builder()
-				.username(memberSignupDTO.getUsername())
-				.password(memberSignupDTO.getPassword())
-				.nickname(memberSignupDTO.getNickname())
-				.email(memberSignupDTO.getEmail())
-				.build();
-		}
-		memberRepository.save(joinMember);
+	public void join(MemberSignupDTO signupDTO) {
+		checkDuplicateMember(signupDTO);
+		Member member = Member.createMember(signupDTO.getUsername(), signupDTO.getPassword(),
+											signupDTO.getNickname(), signupDTO.getEmail());
+		memberRepository.save(member);
 	}
 
-	private Optional<Member> validateDuplicateMember(String username) {
+	private void checkDuplicateMember(MemberSignupDTO signupDTO) {
+		validateUsername(signupDTO.getUsername());
+		validateNickname(signupDTO.getNickname());
+	}
+
+	private void validateUsername(String username) {
 		Optional<Member> findMember = memberRepository.findByUsername(username);
 		if (findMember.isPresent()) {
 			throw new IllegalStateException("이미 존재하는 아이디입니다.");
 		}
-		return findMember;
+	}
+
+	private void validateNickname(String nickname) {
+		Optional<Member> findMember = memberRepository.findByNickname(nickname);
+		if (findMember.isPresent()) {
+			throw new IllegalStateException("이미 존재하는 아이디입니다.");
+		}
 	}
 
 	public void findEmail(MailDTO mailDTO) {

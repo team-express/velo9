@@ -50,4 +50,13 @@ public class Member extends BaseEntity {
 	@OneToMany(mappedBy = "member")
 	@JsonIgnore
 	private List<Refer> refers = new ArrayList<>();
+
+	public static Member createMember(String username, String password, String nickname, String email) {
+		return Member.builder()
+			.username(username)
+			.password(password)
+			.nickname(nickname)
+			.email(email)
+			.build();
+	}
 }
