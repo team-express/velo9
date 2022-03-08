@@ -21,7 +21,7 @@ public class Refer {
 
 	@Id
 	@GeneratedValue
-	@Column(name = "read_id")
+	@Column(name = "refer_id")
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
