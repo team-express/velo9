@@ -39,7 +39,7 @@ public class MemberService {
 	private void validateNickname(String nickname) {
 		Optional<Member> findMember = memberRepository.findByNickname(nickname);
 		if (findMember.isPresent()) {
-			throw new IllegalStateException("이미 존재하는 아이디입니다.");
+			throw new IllegalStateException("이미 존재하는 닉네임입니다.");
 		}
 	}
 
