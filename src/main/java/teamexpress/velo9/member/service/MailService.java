@@ -1,6 +1,8 @@
 package teamexpress.velo9.member.service;
 
 import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -13,6 +15,7 @@ import teamexpress.velo9.member.dto.MailDTO;
 @Service
 public class MailService {
 
+	public static final int BOUND = 10;
 	private final JavaMailSender mailSender;
 
 	@Async
@@ -23,8 +26,10 @@ public class MailService {
 	}
 
 	@Async
-	public void sendMailWithFiles(MailContent mailContent) throws Exception {
-		setEmailContentWithFiles(mailContent);
+	public void sendMailWithFiles(MailDTO mailDTO) throws Exception {
+		MailContent mailContent = getEmailContent(mailDTO);
+		MailHandler mailHandler = setEmailContentWithFiles(mailContent);
+		mailHandler.send();
 	}
 
 	private SimpleMailMessage setEmailContent(MailContent emailContent) {
@@ -35,7 +40,7 @@ public class MailService {
 		return message;
 	}
 
-	private void setEmailContentWithFiles(MailContent mailContent) throws Exception {
+	private MailHandler setEmailContentWithFiles(MailContent mailContent) throws Exception {
 		MailHandler mailHandler = new MailHandler(mailSender);
 		mailHandler.setTo(mailContent.getAddress());
 		mailHandler.setSubject(mailContent.getTitle());
@@ -43,7 +48,7 @@ public class MailService {
 		mailHandler.setText(htmlContent, true);
 		mailHandler.setAttach("파일네임", "파일경로");
 		mailHandler.setInline("확장자 제외한 사진이름","사진경로");
-		mailHandler.send();
+		return mailHandler;
 	}
 
 	public MailContent getEmailContent(MailDTO mailDTO) {
@@ -56,11 +61,9 @@ public class MailService {
 
 	private String getRandomNumber() {
 		Random random = new Random();
-		String randomNumber = "";
-		for (int i = 0; i < 6; i++) {
-			int number = random.nextInt(9) + 1;
-			randomNumber += number;
-		}
-		return randomNumber;
+		return IntStream.range(0, 6)
+			.map(i -> random.nextInt(BOUND))
+			.mapToObj(String::valueOf)
+			.collect(Collectors.joining());
 	}
 }
