@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<img src=""/><br/>
+
+<input type="file" name='uploadFile' />
+
+<button id='uploadBtn'>Upload</button>
+<button id='removeBtn'>Remove</button>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        let fileCallPath = '';
+
+        function show(result){
+            fileCallPath = encodeURIComponent(result.path+"/s_"+result.uuid+"_"+result.name);
+            document.querySelector("img").src = '/displayPostThumbnail?fileName='+fileCallPath;
+        }
+
+        $.getJSON("/getPostThumbnail?postId=1" , function(result) {
+            show(result);
+        });
+
+        $("#uploadBtn").on("click", () => {
+            var formData = new FormData();
+
+            var inputFile = $("input[name='uploadFile']");
+            var file = inputFile[0].files[0];
+
+            formData.append("uploadFile", file);
+            formData.append("postId",1);
+
+            $.ajax({//호출
+                url : '/uploadPostThumbnail',
+                processData : false,
+                contentType : false,
+                data : formData,
+                type : 'POST',
+                dataType: 'json',
+                success : function(result) {
+                    show(result);
+                },
+            });
+
+        });
+        $("#removeBtn").on("click",() => {// 지우기버튼을 클릭하면 컨트롤러 내부적으로 서버의 파일과, db데이터도 지운다.
+            $.ajax({
+                url: '/deletePostThumbnail',
+                data: {fileName: fileCallPath, postId: 1},
+                dataType:'text',
+                type: 'POST',
+                success: function(result){
+                    alert(result);
+                }
+            }); //$.ajax
+        });
+    });
+</script>
+</body>
+</html>
