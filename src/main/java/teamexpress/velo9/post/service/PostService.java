@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import teamexpress.velo9.post.domain.Post;
 import teamexpress.velo9.post.domain.PostRepository;
+import teamexpress.velo9.post.domain.PostStatus;
 import teamexpress.velo9.post.dto.PostDTO;
 
 @Service
@@ -29,7 +30,7 @@ public class PostService {
 			.title(postDTO.getTitle())
 			.introduce(postDTO.getIntroduce())
 			.content(postDTO.getContent())
-			//.status(postDTO.getStatus())
+			.status(PostStatus.GENERAL)
 			.build();
 
 		return post;
