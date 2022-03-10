@@ -24,6 +24,7 @@ public class PostThumbnail extends BaseEntity {
 	private Long id;
 	private String uuid;
 	private String name;
+	private String path;
 
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "post_id")
