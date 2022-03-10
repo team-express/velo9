@@ -22,12 +22,14 @@ public class PostService {
 	}
 
 	private static Post dtoToEntity(PostDTO postDTO) {
+		postDTO.createIntroduce();
+
 		Post post = Post.builder()
 			.id(postDTO.getId())
 			.title(postDTO.getTitle())
 			.introduce(postDTO.getIntroduce())
 			.content(postDTO.getContent())
-			//.status()
+			//.status(postDTO.getStatus())
 			.build();
 
 		return post;
