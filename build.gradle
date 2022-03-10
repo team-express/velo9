@@ -20,18 +20,18 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'mysql:mysql-connector-java'
+	implementation 'net.coobird:thumbnailator:0.4.17'
 
-	//test에서도 lombok을 사용하고 싶을 때
+	compileOnly 'org.projectlombok:lombok'
+
+	annotationProcessor 'org.projectlombok:lombok'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
-
-	// https://mvnrepository.com/artifact/mysql/mysql-connector-java
-	// mysql 커넥터
-	implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.27'
 }
 
 tasks.named('test') {
