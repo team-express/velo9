@@ -2,6 +2,7 @@ package teamexpress.velo9.member.service;
 
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import teamexpress.velo9.member.domain.Member;
@@ -15,11 +16,12 @@ import teamexpress.velo9.member.dto.MemberSignupDTO;
 public class MemberService {
 
 	private final MemberRepository memberRepository;
+	private final PasswordEncoder passwordEncoder;
 
 	@Transactional
 	public void join(MemberSignupDTO signupDTO) {
 		checkDuplicateMember(signupDTO);
-		Member member = Member.createMember(signupDTO.getUsername(), signupDTO.getPassword(),
+		Member member = Member.createMember(signupDTO.getUsername(), passwordEncoder.encode(signupDTO.getPassword()),
 											signupDTO.getNickname(), signupDTO.getEmail());
 		memberRepository.save(member);
 	}
