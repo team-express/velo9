@@ -23,7 +23,7 @@ public class PostService {
 	}
 
 	private static Post dtoToEntity(PostDTO postDTO) {
-		postDTO.createIntroduce();
+		postDTO.rearrangeIntroduce();
 
 		Post post = Post.builder()
 			.id(postDTO.getId())

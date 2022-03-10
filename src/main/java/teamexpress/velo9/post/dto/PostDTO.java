@@ -18,7 +18,10 @@ public class PostDTO {
 		return this.introduce == null;
 	}
 
-	public void createIntroduce() {
+	public void rearrangeIntroduce() {
+		if (!isIntroduceNull()) {
+			return;
+		}
 		if (smallerThanMax(this.content)) {
 			this.introduce = this.content;
 			return;
