@@ -76,13 +76,13 @@ public class PostThumbnailFileService {
 		return uploadPath;
 	}
 
-	private static void check(MultipartFile uploadFile) {
+	private static void checkUploadFile(MultipartFile uploadFile) {
 		if (uploadFile == null || uploadFile.isEmpty() || PostThumbnailType.check(uploadFile.getContentType()))
 			throw new IllegalStateException();
 	}
 
 	public PostThumbnailFileDTO upload(MultipartFile uploadFile) {
-		check(uploadFile);
+		checkUploadFile(uploadFile);
 
 		String uploadFileName = getUploadFileName(uploadFile);
 
@@ -99,7 +99,14 @@ public class PostThumbnailFileService {
 		return postThumbnailFileDTO;
 	}
 
+	private static void checkDeleteFileName(String fileName) {
+		if (fileName == null || fileName.equals(""))
+			throw new IllegalStateException();
+	}
+
 	public void deleteFile(String fileName) {
+		checkDeleteFileName(fileName);
+
 		File file;
 
 		try {
