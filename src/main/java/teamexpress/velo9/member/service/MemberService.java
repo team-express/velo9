@@ -1,6 +1,5 @@
 package teamexpress.velo9.member.service;
 
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,9 +20,13 @@ public class MemberService {
 	@Transactional
 	public void join(MemberSignupDTO signupDTO) {
 		checkDuplicateMember(signupDTO);
-		Member member = Member.createMember(signupDTO.getUsername(), passwordEncoder.encode(signupDTO.getPassword()),
-											signupDTO.getNickname(), signupDTO.getEmail());
+		encodePassword(signupDTO);
+		Member member = signupDTO.toMember();
 		memberRepository.save(member);
+	}
+
+	private void encodePassword(MemberSignupDTO signupDTO) {
+		signupDTO.setPassword(passwordEncoder.encode(signupDTO.getPassword()));
 	}
 
 	private void checkDuplicateMember(MemberSignupDTO signupDTO) {
@@ -32,24 +35,23 @@ public class MemberService {
 	}
 
 	private void validateUsername(String username) {
-		Optional<Member> findMember = memberRepository.findByUsername(username);
-		if (findMember.isPresent()) {
-			throw new IllegalStateException("이미 존재하는 아이디입니다.");
-		}
+		memberRepository.findByUsername(username)
+			.ifPresent(m -> {
+				throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
+			});
 	}
 
 	private void validateNickname(String nickname) {
-		Optional<Member> findMember = memberRepository.findByNickname(nickname);
-		if (findMember.isPresent()) {
-			throw new IllegalStateException("이미 존재하는 닉네임입니다.");
-		}
+		memberRepository.findByNickname(nickname)
+			.ifPresent(m -> {
+				throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");
+			});
 	}
 
 	public void findEmail(MailDTO mailDTO) {
-		memberRepository.findAll().stream()
-			.filter(m -> m.getEmail().equals(mailDTO.getEmail()))
-			.forEach(member -> {
-				throw new IllegalStateException("이미 존재하는 이메일 입니다.");
+		memberRepository.findByEmail(mailDTO.getEmail())
+			.ifPresent(m -> {
+				throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
 			});
 	}
 }

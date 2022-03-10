@@ -5,19 +5,22 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.mail.MailMessage;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
 public class MailHandler {
 
-	private JavaMailSender sender;
-	private MimeMessage message;
+	private MailSender sender;
+	private MailMessage message;
 	private MimeMessageHelper messageHelper;
 
 	public MailHandler(JavaMailSender jSender) throws MessagingException {
 		this.sender = jSender;
-		message = jSender.createMimeMessage();
-		messageHelper = new MimeMessageHelper(message, true, "UTF-8");
+		message = (MailMessage) jSender.createMimeMessage();
+		messageHelper = new MimeMessageHelper((MimeMessage) message, true, "UTF-8");
 	}
 
 	public void setFrom(String fromAddress) throws MessagingException {
@@ -49,7 +52,7 @@ public class MailHandler {
 	}
 
 	public void send() {
-		sender.send(message);
+		sender.send((SimpleMailMessage) message);
 	}
 
 

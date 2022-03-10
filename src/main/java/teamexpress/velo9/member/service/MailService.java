@@ -4,6 +4,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
+import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
@@ -16,7 +17,7 @@ import teamexpress.velo9.member.dto.MailDTO;
 public class MailService {
 
 	public static final int BOUND = 10;
-	private final JavaMailSender mailSender;
+	private final MailSender mailSender;
 
 	@Async
 	public void sendMail(MailDTO mailDTO) {
@@ -41,7 +42,7 @@ public class MailService {
 	}
 
 	private MailHandler setEmailContentWithFiles(MailContent mailContent) throws Exception {
-		MailHandler mailHandler = new MailHandler(mailSender);
+		MailHandler mailHandler = new MailHandler((JavaMailSender) mailSender);
 		mailHandler.setTo(mailContent.getAddress());
 		mailHandler.setSubject(mailContent.getTitle());
 		String htmlContent = "<p>" + mailContent.getMessage() + "<p><img src=경로>";
