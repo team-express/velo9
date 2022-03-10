@@ -57,7 +57,8 @@ public class Post {
 	@JoinColumn(name = "series_id")
 	private Series series;
 
-	@OneToOne(mappedBy = "post")
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "post_thumbnail_id")
 	private PostThumbnail postThumbnail;
 
 	@OneToMany(mappedBy = "post")
