@@ -76,8 +76,13 @@ public class PostThumbnailFileService {
 		return uploadPath;
 	}
 
+	private static void check(MultipartFile uploadFile) {
+		if (uploadFile == null || uploadFile.isEmpty() || PostThumbnailType.check(uploadFile.getContentType()))
+			throw new IllegalStateException();
+	}
+
 	public PostThumbnailFileDTO upload(MultipartFile uploadFile) {
-		PostThumbnailType.check(uploadFile.getContentType());
+		check(uploadFile);
 
 		String uploadFileName = getUploadFileName(uploadFile);
 

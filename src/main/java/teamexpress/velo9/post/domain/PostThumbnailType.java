@@ -19,8 +19,7 @@ public enum PostThumbnailType {
 		this.contentType = contentType;
 	}
 
-	public static void check(String contentType) {
-		if (types.stream().noneMatch(type -> type.contentType.equals(contentType)))
-			throw new IllegalStateException();
+	public static boolean check(String contentType) {
+		return types.stream().noneMatch(type -> type.contentType.equals(contentType));
 	}
 }
