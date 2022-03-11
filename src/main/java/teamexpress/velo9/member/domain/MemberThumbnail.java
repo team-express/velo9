@@ -26,4 +26,5 @@ public class MemberThumbnail extends BaseEntity {
 	private Long id;
 	private String uuid;
 	private String name;
+	private String path;
 }
