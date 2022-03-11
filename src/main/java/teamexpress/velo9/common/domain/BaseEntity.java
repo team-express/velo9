@@ -1,5 +1,6 @@
 package teamexpress.velo9.common.domain;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;

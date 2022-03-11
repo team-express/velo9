@@ -19,7 +19,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import teamexpress.velo9.common.domain.BaseEntity;
 import teamexpress.velo9.post.domain.Post;
 
@@ -28,7 +27,6 @@ import teamexpress.velo9.post.domain.Post;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class Member extends BaseEntity {
 
 	@Id
