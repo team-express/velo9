@@ -17,12 +17,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import net.coobird.thumbnailator.Thumbnailator;
 
-import lombok.extern.slf4j.Slf4j;
 import teamexpress.velo9.post.domain.PostThumbnailType;
 import teamexpress.velo9.post.dto.PostThumbnailFileDTO;
 
 @Service
-@Slf4j
 public class PostThumbnailFileService {
 	private static final String ROOT_PATH = "c:\\resources";
 	private static final String BACKSLASH = "\\";

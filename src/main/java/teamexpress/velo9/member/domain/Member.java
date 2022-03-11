@@ -3,6 +3,7 @@ package teamexpress.velo9.member.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -48,7 +49,7 @@ public class Member extends BaseEntity {
 	@JsonIgnore
 	private List<Post> posts = new ArrayList<>();
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "member_thumbnail_id")
 	private MemberThumbnail memberThumbnail;
 
