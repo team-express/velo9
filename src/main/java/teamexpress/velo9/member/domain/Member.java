@@ -3,11 +3,14 @@ package teamexpress.velo9.member.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
@@ -46,7 +49,8 @@ public class Member extends BaseEntity {
 	@JsonIgnore
 	private List<Post> posts = new ArrayList<>();
 
-	@OneToOne(mappedBy = "member")
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "member_thumbnail_id")
 	private MemberThumbnail memberThumbnail;
 
 	@OneToMany(mappedBy = "member")
