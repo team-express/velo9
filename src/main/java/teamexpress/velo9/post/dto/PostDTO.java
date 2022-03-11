@@ -11,8 +11,9 @@ public class PostDTO {
 	private String title;
 	private String introduce;
 	private String content;
-	//private Long thumbnailId;
 	private String status;
+
+	private PostThumbnailFileDTO postThumbnailFileDTO;
 
 	public boolean isIntroduceNull() {
 		return this.introduce == null;

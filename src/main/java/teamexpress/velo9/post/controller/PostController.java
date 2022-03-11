@@ -1,6 +1,7 @@
 package teamexpress.velo9.post.controller;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,7 +19,7 @@ public class PostController {
 
 	private final PostService postService;
 
-	@PostMapping("/write")
+	@PostMapping(value = "/write", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Long> write(@RequestBody PostDTO postDTO) {
 		return new ResponseEntity<>(postService.write(postDTO), HttpStatus.OK);
 	}
