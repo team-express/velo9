@@ -12,6 +12,9 @@ public class PostDTO {
 	private String introduce;
 	private String content;
 	private String status;
+	private String access;
+
+	private Long seriesId;
 
 	private PostThumbnailFileDTO postThumbnailFileDTO;
 

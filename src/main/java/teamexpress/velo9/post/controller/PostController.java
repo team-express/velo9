@@ -8,13 +8,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import teamexpress.velo9.post.dto.PostDTO;
 import teamexpress.velo9.post.service.PostService;
 
 @RestController
 @RequiredArgsConstructor
-@Slf4j
 public class PostController {
 
 	private final PostService postService;

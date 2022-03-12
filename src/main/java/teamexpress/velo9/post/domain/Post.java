@@ -69,6 +69,9 @@ public class Post {
 	@Enumerated(EnumType.STRING)
 	private PostStatus status;
 
+	@Enumerated(EnumType.STRING)
+	private PostAccess access;
+
 	@CreatedDate
 	@Column(name = "created_date")
 	private LocalDateTime createdDate;

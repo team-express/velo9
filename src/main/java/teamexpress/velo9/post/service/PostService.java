@@ -5,10 +5,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import teamexpress.velo9.post.domain.Post;
+import teamexpress.velo9.post.domain.PostAccess;
 import teamexpress.velo9.post.domain.PostRepository;
 import teamexpress.velo9.post.domain.PostStatus;
 import teamexpress.velo9.post.domain.PostThumbnail;
 import teamexpress.velo9.post.domain.PostThumbnailRepository;
+import teamexpress.velo9.post.domain.Series;
+import teamexpress.velo9.post.domain.SeriesRepository;
 import teamexpress.velo9.post.dto.PostDTO;
 import teamexpress.velo9.post.dto.PostThumbnailFileDTO;
 
@@ -18,17 +21,25 @@ import teamexpress.velo9.post.dto.PostThumbnailFileDTO;
 public class PostService {
 	private final PostRepository postRepository;
 	private final PostThumbnailRepository postThumbnailRepository;
+	private final SeriesRepository seriesRepository;
 
 	@Transactional
 	public Long write(PostDTO postDTO) {
 
 		PostThumbnail postThumbnail = dtoToEntity(postDTO.getPostThumbnailFileDTO());
+		Series series = null;
 
 		if (postThumbnail != null) {
 			postThumbnailRepository.save(postThumbnail);
 		}
 
-		Post post = dtoToEntity(postDTO, postThumbnail);
+		Long seriesId = postDTO.getSeriesId();
+
+		if (seriesId != null) {
+			series = seriesRepository.findById(seriesId).orElse(null);
+		}
+
+		Post post = dtoToEntity(postDTO, postThumbnail, series);
 
 		postRepository.save(post);
 
@@ -48,7 +59,7 @@ public class PostService {
 		return postThumbnail;
 	}
 
-	private static Post dtoToEntity(PostDTO postDTO, PostThumbnail postThumbnail) {
+	private static Post dtoToEntity(PostDTO postDTO, PostThumbnail postThumbnail, Series series) {
 		postDTO.rearrangeIntroduce();
 
 		Post post = Post.builder()
@@ -57,6 +68,8 @@ public class PostService {
 			.introduce(postDTO.getIntroduce())
 			.content(postDTO.getContent())
 			.status(PostStatus.GENERAL)
+			.access(PostAccess.valueOf(postDTO.getAccess()))
+			.series(series)
 			.postThumbnail(postThumbnail)
 			.build();
 
