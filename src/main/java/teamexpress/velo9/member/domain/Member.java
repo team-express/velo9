@@ -59,4 +59,13 @@ public class Member extends BaseEntity {
 	@OneToMany(mappedBy = "member")
 	@JsonIgnore
 	private List<Refer> refers = new ArrayList<>();
+
+	public String getRoleKey() {
+		return role.getKey();
+	}
+
+	public Member update(String nickname) {
+		this.nickname = nickname;
+		return this;
+	}
 }

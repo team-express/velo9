@@ -37,7 +37,7 @@ public class MemberSignupDTO {
 			.password(password)
 			.nickname(nickname)
 			.email(email)
-			.role(Role.USER)
+			.role(Role.ROLE_USER)
 			.build();
 	}
 }

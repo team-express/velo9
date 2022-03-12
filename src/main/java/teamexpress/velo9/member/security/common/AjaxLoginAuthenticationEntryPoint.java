@@ -11,7 +11,7 @@ public class AjaxLoginAuthenticationEntryPoint implements AuthenticationEntryPoi
 
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+		System.out.println("AjaxLoginAuthenticationEntryPoint.commence");
 		response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "UnAuthorized");
-
 	}
 }

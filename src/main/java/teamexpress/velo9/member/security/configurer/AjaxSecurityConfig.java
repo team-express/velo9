@@ -1,5 +1,6 @@
 package teamexpress.velo9.member.security.configurer;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -7,6 +8,8 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -14,11 +17,15 @@ import teamexpress.velo9.member.security.common.AjaxLoginAuthenticationEntryPoin
 import teamexpress.velo9.member.security.handler.AjaxAccessDeniedHandler;
 import teamexpress.velo9.member.security.handler.AjaxAuthenticationFailureHandler;
 import teamexpress.velo9.member.security.handler.AjaxAuthenticationSuccessHandler;
+import teamexpress.velo9.member.security.oauth.CustomOAuth2UserService;
 import teamexpress.velo9.member.security.provider.AjaxAuthenticationProvider;
 
+@RequiredArgsConstructor
 @Configuration
 @Order(0)
 public class AjaxSecurityConfig extends WebSecurityConfigurerAdapter {
+
+	private final CustomOAuth2UserService customOAuth2UserService;
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -26,9 +33,15 @@ public class AjaxSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+	}
+
+	@Bean
 	public AuthenticationSuccessHandler ajaxAuthenticationSuccessHandler() {
 		return new AjaxAuthenticationSuccessHandler();
 	}
+
 	@Bean
 	public AuthenticationFailureHandler ajaxAuthenticationFailureHandler() {
 		return new AjaxAuthenticationFailureHandler();
@@ -42,9 +55,11 @@ public class AjaxSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
-			.antMatcher("/api/**")
+			.httpBasic().disable() // rest api 이므로 기본설정 사용안함. 기본설정은 비인증시 로그인폼 화면으로 리다이렉트 된다.
+			.csrf().disable() // rest api이므로 csrf 보안이 필요없으므로 disable처리.
 			.authorizeRequests()
-			.antMatchers("/api/messages").hasRole("MANAGER")
+			.antMatchers("/signup", "/sendMail").permitAll()
+			.antMatchers("/home").hasRole("ADMIN")
 			.anyRequest().authenticated();
 //			.and()
 //			.addFilterBefore(ajaxLoginProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
@@ -52,7 +67,10 @@ public class AjaxSecurityConfig extends WebSecurityConfigurerAdapter {
 			.exceptionHandling()
 			.authenticationEntryPoint(new AjaxLoginAuthenticationEntryPoint())
 			.accessDeniedHandler(ajaxAccessDeniedHandler());
-		http.csrf().disable();
+		http
+			.oauth2Login()
+			.userInfoEndpoint()
+			.userService(customOAuth2UserService);
 
 		customConfigurerAjax(http);
 
@@ -82,3 +100,4 @@ public class AjaxSecurityConfig extends WebSecurityConfigurerAdapter {
 //	}
 
 }
+

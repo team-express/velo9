@@ -23,6 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		System.out.println("CustomUserDetailsService.loadUserByUsername");
 		Optional<Member> findMember = memberRepository.findByUsername(username);
 		if (findMember.isEmpty()) {
 			throw new UsernameNotFoundException("아이디가 존재하지 않습니다.");
