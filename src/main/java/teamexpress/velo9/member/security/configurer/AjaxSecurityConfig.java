@@ -60,17 +60,21 @@ public class AjaxSecurityConfig extends WebSecurityConfigurerAdapter {
 			.authorizeRequests()
 			.antMatchers("/signup", "/sendMail").permitAll()
 			.antMatchers("/home").hasRole("ADMIN")
-			.anyRequest().authenticated();
+			.anyRequest().authenticated()
+			.and()
+			.oauth2Login()
+//			.authorizationEndpoint()
+//			.baseUri("/oauth2/authorization") -> 프론트엔드 설정
+//			.and()
+			.userInfoEndpoint()
+			.userService(customOAuth2UserService);
+
 //			.and()
 //			.addFilterBefore(ajaxLoginProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
 		http
 			.exceptionHandling()
 			.authenticationEntryPoint(new AjaxLoginAuthenticationEntryPoint())
 			.accessDeniedHandler(ajaxAccessDeniedHandler());
-		http
-			.oauth2Login()
-			.userInfoEndpoint()
-			.userService(customOAuth2UserService);
 
 		customConfigurerAjax(http);
 
