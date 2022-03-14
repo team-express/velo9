@@ -14,6 +14,7 @@ import javax.persistence.OneToOne;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import teamexpress.velo9.common.domain.BaseEntity;
@@ -23,6 +24,7 @@ import teamexpress.velo9.post.domain.Post;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Member extends BaseEntity {
 
 	@Id
@@ -52,4 +54,6 @@ public class Member extends BaseEntity {
 	@OneToMany(mappedBy = "member")
 	@JsonIgnore
 	private List<Refer> refers = new ArrayList<>();
+
+	private Role role;
 }
