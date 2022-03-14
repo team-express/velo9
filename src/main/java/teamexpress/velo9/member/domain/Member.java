@@ -6,6 +6,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -59,5 +61,6 @@ public class Member extends BaseEntity {
 	@JsonIgnore
 	private List<Refer> refers = new ArrayList<>();
 
+	@Enumerated(value = EnumType.STRING)
 	private Role role;
 }
