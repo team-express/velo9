@@ -3,12 +3,10 @@ package teamexpress.velo9.member.security.configure;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -18,11 +16,14 @@ import teamexpress.velo9.member.security.common.AjaxLoginAuthenticationEntryPoin
 import teamexpress.velo9.member.security.handler.AjaxAccessDeniedHandler;
 import teamexpress.velo9.member.security.handler.AjaxAuthenticationFailureHandler;
 import teamexpress.velo9.member.security.handler.AjaxAuthenticationSuccessHandler;
+import teamexpress.velo9.member.security.oauth.CustomOAuth2UserService;
 import teamexpress.velo9.member.security.provider.AjaxAuthenticationProvider;
 
+@RequiredArgsConstructor
 @Configuration
-@Order(0)
 public class AjaxSecurityConfig extends WebSecurityConfigurerAdapter {
+
+	private final CustomOAuth2UserService customOAuth2UserService;
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -55,8 +56,15 @@ public class AjaxSecurityConfig extends WebSecurityConfigurerAdapter {
 			.httpBasic().disable()
 			.csrf().disable()
 			.authorizeRequests()
-			.antMatchers("/signup", "/sendMail", "/{nickname}/temp").permitAll()
-			.anyRequest().authenticated();
+			.antMatchers("/signup", "/sendMail", "/{nickname}/temp","/sessionLogin").permitAll()
+			.anyRequest().authenticated()
+			.and()
+			.oauth2Login()
+			.authorizationEndpoint()
+			.baseUri("/oauth2/authorization")
+			.and()
+			.userInfoEndpoint()
+			.userService(customOAuth2UserService);
 
 		http
 			.exceptionHandling()
@@ -79,6 +87,5 @@ public class AjaxSecurityConfig extends WebSecurityConfigurerAdapter {
 			.setAuthenticationManager(authenticationManagerBean())
 			.loginProcessingUrl("/api/login");
 	}
-
 }
 
