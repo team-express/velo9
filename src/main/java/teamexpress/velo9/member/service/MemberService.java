@@ -18,11 +18,12 @@ public class MemberService {
 	private final PasswordEncoder passwordEncoder;
 
 	@Transactional
-	public void join(MemberSignupDTO signupDTO) {
+	public Long join(MemberSignupDTO signupDTO) {
 		checkDuplicateMember(signupDTO);
 		encodePassword(signupDTO);
 		Member member = signupDTO.toMember();
 		memberRepository.save(member);
+		return member.getId();
 	}
 
 	private void encodePassword(MemberSignupDTO signupDTO) {

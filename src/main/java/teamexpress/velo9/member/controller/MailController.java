@@ -17,9 +17,8 @@ public class MailController {
 	private final MemberService memberService;
 
 	@PostMapping("/sendMail")
-	private String sendMail(@Validated @RequestBody MailDTO mailDTO) {
+	private void sendMail(@Validated @RequestBody MailDTO mailDTO) {
 		memberService.findEmail(mailDTO);
 		mailService.sendMail(mailDTO);
-		return "ok";
 	}
 }
