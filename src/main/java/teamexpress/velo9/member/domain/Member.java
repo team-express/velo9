@@ -63,4 +63,8 @@ public class Member extends BaseEntity {
 
 	@Enumerated(value = EnumType.STRING)
 	private Role role;
+
+	public String getRoleKey() {
+		return role.getKey();
+	}
 }
