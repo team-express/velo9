@@ -7,6 +7,7 @@ import teamexpress.velo9.post.domain.PostThumbnail;
 
 @Data
 public class PostSaveDTO {
+
 	private static final int MAX = 150;
 	private static final int FIRST_INDEX = 0;
 

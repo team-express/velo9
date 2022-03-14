@@ -9,6 +9,7 @@ import teamexpress.velo9.post.domain.PostThumbnail;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostThumbnailSaveDTO {
+
 	private String uuid;
 	private String name;
 	private String path;

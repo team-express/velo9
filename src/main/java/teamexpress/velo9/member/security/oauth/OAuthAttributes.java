@@ -22,12 +22,13 @@ public class OAuthAttributes {
 		String email, String nickname, String picture) {
 		this.attributes = attributes;
 		this.nameAttributeKey = nameAttributeKey;
-		this.nickname=nickname;
+		this.nickname = nickname;
 		this.email = email;
 		this.picture = picture;
 	}
 
-	public static OAuthAttributes of(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
+	public static OAuthAttributes of(String registrationId, String userNameAttributeName,
+		Map<String, Object> attributes) {
 
 		if ("github".equals(registrationId)) {
 			return ofGithub("id", attributes);
@@ -35,7 +36,8 @@ public class OAuthAttributes {
 		return ofGoogle(userNameAttributeName, attributes);
 	}
 
-	private static OAuthAttributes ofGithub(String userNameAttributeName, Map<String, Object> attributes) {
+	private static OAuthAttributes ofGithub(String userNameAttributeName,
+		Map<String, Object> attributes) {
 		for (Entry<String, Object> stringObjectEntry : attributes.entrySet()) {
 			System.out.println("stringObjectEntry = " + stringObjectEntry);
 		}
@@ -48,7 +50,8 @@ public class OAuthAttributes {
 			.build();
 	}
 
-	private static OAuthAttributes ofGoogle(String userNameAttributeName, Map<String, Object> attributes) {
+	private static OAuthAttributes ofGoogle(String userNameAttributeName,
+		Map<String, Object> attributes) {
 		for (Entry<String, Object> stringObjectEntry : attributes.entrySet()) {
 			System.out.println("stringObjectEntry = " + stringObjectEntry);
 		}

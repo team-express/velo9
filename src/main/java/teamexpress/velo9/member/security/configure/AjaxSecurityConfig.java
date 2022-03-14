@@ -1,5 +1,6 @@
 package teamexpress.velo9.member.security.configure;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -11,8 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-
-import lombok.RequiredArgsConstructor;
 import teamexpress.velo9.member.security.common.AjaxLoginAuthenticationEntryPoint;
 import teamexpress.velo9.member.security.handler.AjaxAccessDeniedHandler;
 import teamexpress.velo9.member.security.handler.AjaxAuthenticationFailureHandler;
@@ -57,7 +56,8 @@ public class AjaxSecurityConfig extends WebSecurityConfigurerAdapter {
 			.httpBasic().disable()
 			.csrf().disable()
 			.authorizeRequests()
-			.antMatchers("/signup", "/sendMail", "/{nickname}/temp", "/sessionLogin", "/**").permitAll()
+			.antMatchers("/signup", "/sendMail", "/{nickname}/temp", "/sessionLogin", "/**")
+			.permitAll()
 			.anyRequest().authenticated()
 			.and()
 			.oauth2Login()

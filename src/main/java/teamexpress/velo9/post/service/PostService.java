@@ -1,9 +1,8 @@
 package teamexpress.velo9.post.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import lombok.RequiredArgsConstructor;
 import teamexpress.velo9.post.domain.Post;
 import teamexpress.velo9.post.domain.PostRepository;
 import teamexpress.velo9.post.domain.PostThumbnail;
@@ -15,6 +14,7 @@ import teamexpress.velo9.post.dto.PostThumbnailSaveDTO;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class PostService {
+
 	private final PostRepository postRepository;
 	private final PostThumbnailRepository postThumbnailRepository;
 

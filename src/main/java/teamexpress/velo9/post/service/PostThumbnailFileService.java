@@ -9,19 +9,17 @@ import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
-
+import net.coobird.thumbnailator.Thumbnailator;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
-
-import net.coobird.thumbnailator.Thumbnailator;
-
 import teamexpress.velo9.post.domain.PostThumbnailType;
 import teamexpress.velo9.post.dto.PostThumbnailSaveDTO;
 
 @Service
 public class PostThumbnailFileService {
+
 	private static final String ROOT_PATH = "c:\\resources";
 	private static final String BACKSLASH = "\\";
 	private static final String NAME_SEPARATOR = "_";
@@ -43,7 +41,8 @@ public class PostThumbnailFileService {
 		return str.replace("-", File.separator);
 	}
 
-	private static void createFile(MultipartFile uploadFile, File uploadPath, String uploadFullFileName) {
+	private static void createFile(MultipartFile uploadFile, File uploadPath,
+		String uploadFullFileName) {
 		File saveFile = new File(uploadPath, uploadFullFileName);
 
 		try {
@@ -75,8 +74,16 @@ public class PostThumbnailFileService {
 	}
 
 	private static void checkUploadFile(MultipartFile uploadFile) {
-		if (uploadFile == null || uploadFile.isEmpty() || PostThumbnailType.check(uploadFile.getContentType()))
+		if (uploadFile == null || uploadFile.isEmpty() || PostThumbnailType.check(
+			uploadFile.getContentType())) {
 			throw new IllegalStateException();
+		}
+	}
+
+	private static void checkDeleteFileName(String fileName) {
+		if (fileName == null || fileName.equals("")) {
+			throw new IllegalStateException();
+		}
 	}
 
 	public PostThumbnailSaveDTO upload(MultipartFile uploadFile) {
@@ -90,16 +97,12 @@ public class PostThumbnailFileService {
 
 		String uuid = UUID.randomUUID().toString();
 
-		PostThumbnailSaveDTO postThumbnailSaveDTO = new PostThumbnailSaveDTO(uuid, uploadFileName, uploadFolderPath);
+		PostThumbnailSaveDTO postThumbnailSaveDTO = new PostThumbnailSaveDTO(uuid, uploadFileName,
+			uploadFolderPath);
 
 		createFile(uploadFile, uploadPath, uuid + NAME_SEPARATOR + uploadFileName);
 
 		return postThumbnailSaveDTO;
-	}
-
-	private static void checkDeleteFileName(String fileName) {
-		if (fileName == null || fileName.equals(""))
-			throw new IllegalStateException();
 	}
 
 	public void deleteFile(String fileName) {
