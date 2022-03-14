@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import teamexpress.velo9.common.domain.BaseEntity;
@@ -21,6 +22,7 @@ import teamexpress.velo9.common.domain.BaseEntity;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Tag extends BaseEntity {
 
 	@Id

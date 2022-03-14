@@ -1,5 +1,7 @@
 package teamexpress.velo9.post.dto;
 
+import java.util.List;
+
 import lombok.Data;
 import teamexpress.velo9.member.domain.Member;
 import teamexpress.velo9.post.domain.Post;
@@ -22,6 +24,7 @@ public class PostSaveDTO {
 
 	private Long memberId;
 	private Long seriesId;
+	private List<String> tagNames;
 
 	private PostThumbnailSaveDTO postThumbnailSaveDTO;
 

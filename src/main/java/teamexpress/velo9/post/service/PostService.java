@@ -1,5 +1,7 @@
 package teamexpress.velo9.post.service;
 
+import javax.persistence.EntityManager;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +21,7 @@ import teamexpress.velo9.post.dto.PostThumbnailSaveDTO;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class PostService {
+	private final EntityManager em;
 	private final PostRepository postRepository;
 	private final PostThumbnailRepository postThumbnailRepository;
 	private final SeriesRepository seriesRepository;
@@ -57,5 +60,4 @@ public class PostService {
 
 		return post.getId();
 	}
-
 }

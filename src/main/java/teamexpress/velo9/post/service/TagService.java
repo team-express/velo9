@@ -1,0 +1,38 @@
+package teamexpress.velo9.post.service;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import teamexpress.velo9.post.domain.Post;
+import teamexpress.velo9.post.domain.PostRepository;
+import teamexpress.velo9.post.domain.PostTag;
+import teamexpress.velo9.post.domain.PostTagRepository;
+import teamexpress.velo9.post.domain.Tag;
+import teamexpress.velo9.post.domain.TagRepository;
+
+@Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
+@Log4j2
+public class TagService {
+	private final PostRepository postRepository;
+	private final TagRepository tagRepository;
+	private final PostTagRepository postTagRepository;
+
+	@Transactional
+	public void addTags(Long postId, List<String> tagNames) {
+		Post post = postRepository.findById(postId).orElse(null);
+
+		List<String> realTagNames = tagRepository.getTagNames();
+
+		tagNames.stream().filter((name) -> !realTagNames.contains(name)).forEach((name) -> {
+			Tag tag = Tag.builder().name(name).build();
+			tagRepository.save(tag);
+			postTagRepository.save(PostTag.builder().tag(tag).post(post).build());
+		});
+	}
+}
