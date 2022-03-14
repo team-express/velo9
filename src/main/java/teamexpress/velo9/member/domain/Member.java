@@ -6,6 +6,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,6 +19,7 @@ import javax.persistence.OneToOne;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import teamexpress.velo9.common.domain.BaseEntity;
@@ -26,6 +29,7 @@ import teamexpress.velo9.post.domain.Post;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Member extends BaseEntity {
 
 	@Id
@@ -56,4 +60,11 @@ public class Member extends BaseEntity {
 	@OneToMany(mappedBy = "member")
 	@JsonIgnore
 	private List<Refer> refers = new ArrayList<>();
+
+	@Enumerated(value = EnumType.STRING)
+	private Role role;
+
+	public String getRoleKey() {
+		return role.getKey();
+	}
 }
