@@ -9,7 +9,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import teamexpress.velo9.member.dto.MailContent;
+import teamexpress.velo9.member.dto.MailContentDTO;
 import teamexpress.velo9.member.dto.MailDTO;
 
 @RequiredArgsConstructor
@@ -21,19 +21,19 @@ public class MailService {
 
 	@Async
 	public void sendMail(MailDTO mailDTO) {
-		MailContent emailContent = getEmailContent(mailDTO);
-		SimpleMailMessage message = setEmailContent(emailContent);
+		MailContentDTO mailContent = getMailContent(mailDTO);
+		SimpleMailMessage message = setEmailContent(mailContent);
 		mailSender.send(message);
 	}
 
 	@Async
 	public void sendMailWithFiles(MailDTO mailDTO) throws Exception {
-		MailContent mailContent = getEmailContent(mailDTO);
+		MailContentDTO mailContent = getMailContent(mailDTO);
 		MailHandler mailHandler = setEmailContentWithFiles(mailContent);
 		mailHandler.send();
 	}
 
-	private SimpleMailMessage setEmailContent(MailContent emailContent) {
+	private SimpleMailMessage setEmailContent(MailContentDTO emailContent) {
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setTo(emailContent.getAddress());
 		message.setSubject(emailContent.getTitle());
@@ -41,7 +41,7 @@ public class MailService {
 		return message;
 	}
 
-	private MailHandler setEmailContentWithFiles(MailContent mailContent) throws Exception {
+	private MailHandler setEmailContentWithFiles(MailContentDTO mailContent) throws Exception {
 		MailHandler mailHandler = new MailHandler((JavaMailSender) mailSender);
 		mailHandler.setTo(mailContent.getAddress());
 		mailHandler.setSubject(mailContent.getTitle());
@@ -52,12 +52,12 @@ public class MailService {
 		return mailHandler;
 	}
 
-	public MailContent getEmailContent(MailDTO mailDTO) {
+	public MailContentDTO getMailContent(MailDTO mailDTO) {
 		String email = mailDTO.getEmail();
 		String title = "블로그 이메일 인증번호입니다.";
 		String number = getRandomNumber();
 		String message = "인증번호 : " + number;
-		return new MailContent(email, title, message);
+		return new MailContentDTO(email, title, message);
 	}
 
 	private String getRandomNumber() {
