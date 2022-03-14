@@ -1,9 +1,14 @@
 package teamexpress.velo9.post.dto;
 
 import lombok.Data;
+import teamexpress.velo9.post.domain.Post;
+import teamexpress.velo9.post.domain.PostAccess;
+import teamexpress.velo9.post.domain.PostStatus;
+import teamexpress.velo9.post.domain.PostThumbnail;
+import teamexpress.velo9.post.domain.Series;
 
 @Data
-public class PostDTO {
+public class PostSaveDTO {
 	private static final int MAX = 150;
 	private static final int FIRST_INDEX = 0;
 
@@ -16,7 +21,24 @@ public class PostDTO {
 
 	private Long seriesId;
 
-	private PostThumbnailFileDTO postThumbnailFileDTO;
+	private PostThumbnailSaveDTO postThumbnailSaveDTO;
+
+	public Post toPost(PostThumbnail postThumbnail, Series series) {
+		this.rearrangeIntroduce();
+
+		Post post = Post.builder()
+			.id(this.id)
+			.title(this.title)
+			.introduce(this.introduce)
+			.content(this.content)
+			.status(PostStatus.GENERAL)
+			.access(PostAccess.valueOf(this.access))
+			.series(series)
+			.postThumbnail(postThumbnail)
+			.build();
+
+		return post;
+	}
 
 	public boolean isIntroduceNull() {
 		return this.introduce == null;

@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import net.coobird.thumbnailator.Thumbnailator;
 
 import teamexpress.velo9.post.domain.PostThumbnailType;
-import teamexpress.velo9.post.dto.PostThumbnailFileDTO;
+import teamexpress.velo9.post.dto.PostThumbnailSaveDTO;
 
 @Service
 public class PostThumbnailFileService {
@@ -79,7 +79,7 @@ public class PostThumbnailFileService {
 			throw new IllegalStateException();
 	}
 
-	public PostThumbnailFileDTO upload(MultipartFile uploadFile) {
+	public PostThumbnailSaveDTO upload(MultipartFile uploadFile) {
 		checkUploadFile(uploadFile);
 
 		String uploadFileName = getUploadFileName(uploadFile);
@@ -90,11 +90,11 @@ public class PostThumbnailFileService {
 
 		String uuid = UUID.randomUUID().toString();
 
-		PostThumbnailFileDTO postThumbnailFileDTO = new PostThumbnailFileDTO(uuid, uploadFileName, uploadFolderPath);
+		PostThumbnailSaveDTO postThumbnailSaveDTO = new PostThumbnailSaveDTO(uuid, uploadFileName, uploadFolderPath);
 
 		createFile(uploadFile, uploadPath, uuid + NAME_SEPARATOR + uploadFileName);
 
-		return postThumbnailFileDTO;
+		return postThumbnailSaveDTO;
 	}
 
 	private static void checkDeleteFileName(String fileName) {

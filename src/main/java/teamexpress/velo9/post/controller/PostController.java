@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
-import teamexpress.velo9.post.dto.PostDTO;
+import teamexpress.velo9.post.dto.PostSaveDTO;
 import teamexpress.velo9.post.service.PostService;
 
 @RestController
@@ -18,7 +18,7 @@ public class PostController {
 	private final PostService postService;
 
 	@PostMapping(value = "/write", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Long> write(@RequestBody PostDTO postDTO) {
-		return new ResponseEntity<>(postService.write(postDTO), HttpStatus.OK);
+	public ResponseEntity<Long> write(@RequestBody PostSaveDTO postSaveDTO) {
+		return new ResponseEntity<>(postService.write(postSaveDTO), HttpStatus.OK);
 	}
 }
