@@ -21,6 +21,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import teamexpress.velo9.common.domain.BaseEntity;
 import teamexpress.velo9.post.domain.Post;
+import teamexpress.velo9.post.domain.Series;
 
 @Entity
 @Getter
@@ -56,4 +57,8 @@ public class Member extends BaseEntity {
 	@OneToMany(mappedBy = "member")
 	@JsonIgnore
 	private List<Refer> refers = new ArrayList<>();
+
+	@OneToMany(mappedBy = "member")
+	@JsonIgnore
+	private List<Series> series = new ArrayList<>();
 }
