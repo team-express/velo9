@@ -1,6 +1,8 @@
 package teamexpress.velo9.post.dto;
 
+import java.util.List;
 import lombok.Data;
+import teamexpress.velo9.member.domain.Member;
 import teamexpress.velo9.post.domain.Post;
 import teamexpress.velo9.post.domain.PostAccess;
 import teamexpress.velo9.post.domain.PostStatus;
@@ -20,11 +22,13 @@ public class PostSaveDTO {
 	private String status;
 	private String access;
 
+	private Long memberId;
 	private Long seriesId;
+	private List<String> tagNames;
 
 	private PostThumbnailSaveDTO postThumbnailSaveDTO;
 
-	public Post toPost(PostThumbnail postThumbnail, Series series) {
+	public Post toPost(PostThumbnail postThumbnail, Series series, Member member) {
 		this.setIntroduce();
 
 		Post post = Post.builder()
@@ -34,6 +38,7 @@ public class PostSaveDTO {
 			.content(this.content)
 			.status(PostStatus.GENERAL)
 			.access(PostAccess.valueOf(this.access))
+			.member(member)
 			.series(series)
 			.postThumbnail(postThumbnail)
 			.build();

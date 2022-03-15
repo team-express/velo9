@@ -3,6 +3,8 @@ package teamexpress.velo9.post.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import teamexpress.velo9.member.domain.Member;
+import teamexpress.velo9.member.domain.MemberRepository;
 import teamexpress.velo9.post.domain.Post;
 import teamexpress.velo9.post.domain.PostRepository;
 import teamexpress.velo9.post.domain.PostThumbnail;
@@ -20,6 +22,7 @@ public class PostService {
 	private final PostRepository postRepository;
 	private final PostThumbnailRepository postThumbnailRepository;
 	private final SeriesRepository seriesRepository;
+	private final MemberRepository memberRepository;
 
 	@Transactional
 	public Long write(PostSaveDTO postSaveDTO) {
@@ -37,16 +40,22 @@ public class PostService {
 		}
 
 		Long seriesId = postSaveDTO.getSeriesId();
-
 		if (seriesId != null) {
 			series = seriesRepository.findById(seriesId).orElse(null);
 		}
 
-		Post post = postSaveDTO.toPost(postThumbnail, series);
+		Long memberId = postSaveDTO.getMemberId();
+		if (memberId == null) {
+			throw new NullPointerException("no member id!!!");
+		}
+
+		Member member = memberRepository.findById(postSaveDTO.getMemberId())
+			.orElseThrow(() -> new NullPointerException("no member"));
+
+		Post post = postSaveDTO.toPost(postThumbnail, series, member);
 
 		postRepository.save(post);
 
 		return post.getId();
 	}
-
 }
