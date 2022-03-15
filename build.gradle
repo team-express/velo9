@@ -30,6 +30,8 @@ dependencies {
 
     implementation 'mysql:mysql-connector-java'
     implementation 'net.coobird:thumbnailator:0.4.17'
+    implementation 'org.quartz-scheduler:quartz'
+    implementation 'org.quartz-scheduler:quartz-jobs'
 
     compileOnly 'org.projectlombok:lombok'
 
