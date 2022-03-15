@@ -8,4 +8,6 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
 
 	@Query("select t.name from Tag t")
 	List<String> getTagNames();
+
+	Tag findByName(String name);
 }
