@@ -21,18 +21,25 @@ public class AjaxLoginProcessingFilter extends AbstractAuthenticationProcessingF
 	}
 
 	@Override
-	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException {
+	public Authentication attemptAuthentication(HttpServletRequest request,
+		HttpServletResponse response) throws
+		AuthenticationException,
+		IOException {
 
 		if (!isAjax(request)) {
 			throw new IllegalStateException("Authentication is not supported");
 		}
 
-		MemberSignupDTO memberSignupDTO = objectMapper.readValue(request.getReader(), MemberSignupDTO.class);
-		if (StringUtils.isEmpty(memberSignupDTO.getUsername()) || StringUtils.isEmpty(memberSignupDTO.getPassword())) {
+		MemberSignupDTO memberSignupDTO = objectMapper.readValue(request.getReader(),
+			MemberSignupDTO.class);
+		if (StringUtils.isEmpty(memberSignupDTO.getUsername()) || StringUtils.isEmpty(
+			memberSignupDTO.getPassword())) {
 			throw new IllegalArgumentException("Username or Password is empty");
 		}
 
-		AjaxAuthenticationToken ajaxAuthenticationToken = new AjaxAuthenticationToken(memberSignupDTO.getUsername(), memberSignupDTO.getPassword());
+		AjaxAuthenticationToken ajaxAuthenticationToken = new AjaxAuthenticationToken(
+			memberSignupDTO.getUsername(),
+			memberSignupDTO.getPassword());
 
 		return getAuthenticationManager().authenticate(ajaxAuthenticationToken);
 	}

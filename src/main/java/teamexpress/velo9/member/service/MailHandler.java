@@ -45,7 +45,7 @@ public class MailHandler {
 		messageHelper.addAttachment(displayFileName, fsr);
 	}
 
-	public void setInline(String contentId, String pathToInline) throws Exception{
+	public void setInline(String contentId, String pathToInline) throws Exception {
 		File file = new ClassPathResource(pathToInline).getFile();
 		FileSystemResource fsr = new FileSystemResource(file);
 		messageHelper.addInline(contentId, fsr);

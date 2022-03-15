@@ -22,7 +22,8 @@ public class MemberController {
 	}
 
 	@PostMapping("/signup")
-	public void addMember(@Validated @RequestBody MemberSignupDTO memberSignupDTO, HttpSession session) {
+	public void addMember(@Validated @RequestBody MemberSignupDTO memberSignupDTO,
+		HttpSession session) {
 		Long memberId = memberService.join(memberSignupDTO);
 		session.setAttribute(SessionConst.LOGIN_MEMBER, memberId);
 	}

@@ -48,7 +48,7 @@ public class MailService {
 		String htmlContent = "<p>" + mailContent.getMessage() + "<p><img src=경로>";
 		mailHandler.setText(htmlContent, true);
 		mailHandler.setAttach("파일네임", "파일경로");
-		mailHandler.setInline("확장자 제외한 사진이름","사진경로");
+		mailHandler.setInline("확장자 제외한 사진이름", "사진경로");
 		return mailHandler;
 	}
 
