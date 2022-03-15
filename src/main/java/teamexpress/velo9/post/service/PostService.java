@@ -1,0 +1,75 @@
+package teamexpress.velo9.post.service;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import teamexpress.velo9.member.domain.Member;
+import teamexpress.velo9.member.domain.MemberRepository;
+import teamexpress.velo9.post.domain.Post;
+import teamexpress.velo9.post.domain.PostRepository;
+import teamexpress.velo9.post.domain.PostThumbnail;
+import teamexpress.velo9.post.domain.PostThumbnailRepository;
+import teamexpress.velo9.post.domain.Series;
+import teamexpress.velo9.post.domain.SeriesRepository;
+import teamexpress.velo9.post.dto.PostSaveDTO;
+import teamexpress.velo9.post.dto.PostThumbnailSaveDTO;
+
+@Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
+public class PostService {
+
+	private final PostRepository postRepository;
+	private final PostThumbnailRepository postThumbnailRepository;
+	private final SeriesRepository seriesRepository;
+	private final MemberRepository memberRepository;
+
+	private PostThumbnail getPostThumbnail(PostThumbnailSaveDTO postThumbnailSaveDTO) {
+		PostThumbnail postThumbnail = null;
+
+		if (postThumbnailSaveDTO != null) {
+			postThumbnail = postThumbnailSaveDTO.toPostThumbnail();
+		}
+
+		return postThumbnail;
+	}
+
+	private Series getSeries(Long seriesId) {
+		Series series = null;
+
+		if (seriesId != null) {
+			series = seriesRepository.findById(seriesId).orElse(null);
+		}
+
+		return series;
+	}
+
+	private Member getMember(Long memberId) {
+		if (memberId == null) {
+			throw new NullPointerException("no member is NOT NULL!!!");
+		}
+
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new NullPointerException("no member"));
+
+		return member;
+	}
+
+	@Transactional
+	public Long write(PostSaveDTO postSaveDTO) {
+
+		PostThumbnail postThumbnail = getPostThumbnail(postSaveDTO.getPostThumbnailSaveDTO());
+		Series series = getSeries(postSaveDTO.getSeriesId());
+		Member member = getMember(postSaveDTO.getMemberId());
+
+		if (postThumbnail != null) {
+			postThumbnailRepository.save(postThumbnail);
+		}
+
+		Post post = postSaveDTO.toPost(postThumbnail, series, member);
+
+		postRepository.save(post);
+
+		return post.getId();
+	}
+}

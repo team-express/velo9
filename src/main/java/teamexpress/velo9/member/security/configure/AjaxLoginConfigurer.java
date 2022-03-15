@@ -41,7 +41,8 @@ public final class AjaxLoginConfigurer<H extends HttpSecurityBuilder<H>> extends
 		SessionAuthenticationStrategy sessionAuthenticationStrategy
 			= http.getSharedObject(SessionAuthenticationStrategy.class);
 		if (sessionAuthenticationStrategy != null) {
-			getAuthenticationFilter().setSessionAuthenticationStrategy(sessionAuthenticationStrategy);
+			getAuthenticationFilter().setSessionAuthenticationStrategy(
+				sessionAuthenticationStrategy);
 		}
 
 		RememberMeServices rememberMeServices = http.getSharedObject(RememberMeServices.class);
@@ -62,7 +63,8 @@ public final class AjaxLoginConfigurer<H extends HttpSecurityBuilder<H>> extends
 		return this;
 	}
 
-	public AjaxLoginConfigurer<H> setAuthenticationManager(AuthenticationManager authenticationManager) {
+	public AjaxLoginConfigurer<H> setAuthenticationManager(
+		AuthenticationManager authenticationManager) {
 		this.authenticationManager = authenticationManager;
 		return this;
 	}

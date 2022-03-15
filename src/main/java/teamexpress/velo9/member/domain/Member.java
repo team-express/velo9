@@ -1,8 +1,8 @@
 package teamexpress.velo9.member.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,15 +15,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import teamexpress.velo9.common.domain.BaseEntity;
 import teamexpress.velo9.post.domain.Post;
+import teamexpress.velo9.post.domain.Series;
 
 @Entity
 @Getter
@@ -63,6 +61,10 @@ public class Member extends BaseEntity {
 
 	@Enumerated(value = EnumType.STRING)
 	private Role role;
+
+	@OneToMany(mappedBy = "member")
+	@JsonIgnore
+	private List<Series> series = new ArrayList<>();
 
 	public String getRoleKey() {
 		return role.getKey();
