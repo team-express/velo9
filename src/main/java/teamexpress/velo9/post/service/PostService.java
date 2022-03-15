@@ -24,33 +24,47 @@ public class PostService {
 	private final SeriesRepository seriesRepository;
 	private final MemberRepository memberRepository;
 
-	@Transactional
-	public Long write(PostSaveDTO postSaveDTO) {
-
-		PostThumbnailSaveDTO postThumbnailSaveDTO = postSaveDTO.getPostThumbnailSaveDTO();
+	private PostThumbnail getPostThumbnail(PostThumbnailSaveDTO postThumbnailSaveDTO) {
 		PostThumbnail postThumbnail = null;
-		Series series = null;
 
 		if (postThumbnailSaveDTO != null) {
 			postThumbnail = postThumbnailSaveDTO.toPostThumbnail();
 		}
 
-		if (postThumbnail != null) {
-			postThumbnailRepository.save(postThumbnail);
-		}
+		return postThumbnail;
+	}
 
-		Long seriesId = postSaveDTO.getSeriesId();
+	private Series getSeries(Long seriesId) {
+		Series series = null;
+
 		if (seriesId != null) {
 			series = seriesRepository.findById(seriesId).orElse(null);
 		}
 
-		Long memberId = postSaveDTO.getMemberId();
+		return series;
+	}
+
+	private Member getMember(Long memberId) {
 		if (memberId == null) {
-			throw new NullPointerException("no member id!!!");
+			throw new NullPointerException("no member is NOT NULL!!!");
 		}
 
-		Member member = memberRepository.findById(postSaveDTO.getMemberId())
+		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new NullPointerException("no member"));
+
+		return member;
+	}
+
+	@Transactional
+	public Long write(PostSaveDTO postSaveDTO) {
+
+		PostThumbnail postThumbnail = getPostThumbnail(postSaveDTO.getPostThumbnailSaveDTO());
+		Series series = getSeries(postSaveDTO.getSeriesId());
+		Member member = getMember(postSaveDTO.getMemberId());
+
+		if (postThumbnail != null) {
+			postThumbnailRepository.save(postThumbnail);
+		}
 
 		Post post = postSaveDTO.toPost(postThumbnail, series, member);
 
