@@ -20,7 +20,7 @@ public class PostSaveDTO {
 	private PostThumbnailSaveDTO postThumbnailSaveDTO;
 
 	public Post toPost(PostThumbnail postThumbnail) {
-		this.rearrangeIntroduce();
+		this.setIntroduce();
 
 		Post post = Post.builder()
 			.id(this.id)
@@ -38,7 +38,7 @@ public class PostSaveDTO {
 		return this.introduce == null;
 	}
 
-	public void rearrangeIntroduce() {
+	private void setIntroduce() {
 		if (!isIntroduceNull()) {
 			return;
 		}

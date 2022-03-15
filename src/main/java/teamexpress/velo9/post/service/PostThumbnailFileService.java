@@ -76,13 +76,13 @@ public class PostThumbnailFileService {
 	private static void checkUploadFile(MultipartFile uploadFile) {
 		if (uploadFile == null || uploadFile.isEmpty() || PostThumbnailType.check(
 			uploadFile.getContentType())) {
-			throw new IllegalStateException();
+			throw new IllegalStateException("지원되지 않는 형식의 파일이거나 빈 파일입니다.");
 		}
 	}
 
 	private static void checkDeleteFileName(String fileName) {
 		if (fileName == null || fileName.equals("")) {
-			throw new IllegalStateException();
+			throw new IllegalStateException("파일 이름이 없습니다.");
 		}
 	}
 

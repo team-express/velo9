@@ -8,14 +8,14 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import teamexpress.velo9.post.domain.PostThumbnail;
 import teamexpress.velo9.post.domain.PostThumbnailRepository;
 
 @Component
+@RequiredArgsConstructor
 public class PostThumbnailTask {
 
 	private static final String ROOT_PATH = "c:\\resources";
@@ -23,8 +23,7 @@ public class PostThumbnailTask {
 	private static final String THUMBNAIL_MARK = "s_";
 	private static final int ONE_DAY_AGO = -1;
 
-	@Setter(onMethod_ = {@Autowired})
-	private PostThumbnailRepository postThumbnailRepository;
+	private final PostThumbnailRepository postThumbnailRepository;
 
 	private String getFolderYesterDay() {
 
@@ -39,7 +38,7 @@ public class PostThumbnailTask {
 		return str.replace("-", File.separator);
 	}
 
-	@Scheduled(cron = "0 56 18 * * *")
+	@Scheduled(cron = "0 47 13 * * *")
 	public void deleteUnusedFiles() {
 		List<PostThumbnail> fileList = postThumbnailRepository.getOldFiles();
 

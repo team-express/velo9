@@ -1,7 +1,6 @@
 package teamexpress.velo9.member.security.oauth;
 
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,9 +37,6 @@ public class OAuthAttributes {
 
 	private static OAuthAttributes ofGithub(String userNameAttributeName,
 		Map<String, Object> attributes) {
-		for (Entry<String, Object> stringObjectEntry : attributes.entrySet()) {
-			System.out.println("stringObjectEntry = " + stringObjectEntry);
-		}
 		return OAuthAttributes.builder()
 			.email((String) attributes.get("email"))
 			.picture((String) attributes.get("avatar_url"))
@@ -52,9 +48,6 @@ public class OAuthAttributes {
 
 	private static OAuthAttributes ofGoogle(String userNameAttributeName,
 		Map<String, Object> attributes) {
-		for (Entry<String, Object> stringObjectEntry : attributes.entrySet()) {
-			System.out.println("stringObjectEntry = " + stringObjectEntry);
-		}
 		return OAuthAttributes.builder()
 			.email((String) attributes.get("email"))
 			.picture((String) attributes.get("picture"))
