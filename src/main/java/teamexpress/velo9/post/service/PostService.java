@@ -10,6 +10,7 @@ import teamexpress.velo9.post.domain.PostRepository;
 import teamexpress.velo9.post.domain.PostThumbnail;
 import teamexpress.velo9.post.domain.PostThumbnailRepository;
 import teamexpress.velo9.post.domain.SeriesRepository;
+import teamexpress.velo9.post.dto.PostReadDTO;
 import teamexpress.velo9.post.dto.PostSaveDTO;
 import teamexpress.velo9.post.dto.SeriesDTO;
 import teamexpress.velo9.post.dto.PostThumbnailSaveDTO;
@@ -46,5 +47,9 @@ public class PostService {
 
 	public Slice<SeriesDTO> findSeries(String nickname, Pageable pageable) {
 		return seriesRepository.findPostBySeriesName(nickname, pageable);
+	}
+
+	public Slice<PostReadDTO> findPost(String nickname, Pageable pageable) {
+		return postRepository.findPost(nickname, pageable);
 	}
 }

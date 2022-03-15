@@ -12,7 +12,7 @@ public class SeriesDTO {
 	public static final int SIZE = 3;
 
 	private String seriesName;
-	private List<PostDTO> posts;
+	private List<PostSeriesDTO> posts;
 
 	public SeriesDTO() {
 	}
@@ -20,7 +20,7 @@ public class SeriesDTO {
 	@QueryProjection
 	public SeriesDTO(Series series) {
 		seriesName = series.getName();
-		posts = series.getPosts().stream().map(PostDTO::new).limit(SIZE)
+		posts = series.getPosts().stream().map(PostSeriesDTO::new).limit(SIZE)
 			.collect(Collectors.toList());
 	}
 }

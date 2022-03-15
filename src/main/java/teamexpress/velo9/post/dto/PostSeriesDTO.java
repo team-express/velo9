@@ -4,7 +4,7 @@ import lombok.Data;
 import teamexpress.velo9.post.domain.Post;
 
 @Data
-public class PostDTO {
+public class PostSeriesDTO {
 
 	private String title;
 	private String introduce;
@@ -12,7 +12,7 @@ public class PostDTO {
 	private String thumbnailUuid;
 	private String thumbnailName;
 
-	public PostDTO(Post post) {
+	public PostSeriesDTO(Post post) {
 		title = post.getTitle();
 		introduce = post.getIntroduce();
 		thumbnailPath = post.getPostThumbnail().getPath();
