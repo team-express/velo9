@@ -26,11 +26,11 @@ public class PostThumbnailFileService {
 	private static final String THUMBNAIL_MARK = "s_";
 	private static final int NEXT = 1;
 
-	private static File getFile(String fileName) {
+	private File getFile(String fileName) {
 		return new File(ROOT_PATH + BACKSLASH + fileName);
 	}
 
-	private static String getFolder() {
+	private String getFolder() {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -41,7 +41,7 @@ public class PostThumbnailFileService {
 		return str.replace("-", File.separator);
 	}
 
-	private static void createFile(MultipartFile uploadFile, File uploadPath,
+	private void createFile(MultipartFile uploadFile, File uploadPath,
 		String uploadFullFileName) {
 		File saveFile = new File(uploadPath, uploadFullFileName);
 
@@ -50,20 +50,20 @@ public class PostThumbnailFileService {
 
 			FileOutputStream thumbnail = new FileOutputStream(
 				new File(uploadPath, THUMBNAIL_MARK + uploadFullFileName));
-			Thumbnailator.createThumbnail(uploadFile.getInputStream(), thumbnail, 100, 100);
+			Thumbnailator.createThumbnail(uploadFile.getInputStream(), thumbnail, 80, 80);
 			thumbnail.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	private static String getUploadFileName(MultipartFile uploadFile) {
+	private String getUploadFileName(MultipartFile uploadFile) {
 		String uploadFileName = uploadFile.getOriginalFilename();
 		uploadFileName = uploadFileName.substring(uploadFileName.lastIndexOf(BACKSLASH) + NEXT);
 		return uploadFileName;
 	}
 
-	private static File getUploadPath(String uploadFolderPath) {
+	private File getUploadPath(String uploadFolderPath) {
 		File uploadPath = new File(ROOT_PATH, uploadFolderPath);
 
 		if (!uploadPath.exists()) {
@@ -73,14 +73,14 @@ public class PostThumbnailFileService {
 		return uploadPath;
 	}
 
-	private static void checkUploadFile(MultipartFile uploadFile) {
+	private void checkUploadFile(MultipartFile uploadFile) {
 		if (uploadFile == null || uploadFile.isEmpty() || PostThumbnailType.check(
 			uploadFile.getContentType())) {
 			throw new IllegalStateException("지원되지 않는 형식의 파일이거나 빈 파일입니다.");
 		}
 	}
 
-	private static void checkDeleteFileName(String fileName) {
+	private void checkDeleteFileName(String fileName) {
 		if (fileName == null || fileName.equals("")) {
 			throw new IllegalStateException("파일 이름이 없습니다.");
 		}
