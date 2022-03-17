@@ -14,8 +14,8 @@ import teamexpress.velo9.post.domain.PostThumbnailRepository;
 import teamexpress.velo9.post.domain.Series;
 import teamexpress.velo9.post.domain.SeriesRepository;
 import teamexpress.velo9.post.dto.PostSaveDTO;
-import teamexpress.velo9.post.dto.SeriesDTO;
 import teamexpress.velo9.post.dto.PostThumbnailDTO;
+import teamexpress.velo9.post.dto.SeriesDTO;
 
 @Service
 @RequiredArgsConstructor
@@ -53,25 +53,6 @@ public class PostService {
 		}
 
 		return memberRepository.findById(memberId)
-			.orElseThrow(() -> new NullPointerException("no member"));
-	}
-
-	private Series getSeries(Long seriesId) {
-		Series series = null;
-
-		if (seriesId != null) {
-			series = seriesRepository.findById(seriesId).orElse(null);
-		}
-
-		return series;
-	}
-
-	private Member getMember(Long memberId) {
-		if (memberId == null) {
-			throw new NullPointerException("no member is NOT NULL!!!");
-		}
-
-		return Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new NullPointerException("no member"));
 	}
 
