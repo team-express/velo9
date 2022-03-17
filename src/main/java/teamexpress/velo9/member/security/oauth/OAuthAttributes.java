@@ -4,8 +4,6 @@ import java.util.Map;
 import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
-import teamexpress.velo9.member.domain.Member;
-import teamexpress.velo9.member.domain.Role;
 
 @Getter
 public class OAuthAttributes {
@@ -54,14 +52,6 @@ public class OAuthAttributes {
 			.nickname(UUID.randomUUID().toString())
 			.attributes(attributes)
 			.nameAttributeKey(userNameAttributeName)
-			.build();
-	}
-
-	public Member toEntity() {
-		return Member.builder()
-			.email(email)
-			.nickname(nickname)
-			.role(Role.ROLE_USER)
 			.build();
 	}
 }

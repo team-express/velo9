@@ -15,9 +15,6 @@ import teamexpress.velo9.member.dto.MemberThumbnailDTO;
 public class MemberThumbnailFileUploader {
 
 	private static final String ROOT_PATH = "C:\\member";
-	private static final String BACKSLASH = "\\";
-	private static final String NAME_SEPARATOR = "_";
-	private static final String THUMBNAIL_MARK = "s_";
 	private static final String uploadFileName = "default.png";
 
 	private String getFolder() {
@@ -41,28 +38,27 @@ public class MemberThumbnailFileUploader {
 		return uploadPath;
 	}
 
+	private MemberThumbnailDTO getThumbnailInfo(){
+
+		String uploadFolderPath = getFolder();
+		String uuid = UUID.randomUUID().toString();
+
+		return new MemberThumbnailDTO(uuid, uploadFileName, uploadFolderPath);
+	}
+
 	public MemberThumbnailDTO upload(String urlStr) {
-		MemberThumbnailDTO memberThumbnailDTO = null;
+		MemberThumbnailDTO memberThumbnailDTO = getThumbnailInfo();
 
 		try {
 			URL url = new URL(urlStr);
 			BufferedImage img = ImageIO.read(url);
 
-			String uploadFolderPath = getFolder();
-			File uploadPath = getUploadPath(uploadFolderPath);
-			String uuid = UUID.randomUUID().toString();
+			File uploadPath = getUploadPath(memberThumbnailDTO.getPath());
 
-			memberThumbnailDTO = new MemberThumbnailDTO(uuid,
-				uploadFileName,
-				uploadFolderPath);
-
-			String uploadFullFileName = uuid + NAME_SEPARATOR + uploadFileName;
-
-			File file = new File(uploadPath, uploadFullFileName);
+			File file = new File(uploadPath, memberThumbnailDTO.getFileName());
 			ImageIO.write(img, "png", file);
 
-			File thumbnail = new File(uploadPath, THUMBNAIL_MARK + uploadFullFileName);
-
+			File thumbnail = new File(uploadPath, memberThumbnailDTO.getSFileName());
 			Thumbnailator.createThumbnail(file, thumbnail, img.getWidth(), img.getHeight());
 
 		} catch (Exception e) {

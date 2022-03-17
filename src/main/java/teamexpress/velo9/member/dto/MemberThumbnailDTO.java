@@ -10,18 +10,36 @@ import teamexpress.velo9.member.domain.MemberThumbnail;
 @NoArgsConstructor
 public class MemberThumbnailDTO {
 
+	private static final String NAME_SEPARATOR = "_";
+	private static final String THUMBNAIL_MARK = "s_";
+	private static final String BACKSLASH = "\\";
+
 	private String uuid;
 	private String name;
 	private String path;
 
 	public MemberThumbnail toMemberThumbnail() {
 
-		MemberThumbnail memberThumbnail = MemberThumbnail.builder()
+		return MemberThumbnail.builder()
 			.uuid(this.uuid)
 			.path(this.path)
 			.name(this.name)
 			.build();
+	}
 
-		return memberThumbnail;
+	public String getFileName(){
+		return this.uuid + NAME_SEPARATOR + this.name;
+	}
+
+	public String getFileNameWithPath(){
+		return this.path + BACKSLASH + this.getFileName();
+	}
+
+	public String getSFileName(){
+		return THUMBNAIL_MARK + this.getFileName();
+	}
+
+	public String getSFileNameWithPath(){
+		return this.path + BACKSLASH + this.getSFileName();
 	}
 }
