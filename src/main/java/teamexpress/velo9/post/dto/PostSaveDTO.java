@@ -26,12 +26,12 @@ public class PostSaveDTO {
 	private Long seriesId;
 	private List<String> tagNames;
 
-	private PostThumbnailSaveDTO postThumbnailSaveDTO;
+	private PostThumbnailDTO postThumbnailDTO;
 
 	public Post toPost(PostThumbnail postThumbnail, Series series, Member member) {
 		this.setIntroduce();
 
-		Post post = Post.builder()
+		return Post.builder()
 			.id(this.id)
 			.title(this.title)
 			.introduce(this.introduce)
@@ -42,8 +42,6 @@ public class PostSaveDTO {
 			.series(series)
 			.postThumbnail(postThumbnail)
 			.build();
-
-		return post;
 	}
 
 	private boolean isIntroduceNull() {

@@ -24,8 +24,7 @@ public class SeriesRepositoryCustomImpl implements SeriesRepositoryCustom {
 	public Slice<SeriesDTO> findPostBySeriesName(String nickname, Pageable pageable) {
 
 		List<Series> seriesList = queryFactory
-			.select(series)
-			.from(series)
+			.selectFrom(series)
 			.where(series.member.nickname.eq(nickname))
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())

@@ -15,7 +15,7 @@ import teamexpress.velo9.post.domain.Series;
 import teamexpress.velo9.post.domain.SeriesRepository;
 import teamexpress.velo9.post.dto.PostSaveDTO;
 import teamexpress.velo9.post.dto.SeriesDTO;
-import teamexpress.velo9.post.dto.PostThumbnailSaveDTO;
+import teamexpress.velo9.post.dto.PostThumbnailDTO;
 
 @Service
 @RequiredArgsConstructor
@@ -27,11 +27,11 @@ public class PostService {
 	private final SeriesRepository seriesRepository;
 	private final MemberRepository memberRepository;
 
-	private PostThumbnail getPostThumbnail(PostThumbnailSaveDTO postThumbnailSaveDTO) {
+	private PostThumbnail getPostThumbnail(PostThumbnailDTO postThumbnailDTO) {
 		PostThumbnail postThumbnail = null;
 
-		if (postThumbnailSaveDTO != null) {
-			postThumbnail = postThumbnailSaveDTO.toPostThumbnail();
+		if (postThumbnailDTO != null) {
+			postThumbnail = postThumbnailDTO.toPostThumbnail();
 		}
 
 		return postThumbnail;
@@ -52,16 +52,14 @@ public class PostService {
 			throw new NullPointerException("no member is NOT NULL!!!");
 		}
 
-		Member member = memberRepository.findById(memberId)
+		return memberRepository.findById(memberId)
 			.orElseThrow(() -> new NullPointerException("no member"));
-
-		return member;
 	}
 
 	@Transactional
 	public Long write(PostSaveDTO postSaveDTO) {
 
-		PostThumbnail postThumbnail = getPostThumbnail(postSaveDTO.getPostThumbnailSaveDTO());
+		PostThumbnail postThumbnail = getPostThumbnail(postSaveDTO.getPostThumbnailDTO());
 		Series series = getSeries(postSaveDTO.getSeriesId());
 		Member member = getMember(postSaveDTO.getMemberId());
 

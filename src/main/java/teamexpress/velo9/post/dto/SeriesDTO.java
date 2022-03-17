@@ -12,12 +12,12 @@ public class SeriesDTO {
 	public static final int SIZE = 3;
 
 	private String seriesName;
-	private List<PostDTO> posts;
+	private List<PostSummaryDTO> posts;
 
 	@QueryProjection
 	public SeriesDTO(Series series) {
 		seriesName = series.getName();
-		posts = series.getPosts().stream().map(PostDTO::new).limit(SIZE)
+		posts = series.getPosts().stream().map(PostSummaryDTO::new).limit(SIZE)
 			.collect(Collectors.toList());
 	}
 }

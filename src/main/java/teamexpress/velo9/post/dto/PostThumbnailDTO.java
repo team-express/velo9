@@ -8,20 +8,25 @@ import teamexpress.velo9.post.domain.PostThumbnail;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostThumbnailSaveDTO {
+public class PostThumbnailDTO {
 
 	private String uuid;
 	private String name;
 	private String path;
 
+
+	public PostThumbnailDTO(PostThumbnail postThumbnail) {
+		this.uuid = postThumbnail.getUuid();
+		this.name = postThumbnail.getName();
+		this.path = postThumbnail.getPath();
+	}
+
 	public PostThumbnail toPostThumbnail() {
 
-		PostThumbnail postThumbnail = PostThumbnail.builder()
+		return PostThumbnail.builder()
 			.uuid(this.uuid)
 			.path(this.path)
 			.name(this.name)
 			.build();
-
-		return postThumbnail;
 	}
 }
