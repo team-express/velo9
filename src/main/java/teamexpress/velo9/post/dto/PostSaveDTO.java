@@ -20,7 +20,6 @@ public class PostSaveDTO {
 	private String title;
 	private String introduce;
 	private String content;
-	private String status;
 	private String access;
 
 	private Long memberId;
@@ -28,22 +27,6 @@ public class PostSaveDTO {
 	private List<String> tagNames;
 
 	private PostThumbnailDTO postThumbnailDTO;
-
-	public Post toPost(PostThumbnail postThumbnail, Series series, Member member) {
-		this.setIntroduce();
-
-		return Post.builder()
-			.id(this.id)
-			.title(this.title)
-			.introduce(this.introduce)
-			.content(this.content)
-			.status(PostStatus.GENERAL)
-			.access(PostAccess.valueOf(this.access))
-			.member(member)
-			.series(series)
-			.postThumbnail(postThumbnail)
-			.build();
-	}
 
 	public Post toPost(PostThumbnail postThumbnail, Series series, Member member, LocalDateTime createdDate) {
 		this.setIntroduce();
