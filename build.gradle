@@ -1,9 +1,8 @@
 buildscript {
     ext {
-        queryDslVersion = "5.0.0" as Object
+        queryDslVersion = '5.0.0'
     }
 }
-
 plugins {
     id 'org.springframework.boot' version '2.6.4'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
@@ -33,8 +32,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-
-    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.7'
 
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
     annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
