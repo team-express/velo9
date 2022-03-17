@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import teamexpress.velo9.common.domain.BaseEntity;
@@ -14,6 +15,7 @@ import teamexpress.velo9.common.domain.BaseEntity;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class MemberThumbnail extends BaseEntity {
 
 	@Id

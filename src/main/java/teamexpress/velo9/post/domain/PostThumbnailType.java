@@ -3,7 +3,9 @@ package teamexpress.velo9.post.domain;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public enum PostThumbnailType {
 	PNG("image/png"), JPEG("image/jpeg");
 
@@ -14,10 +16,6 @@ public enum PostThumbnailType {
 	}
 
 	private final String contentType;
-
-	PostThumbnailType(String contentType) {
-		this.contentType = contentType;
-	}
 
 	public static boolean check(String contentType) {
 		return types.stream().noneMatch(type -> type.contentType.equals(contentType));

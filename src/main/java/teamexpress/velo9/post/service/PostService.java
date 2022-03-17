@@ -14,8 +14,8 @@ import teamexpress.velo9.post.domain.PostThumbnailRepository;
 import teamexpress.velo9.post.domain.Series;
 import teamexpress.velo9.post.domain.SeriesRepository;
 import teamexpress.velo9.post.dto.PostSaveDTO;
-import teamexpress.velo9.post.dto.SeriesDTO;
 import teamexpress.velo9.post.dto.PostThumbnailDTO;
+import teamexpress.velo9.post.dto.SeriesDTO;
 
 @Service
 @RequiredArgsConstructor
