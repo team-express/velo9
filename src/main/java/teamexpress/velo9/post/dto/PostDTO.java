@@ -8,15 +8,15 @@ public class PostDTO {
 
 	private String title;
 	private String introduce;
-	private String thumbnailPath;
-	private String thumbnailUuid;
-	private String thumbnailName;
+	private String path;
+	private String uuid;
+	private String name;
 
 	public PostDTO(Post post) {
 		title = post.getTitle();
 		introduce = post.getIntroduce();
-		thumbnailPath = post.getPostThumbnail().getPath();
-		thumbnailUuid = post.getPostThumbnail().getUuid();
-		thumbnailName = post.getPostThumbnail().getName();
+		path = post.getPostThumbnail().getPath();
+		uuid = post.getPostThumbnail().getUuid();
+		name = post.getPostThumbnail().getName();
 	}
 }

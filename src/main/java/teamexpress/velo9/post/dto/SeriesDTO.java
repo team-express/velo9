@@ -14,9 +14,6 @@ public class SeriesDTO {
 	private String seriesName;
 	private List<PostDTO> posts;
 
-	public SeriesDTO() {
-	}
-
 	@QueryProjection
 	public SeriesDTO(Series series) {
 		seriesName = series.getName();
