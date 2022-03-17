@@ -12,17 +12,27 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import teamexpress.velo9.member.api.MemberThumbnailFileUploader;
 import teamexpress.velo9.member.domain.Member;
 import teamexpress.velo9.member.domain.MemberRepository;
+import teamexpress.velo9.member.domain.MemberThumbnail;
+import teamexpress.velo9.member.domain.MemberThumbnailRepository;
+import teamexpress.velo9.member.domain.Role;
+import teamexpress.velo9.member.dto.MemberThumbnailDTO;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
 	private final MemberRepository memberRepository;
+	private final MemberThumbnailRepository memberThumbnailRepository;
 	private final HttpSession httpSession;
+	private final MemberThumbnailFileUploader uploader;
 
+	@Transactional
 	@Override
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
@@ -52,8 +62,19 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
 	private Member save(OAuthAttributes attributes) {
 		checkEmail(attributes);
-		Member member = memberRepository.findByEmail(attributes.getEmail())
-			.orElse(attributes.toEntity());
+
+		MemberThumbnailDTO memberThumbnailDTO = uploader.upload(attributes.getPicture());
+		MemberThumbnail memberThumbnail = memberThumbnailDTO.toMemberThumbnail();
+
+		memberThumbnailRepository.save(memberThumbnail);
+
+		Member member = Member.builder()
+			.nickname(attributes.getNickname())
+			.email(attributes.getEmail())
+			.role(Role.ROLE_USER)
+			.memberThumbnail(memberThumbnail)
+			.build();
+
 		return memberRepository.save(member);
 	}
 
