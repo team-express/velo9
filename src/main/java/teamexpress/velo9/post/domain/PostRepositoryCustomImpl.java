@@ -21,14 +21,16 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 	}
 
 	@Override
-	public Slice<PostReadDTO> findPost(String nickname, Pageable pageable) {
+	public Slice<PostReadDTO> findPost(String blogTitle, Pageable pageable) {
 		List<Post> postList = queryFactory
 			.selectFrom(post)
-			.where(post.member.nickname.eq(nickname))
+			.where(post.member.blogTitle.eq(blogTitle))
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
 			.fetch();
 
 		List<PostReadDTO> result =
-			postList.stream().map(PostReadDTO::new).limit(10)
+			postList.stream().map(PostReadDTO::new)
 				.collect(Collectors.toList());
 
 		JPAQuery<Post> countQuery = queryFactory

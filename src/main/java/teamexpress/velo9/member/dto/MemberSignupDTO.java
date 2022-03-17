@@ -17,6 +17,7 @@ public class MemberSignupDTO {
 	private String password;
 	@NotBlank
 	private String nickname;
+	private String blogTitle;
 	@NotBlank
 	@Email
 	private String email;
@@ -26,6 +27,7 @@ public class MemberSignupDTO {
 		this.username = member.getUsername();
 		this.password = member.getPassword();
 		this.nickname = member.getNickname();
+		this.blogTitle = member.getNickname();
 		this.email = member.getEmail();
 		this.role = member.getRole();
 	}
@@ -35,6 +37,7 @@ public class MemberSignupDTO {
 			.username(username)
 			.password(password)
 			.nickname(nickname)
+			.blogTitle(nickname)
 			.email(email)
 			.role(Role.ROLE_USER)
 			.build();
