@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import teamexpress.velo9.common.domain.BaseEntity;
@@ -22,6 +23,7 @@ import teamexpress.velo9.member.domain.Member;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Series extends BaseEntity {
 
 	@Id
