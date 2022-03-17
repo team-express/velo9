@@ -1,6 +1,5 @@
 package teamexpress.velo9.post.domain;
 
-import static teamexpress.velo9.post.domain.QPost.post;
 import static teamexpress.velo9.post.domain.QSeries.series;
 
 import com.querydsl.jpa.impl.JPAQuery;
@@ -25,13 +24,13 @@ public class SeriesRepositoryCustomImpl implements SeriesRepositoryCustom {
 	public Slice<SeriesDTO> findPostBySeriesName(String nickname, Pageable pageable) {
 
 		List<Series> seriesList = queryFactory
-			.selectDistinct(series)
-			.from(series)
-			.leftJoin(series.posts, post)
-			.where(post.member.nickname.eq(nickname))
+			.selectFrom(series)
+			.where(series.member.nickname.eq(nickname))
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
 			.fetch();
 
-		List<SeriesDTO> result = seriesList.stream().map(SeriesDTO::new).limit(pageable.getPageSize())
+		List<SeriesDTO> result = seriesList.stream().map(SeriesDTO::new)
 			.collect(Collectors.toList());
 
 		JPAQuery<Series> countQuery = queryFactory

@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,6 +17,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class PostTag {
 
 	@Id
@@ -30,4 +32,9 @@ public class PostTag {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "tag_id")
 	private Tag tag;
+
+	public PostTag(Post post, Tag tag) {
+		this.post = post;
+		this.tag = tag;
+	}
 }
