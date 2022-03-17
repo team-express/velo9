@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import teamexpress.velo9.post.dto.PostThumbnailSaveDTO;
+import teamexpress.velo9.post.dto.PostThumbnailDTO;
 import teamexpress.velo9.post.service.PostThumbnailFileService;
 
 @RestController
@@ -24,11 +24,11 @@ public class PostThumbnailFileController {
 	}
 
 	@PostMapping("/uploadPostThumbnail")
-	public ResponseEntity<PostThumbnailSaveDTO> upload(MultipartFile uploadFile) {
+	public ResponseEntity<PostThumbnailDTO> upload(MultipartFile uploadFile) {
 
-		PostThumbnailSaveDTO postThumbnailSaveDTO = postThumbnailFileService.upload(uploadFile);
+		PostThumbnailDTO postThumbnailDTO = postThumbnailFileService.upload(uploadFile);
 
-		return new ResponseEntity<>(postThumbnailSaveDTO, HttpStatus.OK);
+		return new ResponseEntity<>(postThumbnailDTO, HttpStatus.OK);
 	}
 
 	@PostMapping("/deletePostThumbnail")

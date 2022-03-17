@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 import teamexpress.velo9.post.domain.PostThumbnailType;
-import teamexpress.velo9.post.dto.PostThumbnailSaveDTO;
+import teamexpress.velo9.post.dto.PostThumbnailDTO;
 
 @Service
 public class PostThumbnailFileService {
@@ -86,23 +86,22 @@ public class PostThumbnailFileService {
 		}
 	}
 
-	public PostThumbnailSaveDTO upload(MultipartFile uploadFile) {
+	public PostThumbnailDTO upload(MultipartFile uploadFile) {
 		checkUploadFile(uploadFile);
 
 		String uploadFileName = getUploadFileName(uploadFile);
 
 		String uploadFolderPath = getFolder();
-
 		File uploadPath = getUploadPath(uploadFolderPath);
 
 		String uuid = UUID.randomUUID().toString();
 
-		PostThumbnailSaveDTO postThumbnailSaveDTO = new PostThumbnailSaveDTO(uuid, uploadFileName,
+		PostThumbnailDTO postThumbnailDTO = new PostThumbnailDTO(uuid, uploadFileName,
 			uploadFolderPath);
 
 		createFile(uploadFile, uploadPath, uuid + NAME_SEPARATOR + uploadFileName);
 
-		return postThumbnailSaveDTO;
+		return postThumbnailDTO;
 	}
 
 	public void deleteFile(String fileName) {
@@ -112,13 +111,9 @@ public class PostThumbnailFileService {
 
 		try {
 			file = new File(ROOT_PATH + BACKSLASH + URLDecoder.decode(fileName, "UTF-8"));
-
 			file.delete();
-
 			String largeFileName = file.getAbsolutePath().replace(THUMBNAIL_MARK, "");
-
 			file = new File(largeFileName);
-
 			file.delete();
 
 		} catch (UnsupportedEncodingException e) {

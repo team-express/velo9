@@ -28,16 +28,13 @@ public class TagService {
 
 		List<String> realTagNames = tagRepository.getTagNames();
 
-		tagNames.stream().filter(name -> !realTagNames.contains(name)).forEach((name) -> {
-			tagRepository.save(Tag.builder().name(name).build());
-		});
+		tagNames.stream().filter(name -> !realTagNames.contains(name))
+			.forEach((name) -> tagRepository.save(Tag.builder().name(name).build()));
 
-		tagNames.stream().forEach(name -> {
-			postTagRepository.save(PostTag.builder()
-				.tag(tagRepository.findByName(name))
-				.post(post)
-				.build()
-			);
-		});
+		tagNames.forEach(name -> postTagRepository.save(PostTag.builder()
+			.tag(tagRepository.findByName(name))
+			.post(post)
+			.build()
+		));
 	}
 }
