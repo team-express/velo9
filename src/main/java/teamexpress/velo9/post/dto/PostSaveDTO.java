@@ -26,6 +26,10 @@ public class PostSaveDTO {
 	private Long seriesId;
 	private List<String> tagNames;
 
+	private Long memberId;
+	private Long seriesId;
+	private List<String> tagNames;
+
 	private PostThumbnailDTO postThumbnailDTO;
 
 	public Post toPost(PostThumbnail postThumbnail, Series series, Member member) {
