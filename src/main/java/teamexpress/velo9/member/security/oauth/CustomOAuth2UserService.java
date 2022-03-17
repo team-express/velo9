@@ -19,7 +19,7 @@ import teamexpress.velo9.member.domain.MemberRepository;
 import teamexpress.velo9.member.domain.MemberThumbnail;
 import teamexpress.velo9.member.domain.MemberThumbnailRepository;
 import teamexpress.velo9.member.domain.Role;
-import teamexpress.velo9.member.dto.MemberThumbnailSaveDTO;
+import teamexpress.velo9.member.dto.MemberThumbnailDTO;
 
 @Service
 @Slf4j
@@ -63,8 +63,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 	private Member save(OAuthAttributes attributes) {
 		checkEmail(attributes);
 
-		MemberThumbnailSaveDTO memberThumbnailSaveDTO = uploader.upload(attributes.getPicture());
-		MemberThumbnail memberThumbnail = memberThumbnailSaveDTO.toMemberThumbnail();
+		MemberThumbnailDTO memberThumbnailDTO = uploader.upload(attributes.getPicture());
+		MemberThumbnail memberThumbnail = memberThumbnailDTO.toMemberThumbnail();
 
 		memberThumbnailRepository.save(memberThumbnail);
 

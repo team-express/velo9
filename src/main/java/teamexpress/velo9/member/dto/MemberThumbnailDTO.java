@@ -8,7 +8,7 @@ import teamexpress.velo9.member.domain.MemberThumbnail;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MemberThumbnailSaveDTO {
+public class MemberThumbnailDTO {
 
 	private String uuid;
 	private String name;

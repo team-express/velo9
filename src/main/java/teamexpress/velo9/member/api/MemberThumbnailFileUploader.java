@@ -9,7 +9,7 @@ import java.util.UUID;
 import javax.imageio.ImageIO;
 import net.coobird.thumbnailator.Thumbnailator;
 import org.springframework.stereotype.Component;
-import teamexpress.velo9.member.dto.MemberThumbnailSaveDTO;
+import teamexpress.velo9.member.dto.MemberThumbnailDTO;
 
 @Component
 public class MemberThumbnailFileUploader {
@@ -41,8 +41,8 @@ public class MemberThumbnailFileUploader {
 		return uploadPath;
 	}
 
-	public MemberThumbnailSaveDTO upload(String urlStr) {
-		MemberThumbnailSaveDTO memberThumbnailSaveDTO = null;
+	public MemberThumbnailDTO upload(String urlStr) {
+		MemberThumbnailDTO memberThumbnailDTO = null;
 
 		try {
 			URL url = new URL(urlStr);
@@ -52,7 +52,7 @@ public class MemberThumbnailFileUploader {
 			File uploadPath = getUploadPath(uploadFolderPath);
 			String uuid = UUID.randomUUID().toString();
 
-			memberThumbnailSaveDTO = new MemberThumbnailSaveDTO(uuid,
+			memberThumbnailDTO = new MemberThumbnailDTO(uuid,
 				uploadFileName,
 				uploadFolderPath);
 
@@ -69,6 +69,6 @@ public class MemberThumbnailFileUploader {
 			e.printStackTrace();
 		}
 
-		return memberThumbnailSaveDTO;
+		return memberThumbnailDTO;
 	}
 }
