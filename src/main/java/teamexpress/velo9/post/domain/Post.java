@@ -54,7 +54,7 @@ public class Post {
 	@JoinColumn(name = "series_id")
 	private Series series;
 
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "post_thumbnail_id")
 	private PostThumbnail postThumbnail;
 
