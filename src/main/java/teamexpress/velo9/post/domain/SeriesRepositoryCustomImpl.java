@@ -24,12 +24,14 @@ public class SeriesRepositoryCustomImpl implements SeriesRepositoryCustom {
 	public Slice<SeriesDTO> findPostBySeriesName(String nickname, Pageable pageable) {
 
 		List<Series> seriesList = queryFactory
-			.selectDistinct(series)
+			.select(series)
 			.from(series)
 			.where(series.member.nickname.eq(nickname))
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
 			.fetch();
 
-		List<SeriesDTO> result = seriesList.stream().map(SeriesDTO::new).limit(pageable.getPageSize())
+		List<SeriesDTO> result = seriesList.stream().map(SeriesDTO::new)
 			.collect(Collectors.toList());
 
 		JPAQuery<Series> countQuery = queryFactory

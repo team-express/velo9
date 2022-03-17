@@ -3,6 +3,7 @@ package teamexpress.velo9.post.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,7 +33,7 @@ public class PostController {
 	}
 
 	@GetMapping("/{nickname}/series")
-	public ResponseEntity<Slice<SeriesDTO>> series(@PathVariable String nickname, Pageable pageable) {
+	public ResponseEntity<Slice<SeriesDTO>> series(@PathVariable String nickname, @PageableDefault(size = 5) Pageable pageable) {
 		Slice<SeriesDTO> series = postService.findSeries(nickname, pageable);
 		return new ResponseEntity<>(series, HttpStatus.OK);
 	}
