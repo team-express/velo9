@@ -31,10 +31,18 @@ public class TagService {
 		tagNames.stream().filter(name -> !realTagNames.contains(name))
 			.forEach((name) -> tagRepository.save(Tag.builder().name(name).build()));
 
+		postTagRepository.deleteAllByPost(post);
+
 		tagNames.forEach(name -> postTagRepository.save(PostTag.builder()
 			.tag(tagRepository.findByName(name))
 			.post(post)
 			.build()
 		));
+	}
+
+	@Transactional
+	public void removeUselessTags() {
+		tagRepository.findAll().stream().filter(tag -> postTagRepository.countByTag(tag) == 0)
+			.forEach(tagRepository::delete);
 	}
 }

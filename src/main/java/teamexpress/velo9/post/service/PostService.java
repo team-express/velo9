@@ -68,7 +68,8 @@ public class PostService {
 			postThumbnailRepository.save(postThumbnail);
 		}
 
-		Post post = postSaveDTO.toPost(postThumbnail, series, member);
+		Post post = postSaveDTO.toPost(postThumbnail, series, member, postRepository.getCreatedDate(
+			postSaveDTO.getId()));
 
 		postRepository.save(post);
 
