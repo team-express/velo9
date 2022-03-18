@@ -21,11 +21,11 @@ public class SeriesRepositoryCustomImpl implements SeriesRepositoryCustom {
 	}
 
 	@Override
-	public Slice<SeriesDTO> findPostBySeriesName(String blogTitle, Pageable pageable) {
+	public Slice<SeriesDTO> findPostBySeriesName(String nickname, Pageable pageable) {
 
 		List<Series> seriesList = queryFactory
 			.selectFrom(series)
-			.where(series.member.blogTitle.eq(blogTitle))
+			.where(series.member.nickname.eq(nickname).and(series.posts.isNotEmpty()))
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
 			.fetch();

@@ -21,10 +21,10 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 	}
 
 	@Override
-	public Slice<PostReadDTO> findPost(String blogTitle, Pageable pageable) {
+	public Slice<PostReadDTO> findPost(String nickname, Pageable pageable) {
 		List<Post> postList = queryFactory
 			.selectFrom(post)
-			.where(post.member.blogTitle.eq(blogTitle))
+			.where(post.member.nickname.eq(nickname))
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
 			.fetch();

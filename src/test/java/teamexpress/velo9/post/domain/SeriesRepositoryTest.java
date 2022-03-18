@@ -20,11 +20,11 @@ class SeriesRepositoryTest {
 	@Test
 	void findSeries() {
 	    //given
-		String blogTitle = "admin";
+		String nickname = "admin";
 		PageRequest pageRequest = PageRequest.of(0, 5);
 
 		//when
-		Slice<SeriesDTO> findSeries = seriesRepository.findPostBySeriesName(blogTitle, pageRequest);
+		Slice<SeriesDTO> findSeries = seriesRepository.findPostBySeriesName(nickname, pageRequest);
 
 	    //then
 		assertThat(findSeries.getNumberOfElements()).isEqualTo(5);

@@ -20,10 +20,10 @@ class PostRepositoryTest {
 	@Test
 	void findPost() {
 	    //given
-		String blogTitle = "admin";
+		String nickname = "admin";
 		PageRequest pageRequest = PageRequest.of(0, 10);
 
-		Slice<PostReadDTO> findPost = postRepository.findPost(blogTitle, pageRequest);
+		Slice<PostReadDTO> findPost = postRepository.findPost(nickname, pageRequest);
 		System.out.println("findPost = " + findPost);
 
 		//when
