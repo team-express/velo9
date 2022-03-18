@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import teamexpress.velo9.post.dto.PostReadDTO;
 import teamexpress.velo9.post.dto.PostSaveDTO;
 import teamexpress.velo9.post.dto.SeriesDTO;
 import teamexpress.velo9.post.service.PostService;
@@ -33,9 +34,14 @@ public class PostController {
 	}
 
 	@GetMapping("/{nickname}/series")
-	public ResponseEntity<Slice<SeriesDTO>> series(@PathVariable String nickname,
-		@PageableDefault(size = 5) Pageable pageable) {
+	public ResponseEntity<Slice<SeriesDTO>> series(@PathVariable String nickname, @PageableDefault(size = 5) Pageable pageable) {
 		Slice<SeriesDTO> series = postService.findSeries(nickname, pageable);
 		return new ResponseEntity<>(series, HttpStatus.OK);
+	}
+
+	@GetMapping("/{nickname}")
+	public ResponseEntity<Slice<PostReadDTO>> posts(@PathVariable String nickname, @PageableDefault(size = 10) Pageable pageable) {
+		Slice<PostReadDTO> post = postService.findPost(nickname, pageable);
+		return new ResponseEntity<>(post, HttpStatus.OK);
 	}
 }
