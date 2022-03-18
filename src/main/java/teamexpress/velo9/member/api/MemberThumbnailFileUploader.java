@@ -38,7 +38,7 @@ public class MemberThumbnailFileUploader {
 		return uploadPath;
 	}
 
-	private MemberThumbnailDTO getThumbnailInfo(){
+	private MemberThumbnailDTO getThumbnailInfo() {
 
 		String uploadFolderPath = getFolder();
 		String uuid = UUID.randomUUID().toString();
