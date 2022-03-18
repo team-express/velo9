@@ -27,19 +27,19 @@ public class MemberThumbnailDTO {
 			.build();
 	}
 
-	public String getFileName(){
+	public String getFileName() {
 		return this.uuid + NAME_SEPARATOR + this.name;
 	}
 
-	public String getFileNameWithPath(){
+	public String getFileNameWithPath() {
 		return this.path + BACKSLASH + this.getFileName();
 	}
 
-	public String getSFileName(){
+	public String getSFileName() {
 		return THUMBNAIL_MARK + this.getFileName();
 	}
 
-	public String getSFileNameWithPath(){
+	public String getSFileNameWithPath() {
 		return this.path + BACKSLASH + this.getSFileName();
 	}
 }
