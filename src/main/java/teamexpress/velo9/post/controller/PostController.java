@@ -28,6 +28,7 @@ public class PostController {
 
 		Long postId = postService.write(postSaveDTO);
 		tagService.addTags(postId, postSaveDTO.getTagNames());
+		tagService.removeUselessTags();
 
 		return new ResponseEntity<>(postId, HttpStatus.OK);
 	}
