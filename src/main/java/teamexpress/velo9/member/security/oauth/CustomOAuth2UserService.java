@@ -61,7 +61,10 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 	}
 
 	private Member save(OAuthAttributes attributes) {
-		checkEmail(attributes);
+		Member findMember = checkEmail(attributes);
+		if (findMember != null) {
+			return findMember;
+		}
 
 		MemberThumbnailDTO memberThumbnailDTO = uploader.upload(attributes.getPicture());
 		MemberThumbnail memberThumbnail = memberThumbnailDTO.toMemberThumbnail();
@@ -71,17 +74,14 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 		Member member = Member.builder()
 			.nickname(attributes.getNickname())
 			.email(attributes.getEmail())
-			.role(Role.ROLE_USER)
+			.role(Role.ROLE_SOCIAL)
 			.memberThumbnail(memberThumbnail)
 			.build();
 
 		return memberRepository.save(member);
 	}
 
-	private void checkEmail(OAuthAttributes attributes) {
-		memberRepository.findByEmail(attributes.getEmail())
-			.ifPresent(m -> {
-				throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
-			});
+	private Member checkEmail(OAuthAttributes attributes) {
+		return memberRepository.findByEmail(attributes.getEmail()).orElse(null);
 	}
 }
