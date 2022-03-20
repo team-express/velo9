@@ -19,12 +19,17 @@ public class SeriesController {
 	private final SeriesService seriesService;
 
 	@GetMapping("/getSeriesList")
-	public ResponseEntity<List<SeriesReadDTO>> getList() {
+	public ResponseEntity<List<SeriesReadDTO>> getSeriesList() {
 		return new ResponseEntity<>(seriesService.getAll(), HttpStatus.OK);
 	}
 
 	@PostMapping("addSeries")
 	public void addSeries(@RequestBody SeriesAddDTO seriesAddDTO) {
 		seriesService.add(seriesAddDTO);
+	}
+
+	@PostMapping("deleteSeries")
+	public void deleteSeries(Long id){
+		seriesService.delete(id);
 	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import teamexpress.velo9.member.domain.Member;
 import teamexpress.velo9.member.domain.MemberRepository;
 import teamexpress.velo9.post.domain.Series;
@@ -14,6 +15,7 @@ import teamexpress.velo9.post.dto.SeriesReadDTO;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class SeriesService {
 
 	private final SeriesRepository seriesRepository;
@@ -33,6 +35,7 @@ public class SeriesService {
 			Collectors.toList());
 	}
 
+	@Transactional
 	public void add(SeriesAddDTO seriesAddDTO) {
 		checkName(seriesAddDTO.getName());
 
@@ -40,5 +43,10 @@ public class SeriesService {
 		Series series = seriesAddDTO.toSeries(member);
 
 		seriesRepository.save(series);
+	}
+
+	@Transactional
+	public void delete(Long id) {
+		seriesRepository.deleteById(id);
 	}
 }
