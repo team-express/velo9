@@ -76,6 +76,11 @@ public class PostService {
 		return post.getId();
 	}
 
+	public PostSaveDTO getPostById(Long id){
+		Post post = postRepository.findById(id).orElse(new Post());
+		return new PostSaveDTO(post);
+	}
+
 	public Slice<SeriesDTO> findSeries(String nickname, Pageable pageable) {
 		return seriesRepository.findPostBySeriesName(nickname, pageable);
 	}
