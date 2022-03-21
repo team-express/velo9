@@ -9,11 +9,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-import teamexpress.velo9.member.controller.MemberDTO;
-import teamexpress.velo9.member.controller.MemberEditDTO;
 import teamexpress.velo9.member.domain.Member;
 import teamexpress.velo9.member.domain.MemberRepository;
 import teamexpress.velo9.member.domain.Role;
+import teamexpress.velo9.member.dto.MemberDTO;
+import teamexpress.velo9.member.dto.MemberEditDTO;
+import teamexpress.velo9.member.dto.PasswordDTO;
 
 @SpringBootTest
 @Transactional
@@ -41,6 +42,28 @@ class MemberServiceTest {
 		assertThat(findMember).extracting("blogTitle").isEqualTo("blogTitle");
 
 	}
+
+	@Test
+	void changPassword() {
+		//given
+		Member oldMember = memberRepository.save(createMember("nickname", "testUsername", "1234", "zxcv@nate.com", Role.ROLE_USER));
+
+		PasswordDTO passwordDTO = new PasswordDTO();
+		passwordDTO.setOldPassword("1234");
+		passwordDTO.setNewPassword("1111");
+
+		//when
+		memberService.changePassword(oldMember.getId(), passwordDTO);
+		Member changeMember = memberRepository.findByNickname("nickname").get();
+
+		String oldPwd = oldMember.getPassword();
+		String newPwd = changeMember.getPassword();
+
+		//then
+		assertThat(oldPwd).isNotEqualTo(newPwd);
+	}
+
+
 
 	private Member createMember(String nickname, String username, String password, String email, Role roleUser) {
 		return Member.builder().nickname(nickname).blogTitle(nickname).username(username).password(passwordEncoder.encode(password)).email(email).posts(new ArrayList<>()).role(roleUser).build();
