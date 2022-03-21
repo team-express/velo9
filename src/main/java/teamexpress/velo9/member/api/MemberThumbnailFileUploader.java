@@ -4,7 +4,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -80,6 +82,30 @@ public class MemberThumbnailFileUploader {
 		}
 
 		return header;
+	}
+
+	public void deleteFile(String fileName) {
+		checkDeleteFileName(fileName);
+
+		File file;
+
+		try {
+			file = new File(ROOT_PATH + BACKSLASH + URLDecoder.decode(fileName, "UTF-8"));
+			file.delete();
+
+			String largeFileName = file.getAbsolutePath().replace("s_", "");
+			file = new File(largeFileName);
+			file.delete();
+
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void checkDeleteFileName(String fileName) {
+		if (fileName == null || fileName.equals("")) {
+			throw new IllegalStateException("파일 이름이 없습니다.");
+		}
 	}
 
 	private File getFile(String fileName) {

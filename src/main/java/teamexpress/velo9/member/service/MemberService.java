@@ -37,7 +37,7 @@ public class MemberService {
 	}
 
 	@Transactional
-	public void upload(MemberThumbnailDTO memberThumbnailDTO, Long memberId) {
+	public void uploadThumbnail(MemberThumbnailDTO memberThumbnailDTO, Long memberId) {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new NullPointerException());
 
@@ -48,6 +48,20 @@ public class MemberService {
 		}
 
 		member.uploadThumbnail(memberThumbnailDTO.toMemberThumbnail());
+
+		memberRepository.save(member);
+	}
+
+	@Transactional
+	public void deleteThumbnail(Long memberId) {
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new NullPointerException());
+
+		if (member.getMemberThumbnail() == null) {
+			return;
+		}
+
+		member.uploadThumbnail(null);
 
 		memberRepository.save(member);
 	}

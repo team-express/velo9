@@ -22,7 +22,7 @@ public class MemberThumbnailController {
 	public ResponseEntity<MemberThumbnailDTO> upload(MultipartFile uploadFile, Long memberId) {
 
 		MemberThumbnailDTO memberThumbnailDTO = memberThumbnailFileUploader.upload(uploadFile);
-		memberService.upload(memberThumbnailDTO, memberId);
+		memberService.uploadThumbnail(memberThumbnailDTO, memberId);
 
 		return new ResponseEntity<>(memberThumbnailDTO, HttpStatus.OK);
 	}
@@ -32,5 +32,11 @@ public class MemberThumbnailController {
 		return new ResponseEntity<>(memberThumbnailFileUploader.getImage(fileName),
 			memberThumbnailFileUploader.getHeader(fileName),
 			HttpStatus.OK);
+	}
+
+	@PostMapping("/deleteMemberThumbnail")
+	public void delete(String fileName, Long memberId) {
+		memberThumbnailFileUploader.deleteFile(fileName);
+		memberService.deleteThumbnail(memberId);
 	}
 }
