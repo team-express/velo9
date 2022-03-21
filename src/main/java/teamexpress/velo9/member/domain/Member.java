@@ -74,8 +74,7 @@ public class Member extends BaseEntity {
 		return role.getKey();
 	}
 
-	public Member edit(String nickname, String introduce, String blogTitle, String socialEmail,
-		String socialGithub) {
+	public Member edit(String nickname, String introduce, String blogTitle, String socialEmail, String socialGithub) {
 		this.nickname = nickname;
 		this.introduce = introduce;
 		this.blogTitle = blogTitle;
