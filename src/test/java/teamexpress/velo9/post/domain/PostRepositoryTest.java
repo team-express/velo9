@@ -8,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
-import teamexpress.velo9.post.dto.PostReadDTO;
 
 @SpringBootTest
 @Transactional
@@ -23,7 +22,7 @@ class PostRepositoryTest {
 		String nickname = "admin";
 		PageRequest pageRequest = PageRequest.of(0, 10);
 
-		Slice<PostReadDTO> findPost = postRepository.findPost(nickname, pageRequest);
+		Slice<Post> findPost = postRepository.findReadPost(nickname, pageRequest);
 		System.out.println("findPost = " + findPost);
 
 		//when
@@ -34,5 +33,4 @@ class PostRepositoryTest {
 		assertThat(findPost).extracting("title").contains("1", "2", "3", "4", "5", "6", "7", "8", "9");
 		assertThat(findPost).extracting("introduce").contains("1", "2", "3", "4", "5", "6", "7", "8", "9");
 	}
-
 }

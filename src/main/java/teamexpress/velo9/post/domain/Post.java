@@ -42,7 +42,7 @@ public class Post {
 	private String title;
 	private String introduce;
 	private String content;
-	private int likeCount;
+	private int loveCount;
 	private int replyCount;
 	private int viewCount;
 

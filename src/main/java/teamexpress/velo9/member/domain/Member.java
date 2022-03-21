@@ -57,7 +57,11 @@ public class Member extends BaseEntity {
 
 	@OneToMany(mappedBy = "member")
 	@JsonIgnore
-	private List<Refer> refers = new ArrayList<>();
+	private List<Look> looks = new ArrayList<>();
+
+	@OneToMany(mappedBy = "member")
+	@JsonIgnore
+	private List<Love> loves = new ArrayList<>();
 
 	@Enumerated(value = EnumType.STRING)
 	private Role role;
