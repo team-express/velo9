@@ -49,6 +49,6 @@ public class PostController {
 
 	@PostMapping("/love")
 	public void love(@RequestBody LoveDTO loveDTO) {
-		postService.doLoveOrNot(loveDTO);
+		postService.loveOrNot(loveDTO);
 	}
 }

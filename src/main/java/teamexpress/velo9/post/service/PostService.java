@@ -62,13 +62,13 @@ public class PostService {
 	}
 
 	@Transactional
-	public void doLoveOrNot(LoveDTO loveDTO) {
+	public void loveOrNot(LoveDTO loveDTO) {
 
 		Post post = postRepository.findById(loveDTO.getPostId()).orElseThrow();
 		Member member = memberRepository.findById(loveDTO.getMemberId()).orElseThrow();
 
 		loveRepository.findByPostAndMember(post, member).ifPresentOrElse(
-			love -> loveRepository.delete(love),
+			loveRepository::delete,
 			() -> loveRepository.save(
 				Love.builder()
 					.post(post)
