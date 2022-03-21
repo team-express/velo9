@@ -82,4 +82,8 @@ public class Member extends BaseEntity {
 		this.socialGithub = socialGithub;
 		return this;
 	}
+
+	public void changePassword(String encodedPassword) {
+		password = encodedPassword;
+	}
 }

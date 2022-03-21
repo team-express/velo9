@@ -1,15 +1,18 @@
 package teamexpress.velo9.member.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import teamexpress.velo9.member.controller.MemberDTO;
-import teamexpress.velo9.member.controller.MemberEditDTO;
 import teamexpress.velo9.member.domain.Member;
 import teamexpress.velo9.member.domain.MemberRepository;
 import teamexpress.velo9.member.dto.MailDTO;
+import teamexpress.velo9.member.dto.MemberDTO;
+import teamexpress.velo9.member.dto.MemberEditDTO;
 import teamexpress.velo9.member.dto.MemberSignupDTO;
+import teamexpress.velo9.member.dto.PasswordDTO;
+import teamexpress.velo9.member.security.MemberContext;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -18,6 +21,7 @@ public class MemberService {
 
 	private final MemberRepository memberRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final UserDetailsService userDetailsService;
 
 	@Transactional
 	public void join(MemberSignupDTO signupDTO) {
@@ -38,9 +42,19 @@ public class MemberService {
 		return new MemberDTO(editMember);
 	}
 
+	@Transactional
+	public void changePassword(Long memberId, PasswordDTO passwordDTO) {
+		Member findMember = getMember(memberId);
+		MemberContext memberContext = (MemberContext) userDetailsService.loadUserByUsername(findMember.getUsername());
+		if (passwordEncoder.matches(passwordDTO.getOldPassword(), memberContext.getMember().getPassword())) {
+			String encodedPassword = passwordEncoder.encode(passwordDTO.getNewPassword());
+			findMember.changePassword(encodedPassword);
+		}
+	}
+
 	private Member getMember(Long memberId) {
 		return memberRepository.findById(memberId).orElseThrow(() -> {
-			throw new IllegalArgumentException("찾는 회원이 없습니다.");
+			throw new IllegalArgumentException("존재하지 않는 회원입니다.");
 		});
 	}
 
