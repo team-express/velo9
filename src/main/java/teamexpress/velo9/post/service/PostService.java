@@ -5,6 +5,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import teamexpress.velo9.member.domain.Look;
+import teamexpress.velo9.member.domain.LookRepository;
 import teamexpress.velo9.member.domain.Love;
 import teamexpress.velo9.member.domain.LoveRepository;
 import teamexpress.velo9.member.domain.Member;
@@ -15,6 +17,7 @@ import teamexpress.velo9.post.domain.PostThumbnail;
 import teamexpress.velo9.post.domain.PostThumbnailRepository;
 import teamexpress.velo9.post.domain.Series;
 import teamexpress.velo9.post.domain.SeriesRepository;
+import teamexpress.velo9.post.dto.LookDTO;
 import teamexpress.velo9.post.dto.LoveDTO;
 import teamexpress.velo9.post.dto.PostReadDTO;
 import teamexpress.velo9.post.dto.PostSaveDTO;
@@ -31,6 +34,7 @@ public class PostService {
 	private final SeriesRepository seriesRepository;
 	private final MemberRepository memberRepository;
 	private final LoveRepository loveRepository;
+	private final LookRepository lookRepository;
 
 	@Transactional
 	public Long write(PostSaveDTO postSaveDTO) {
@@ -64,8 +68,8 @@ public class PostService {
 	@Transactional
 	public void loveOrNot(LoveDTO loveDTO) {
 
-		Post post = postRepository.findById(loveDTO.getPostId()).orElseThrow();
 		Member member = memberRepository.findById(loveDTO.getMemberId()).orElseThrow();
+		Post post = postRepository.findById(loveDTO.getPostId()).orElseThrow();
 
 		loveRepository.findByPostAndMember(post, member).ifPresentOrElse(
 			loveRepository::delete,
@@ -76,6 +80,20 @@ public class PostService {
 					.build()
 			)
 		);
+	}
+
+	@Transactional
+	public void look(LookDTO lookDTO) {
+		Member member = memberRepository.findById(lookDTO.getMemberId()).orElseThrow();
+		Post post = postRepository.findById(lookDTO.getPostId()).orElseThrow();
+
+		if (lookRepository.findByPostAndMember(post, member).isEmpty()) {
+			lookRepository.save(Look.builder()
+				.post(post)
+				.member(member)
+				.build()
+			);
+		}
 	}
 
 	private PostThumbnail getPostThumbnail(PostThumbnailDTO postThumbnailDTO) {
