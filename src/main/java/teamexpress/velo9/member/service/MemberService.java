@@ -6,8 +6,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import teamexpress.velo9.member.domain.Member;
 import teamexpress.velo9.member.domain.MemberRepository;
+import teamexpress.velo9.member.domain.MemberThumbnail;
 import teamexpress.velo9.member.dto.MailDTO;
 import teamexpress.velo9.member.dto.MemberSignupDTO;
+import teamexpress.velo9.member.dto.MemberThumbnailDTO;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -24,6 +26,30 @@ public class MemberService {
 		Member member = signupDTO.toMember();
 		memberRepository.save(member);
 		return member.getId();
+	}
+
+
+	public void findEmail(MailDTO mailDTO) {
+		memberRepository.findByEmail(mailDTO.getEmail())
+			.ifPresent(m -> {
+				throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
+			});
+	}
+
+	@Transactional
+	public void upload(MemberThumbnailDTO memberThumbnailDTO, Long memberId) {
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new NullPointerException());
+
+		MemberThumbnail memberThumbnail = member.getMemberThumbnail();
+
+		if (memberThumbnail != null) {
+			memberThumbnailDTO.setId(memberThumbnail.getId());
+		}
+
+		member.uploadThumbnail(memberThumbnailDTO.toMemberThumbnail());
+
+		memberRepository.save(member);
 	}
 
 	private void encodePassword(MemberSignupDTO signupDTO) {
@@ -46,13 +72,6 @@ public class MemberService {
 		memberRepository.findByNickname(nickname)
 			.ifPresent(m -> {
 				throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");
-			});
-	}
-
-	public void findEmail(MailDTO mailDTO) {
-		memberRepository.findByEmail(mailDTO.getEmail())
-			.ifPresent(m -> {
-				throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
 			});
 	}
 }

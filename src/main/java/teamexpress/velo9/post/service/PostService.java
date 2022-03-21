@@ -79,6 +79,7 @@ public class PostService {
 	public Slice<SeriesDTO> findSeries(String nickname, Pageable pageable) {
 		return seriesRepository.findPostBySeriesName(nickname, pageable);
 	}
+
 	public Slice<PostReadDTO> findPost(String nickname, Pageable pageable) {
 		return postRepository.findPost(nickname, pageable);
 	}

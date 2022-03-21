@@ -35,13 +35,15 @@ public class PostController {
 	}
 
 	@GetMapping("/{nickname}/series")
-	public ResponseEntity<Slice<SeriesDTO>> series(@PathVariable String nickname, @PageableDefault(size = 5) Pageable pageable) {
+	public ResponseEntity<Slice<SeriesDTO>> series(@PathVariable String nickname,
+		@PageableDefault(size = 5) Pageable pageable) {
 		Slice<SeriesDTO> series = postService.findSeries(nickname, pageable);
 		return new ResponseEntity<>(series, HttpStatus.OK);
 	}
 
 	@GetMapping("/{nickname}")
-	public ResponseEntity<Slice<PostReadDTO>> posts(@PathVariable String nickname, @PageableDefault(size = 10) Pageable pageable) {
+	public ResponseEntity<Slice<PostReadDTO>> posts(@PathVariable String nickname,
+		@PageableDefault(size = 10) Pageable pageable) {
 		Slice<PostReadDTO> post = postService.findPost(nickname, pageable);
 		return new ResponseEntity<>(post, HttpStatus.OK);
 	}
