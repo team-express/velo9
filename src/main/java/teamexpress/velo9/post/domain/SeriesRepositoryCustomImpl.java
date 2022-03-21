@@ -2,15 +2,12 @@ package teamexpress.velo9.post.domain;
 
 import static teamexpress.velo9.post.domain.QSeries.series;
 
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.support.PageableExecutionUtils;
-import teamexpress.velo9.post.dto.SeriesDTO;
+import org.springframework.data.domain.SliceImpl;
 
 public class SeriesRepositoryCustomImpl implements SeriesRepositoryCustom {
 
@@ -21,21 +18,27 @@ public class SeriesRepositoryCustomImpl implements SeriesRepositoryCustom {
 	}
 
 	@Override
-	public Slice<SeriesDTO> findPostBySeriesName(String nickname, Pageable pageable) {
+	public Slice<Series> findPostBySeriesName(String nickname, Pageable pageable) {
 
-		List<Series> seriesList = queryFactory
+		List<Series> content = queryFactory
 			.selectFrom(series)
-			.where(series.member.nickname.eq(nickname).and(series.posts.isNotEmpty()))
+			.where(series.member.nickname.eq(nickname)
+				.and(series.posts.isNotEmpty()))
 			.offset(pageable.getOffset())
-			.limit(pageable.getPageSize())
+			.limit(pageable.getPageSize() + 1)
 			.fetch();
 
-		List<SeriesDTO> result = seriesList.stream().map(SeriesDTO::new)
-			.collect(Collectors.toList());
+		boolean hasNext = isHasNext(content, pageable);
 
-		JPAQuery<Series> countQuery = queryFactory
-			.selectFrom(series);
+		return new SliceImpl<>(content, pageable, hasNext);
+	}
 
-		return PageableExecutionUtils.getPage(result, pageable, countQuery::fetchCount);
+	private boolean isHasNext(List<Series> result, Pageable pageable) {
+		boolean hasNext = false;
+		if (result.size() > pageable.getPageSize()) {
+			result.remove(pageable.getPageSize());
+			hasNext = true;
+		}
+		return hasNext;
 	}
 }
