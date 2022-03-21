@@ -38,6 +38,15 @@ public class PostService {
 		return postThumbnail;
 	}
 
+	private Member getMember(Long memberId) {
+		if (memberId == null) {
+			throw new NullPointerException("no member is NOT NULL!!!");
+		}
+
+		return memberRepository.findById(memberId)
+			.orElseThrow(() -> new NullPointerException("no member"));
+	}
+
 	private Series getSeries(Long seriesId) {
 		Series series = null;
 
@@ -46,15 +55,6 @@ public class PostService {
 		}
 
 		return series;
-	}
-
-	private Member getMember(Long memberId) {
-		if (memberId == null) {
-			throw new NullPointerException("no member is NOT NULL!!!");
-		}
-
-		return memberRepository.findById(memberId)
-			.orElseThrow(() -> new NullPointerException("no member"));
 	}
 
 	@Transactional
