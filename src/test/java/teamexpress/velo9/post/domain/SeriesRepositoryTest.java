@@ -8,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
-import teamexpress.velo9.post.dto.SeriesDTO;
 
 @SpringBootTest
 @Transactional
@@ -19,15 +18,15 @@ class SeriesRepositoryTest {
 
 	@Test
 	void findSeries() {
-	    //given
+		//given
 		String nickname = "admin";
 		PageRequest pageRequest = PageRequest.of(0, 5);
 
 		//when
-		Slice<SeriesDTO> findSeries = seriesRepository.findPostBySeriesName(nickname, pageRequest);
+		Slice<Series> findSeries = seriesRepository.findPostBySeriesName(nickname, pageRequest);
 
-	    //then
+		//then
 		assertThat(findSeries.getNumberOfElements()).isEqualTo(5);
-		assertThat(findSeries).extracting("seriesName").contains("series1", "series2", "series3", "series4", "series5");
+		assertThat(findSeries).extracting("name").contains("series1", "series3", "series4", "series5", "series6");
 	}
 }
