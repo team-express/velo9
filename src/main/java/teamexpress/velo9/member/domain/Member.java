@@ -57,7 +57,7 @@ public class Member extends BaseEntity {
 
 	@OneToMany(mappedBy = "member")
 	@JsonIgnore
-	private List<Refer> refers = new ArrayList<>();
+	private List<Look> looks = new ArrayList<>();
 
 	@OneToMany(mappedBy = "member")
 	@JsonIgnore
