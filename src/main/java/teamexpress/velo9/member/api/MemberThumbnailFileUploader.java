@@ -3,13 +3,17 @@ package teamexpress.velo9.member.api;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 import javax.imageio.ImageIO;
 import net.coobird.thumbnailator.Thumbnailator;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 import teamexpress.velo9.member.dto.MemberThumbnailDTO;
 import teamexpress.velo9.post.domain.PostThumbnailType;
@@ -18,6 +22,7 @@ import teamexpress.velo9.post.domain.PostThumbnailType;
 public class MemberThumbnailFileUploader {
 
 	private static final String ROOT_PATH = "C:\\member";
+	private static final String BACKSLASH = "\\";
 	private static final String uploadFileName = "default.png";
 
 
@@ -51,6 +56,34 @@ public class MemberThumbnailFileUploader {
 		createFile(uploadFile, memberThumbnailDTO);
 
 		return memberThumbnailDTO;
+	}
+
+	public byte[] getImage(String fileName) {
+		byte[] result = null;
+
+		try {
+			result = FileCopyUtils.copyToByteArray(getFile(fileName));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return result;
+	}
+
+	public HttpHeaders getHeader(String fileName) {
+		HttpHeaders header = new HttpHeaders();
+
+		try {
+			header.add("Content-Type", Files.probeContentType(getFile(fileName).toPath()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return header;
+	}
+
+	private File getFile(String fileName) {
+		return new File(ROOT_PATH + BACKSLASH + fileName);
 	}
 
 	private String getFolder() {
@@ -96,7 +129,6 @@ public class MemberThumbnailFileUploader {
 	private void checkUploadFile(MultipartFile uploadFile) {
 		if (uploadFile == null || uploadFile.isEmpty() || PostThumbnailType.check(
 			uploadFile.getContentType())) {
-			System.out.println("랄랄랄 = " + uploadFile.getContentType());
 			throw new IllegalStateException("지원되지 않는 형식의 파일이거나 빈 파일입니다.");
 		}
 	}
