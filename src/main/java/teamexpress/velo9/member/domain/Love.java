@@ -17,11 +17,11 @@ import teamexpress.velo9.post.domain.Post;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Refer {
+public class Love {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "refer_id")
+	@Column(name = "love_id")
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
