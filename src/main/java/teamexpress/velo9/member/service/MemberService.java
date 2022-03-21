@@ -29,15 +29,19 @@ public class MemberService {
 
 	@Transactional
 	public MemberDTO editMember(Long memberId, MemberEditDTO memberEditDTO) {
-		Member findMember = memberRepository.findById(memberId).orElseThrow(() -> {
-			throw new IllegalArgumentException("찾는 회원이 없습니다.");
-		});
+		Member findMember = getMember(memberId);
 		Member editMember = findMember.edit(
 			memberEditDTO.getNickname(), memberEditDTO.getIntroduce(),
 			memberEditDTO.getBlogTitle(), memberEditDTO.getSocialEmail(),
 			memberEditDTO.getSocialGithub());
 
 		return new MemberDTO(editMember);
+	}
+
+	private Member getMember(Long memberId) {
+		return memberRepository.findById(memberId).orElseThrow(() -> {
+			throw new IllegalArgumentException("찾는 회원이 없습니다.");
+		});
 	}
 
 	private void encodePassword(MemberSignupDTO signupDTO) {
