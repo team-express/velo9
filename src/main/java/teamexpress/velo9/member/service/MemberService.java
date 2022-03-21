@@ -34,22 +34,14 @@ public class MemberService {
 	@Transactional
 	public MemberDTO editMember(Long memberId, MemberEditDTO memberEditDTO) {
 		Member findMember = getMember(memberId);
-		Member editMember = findMember.edit(
-			memberEditDTO.getNickname(), memberEditDTO.getIntroduce(),
-			memberEditDTO.getBlogTitle(), memberEditDTO.getSocialEmail(),
-			memberEditDTO.getSocialGithub());
-
+		Member editMember = changeMemberInfo(memberEditDTO, findMember);
 		return new MemberDTO(editMember);
 	}
 
 	@Transactional
 	public void changePassword(Long memberId, PasswordDTO passwordDTO) {
 		Member findMember = getMember(memberId);
-		MemberContext memberContext = (MemberContext) userDetailsService.loadUserByUsername(findMember.getUsername());
-		if (passwordEncoder.matches(passwordDTO.getOldPassword(), memberContext.getMember().getPassword())) {
-			String encodedPassword = passwordEncoder.encode(passwordDTO.getNewPassword());
-			findMember.changePassword(encodedPassword);
-		}
+		changeMemberPassword(passwordDTO, findMember);
 	}
 
 	private Member getMember(Long memberId) {
@@ -86,5 +78,20 @@ public class MemberService {
 			.ifPresent(m -> {
 				throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
 			});
+	}
+
+	private Member changeMemberInfo(MemberEditDTO memberEditDTO, Member findMember) {
+		return findMember.edit(
+			memberEditDTO.getNickname(), memberEditDTO.getIntroduce(),
+			memberEditDTO.getBlogTitle(), memberEditDTO.getSocialEmail(),
+			memberEditDTO.getSocialGithub());
+	}
+
+	private void changeMemberPassword(PasswordDTO passwordDTO, Member findMember) {
+		MemberContext memberContext = (MemberContext) userDetailsService.loadUserByUsername(findMember.getUsername());
+		if (passwordEncoder.matches(passwordDTO.getOldPassword(), memberContext.getMember().getPassword())) {
+			String encodedPassword = passwordEncoder.encode(passwordDTO.getNewPassword());
+			findMember.changePassword(encodedPassword);
+		}
 	}
 }
