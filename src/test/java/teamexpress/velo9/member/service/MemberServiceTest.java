@@ -51,12 +51,12 @@ class MemberServiceTest {
 		PasswordDTO passwordDTO = new PasswordDTO();
 		passwordDTO.setOldPassword("1234");
 		passwordDTO.setNewPassword("1111");
+		String oldPwd = oldMember.getPassword();
 
 		//when
 		memberService.changePassword(oldMember.getId(), passwordDTO);
 		Member changeMember = memberRepository.findByNickname("nickname").get();
 
-		String oldPwd = oldMember.getPassword();
 		String newPwd = changeMember.getPassword();
 
 		//then
