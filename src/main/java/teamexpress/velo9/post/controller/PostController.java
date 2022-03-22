@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import teamexpress.velo9.post.dto.LookDTO;
 import teamexpress.velo9.post.dto.LoveDTO;
@@ -25,6 +26,11 @@ public class PostController {
 
 	private final PostService postService;
 	private final TagService tagService;
+
+	@GetMapping("/write")
+	public ResponseEntity<PostSaveDTO> write(@RequestParam("postId") Long postId){
+		return new ResponseEntity<>(postService.getPostById(postId), HttpStatus.OK);
+	}
 
 	@PostMapping("/write")
 	public ResponseEntity<Long> write(@RequestBody PostSaveDTO postSaveDTO) {

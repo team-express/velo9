@@ -16,9 +16,11 @@ public class PostThumbnailDTO {
 
 
 	public PostThumbnailDTO(PostThumbnail postThumbnail) {
-		this.uuid = postThumbnail.getUuid();
-		this.name = postThumbnail.getName();
-		this.path = postThumbnail.getPath();
+		if (postThumbnail != null) {
+			this.uuid = postThumbnail.getUuid();
+			this.name = postThumbnail.getName();
+			this.path = postThumbnail.getPath();
+		}
 	}
 
 	public PostThumbnail toPostThumbnail() {
