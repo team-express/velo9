@@ -55,7 +55,7 @@ public class PostService {
 		return post.getId();
 	}
 
-	public PostSaveDTO getPostById(Long id){
+	public PostSaveDTO getPostById(Long id) {
 		Post post = postRepository.findById(id).orElse(new Post());
 		return new PostSaveDTO(post);
 	}
@@ -75,30 +75,14 @@ public class PostService {
 
 		Member member = memberRepository.findById(loveDTO.getMemberId()).orElseThrow();
 		Post post = postRepository.findById(loveDTO.getPostId()).orElseThrow();
-
-		loveRepository.findByPostAndMember(post, member).ifPresentOrElse(
-			loveRepository::delete,
-			() -> loveRepository.save(
-				Love.builder()
-					.post(post)
-					.member(member)
-					.build()
-			)
-		);
+		toggleLove(member, post);
 	}
 
 	@Transactional
 	public void look(LookDTO lookDTO) {
 		Member member = memberRepository.findById(lookDTO.getMemberId()).orElseThrow();
 		Post post = postRepository.findById(lookDTO.getPostId()).orElseThrow();
-
-		if (lookRepository.findByPostAndMember(post, member).isEmpty()) {
-			lookRepository.save(Look.builder()
-				.post(post)
-				.member(member)
-				.build()
-			);
-		}
+		makeLook(member, post);
 	}
 
 	private PostThumbnail getPostThumbnail(PostThumbnailDTO postThumbnailDTO) {
@@ -121,12 +105,33 @@ public class PostService {
 	}
 
 	private Series getSeries(Long seriesId) {
-		Series series = null;
 
-		if (seriesId != null) {
-			series = seriesRepository.findById(seriesId).orElse(null);
+		if (seriesId == null) {
+			return null;
 		}
 
-		return series;
+		return seriesRepository.findById(seriesId).orElse(null);
+	}
+
+	private void toggleLove(Member member, Post post) {
+		loveRepository.findByPostAndMember(post, member).ifPresentOrElse(
+			loveRepository::delete,
+			() -> loveRepository.save(
+				Love.builder()
+					.post(post)
+					.member(member)
+					.build()
+			)
+		);
+	}
+
+	private void makeLook(Member member, Post post) {
+		if (lookRepository.findByPostAndMember(post, member).isEmpty()) {
+			lookRepository.save(Look.builder()
+				.post(post)
+				.member(member)
+				.build()
+			);
+		}
 	}
 }
