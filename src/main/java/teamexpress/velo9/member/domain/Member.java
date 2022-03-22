@@ -74,6 +74,10 @@ public class Member extends BaseEntity {
 		return role.getKey();
 	}
 
+	public void uploadThumbnail(MemberThumbnail memberThumbnail) {
+		this.memberThumbnail = memberThumbnail;
+	}
+
 	public Member edit(String nickname, String introduce, String blogTitle, String socialEmail, String socialGithub) {
 		this.nickname = nickname;
 		this.introduce = introduce;

@@ -6,10 +6,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import teamexpress.velo9.member.domain.Member;
 import teamexpress.velo9.member.domain.MemberRepository;
+import teamexpress.velo9.member.domain.MemberThumbnail;
 import teamexpress.velo9.member.dto.MailDTO;
 import teamexpress.velo9.member.dto.MemberDTO;
 import teamexpress.velo9.member.dto.MemberEditDTO;
 import teamexpress.velo9.member.dto.MemberSignupDTO;
+import teamexpress.velo9.member.dto.MemberThumbnailDTO;
 import teamexpress.velo9.member.dto.PasswordDTO;
 
 @RequiredArgsConstructor
@@ -48,6 +50,43 @@ public class MemberService {
 		memberRepository.delete(findMember);
 	}
 
+	@Transactional
+	public void uploadThumbnail(MemberThumbnailDTO memberThumbnailDTO, Long memberId) {
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new NullPointerException());
+
+		MemberThumbnail memberThumbnail = member.getMemberThumbnail();
+
+		if (memberThumbnail != null) {
+			memberThumbnailDTO.setId(memberThumbnail.getId());
+		}
+
+		member.uploadThumbnail(memberThumbnailDTO.toMemberThumbnail());
+
+		memberRepository.save(member);
+	}
+
+	@Transactional
+	public void deleteThumbnail(Long memberId) {
+		Member member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new NullPointerException());
+
+		if (member.getMemberThumbnail() == null) {
+			return;
+		}
+
+		member.uploadThumbnail(null);
+
+		memberRepository.save(member);
+	}
+
+	public void findEmail(MailDTO mailDTO) {
+		memberRepository.findByEmail(mailDTO.getEmail())
+			.ifPresent(m -> {
+				throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
+			});
+	}
+
 	private Member getMember(Long memberId) {
 		return memberRepository.findById(memberId).orElseThrow(() -> {
 			throw new IllegalArgumentException("존재하지 않는 회원입니다.");
@@ -74,13 +113,6 @@ public class MemberService {
 		memberRepository.findByNickname(nickname)
 			.ifPresent(m -> {
 				throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");
-			});
-	}
-
-	public void findEmail(MailDTO mailDTO) {
-		memberRepository.findByEmail(mailDTO.getEmail())
-			.ifPresent(m -> {
-				throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
 			});
 	}
 

@@ -28,7 +28,7 @@ public class PostController {
 	private final TagService tagService;
 
 	@GetMapping("/write")
-	public ResponseEntity<PostSaveDTO> write(@RequestParam("postId") Long postId){
+	public ResponseEntity<PostSaveDTO> write(@RequestParam("postId") Long postId) {
 		return new ResponseEntity<>(postService.getPostById(postId), HttpStatus.OK);
 	}
 
