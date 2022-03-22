@@ -43,4 +43,10 @@ public class MemberController {
 		Long memberId = (Long) session.getAttribute(SessionConst.LOGIN_MEMBER);
 		memberService.changePassword(memberId, passwordDTO);
 	}
+
+	@PostMapping("/withdraw")
+	public void withdrawMember(@RequestBody PasswordDTO passwordDTO, HttpSession session) {
+		Long memberId = (Long) session.getAttribute(SessionConst.LOGIN_MEMBER);
+		memberService.withdraw(memberId, passwordDTO);
+	}
 }

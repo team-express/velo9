@@ -40,8 +40,15 @@ public class MemberService {
 
 	@Transactional
 	public void changePassword(Long memberId, PasswordDTO passwordDTO) {
-		Member findMember = getMember(memberId);
-		changeMemberPassword(passwordDTO, findMember);
+		Member findMember = checkPasswordMember(passwordDTO, memberId);
+		String encodedPassword = passwordEncoder.encode(passwordDTO.getNewPassword());
+		findMember.changePassword(encodedPassword);
+	}
+
+	@Transactional
+	public void withdraw(Long memberId, PasswordDTO passwordDTO) {
+		Member findMember = checkPasswordMember(passwordDTO, memberId);
+		memberRepository.delete(findMember);
 	}
 
 	private Member getMember(Long memberId) {
@@ -87,11 +94,12 @@ public class MemberService {
 			memberEditDTO.getSocialGithub());
 	}
 
-	private void changeMemberPassword(PasswordDTO passwordDTO, Member findMember) {
+	private Member checkPasswordMember(PasswordDTO passwordDTO, Long memberId) {
+		Member findMember = getMember(memberId);
 		MemberContext memberContext = (MemberContext) userDetailsService.loadUserByUsername(findMember.getUsername());
-		if (passwordEncoder.matches(passwordDTO.getOldPassword(), memberContext.getMember().getPassword())) {
-			String encodedPassword = passwordEncoder.encode(passwordDTO.getNewPassword());
-			findMember.changePassword(encodedPassword);
+		if (!passwordEncoder.matches(passwordDTO.getOldPassword(), memberContext.getMember().getPassword())) {
+			throw new IllegalArgumentException("잘못된 비밀번호 입니다.");
 		}
+		return findMember;
 	}
 }
