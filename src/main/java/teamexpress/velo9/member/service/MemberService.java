@@ -50,20 +50,6 @@ public class MemberService {
 		memberRepository.delete(findMember);
 	}
 
-	private Member getMember(Long memberId) {
-		return memberRepository.findById(memberId).orElseThrow(() -> {
-			throw new IllegalArgumentException("존재하지 않는 회원입니다.");
-		});
-	}
-
-
-	public void findEmail(MailDTO mailDTO) {
-		memberRepository.findByEmail(mailDTO.getEmail())
-			.ifPresent(m -> {
-				throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
-			});
-	}
-
 	@Transactional
 	public void uploadThumbnail(MemberThumbnailDTO memberThumbnailDTO, Long memberId) {
 		Member member = memberRepository.findById(memberId)
@@ -92,6 +78,19 @@ public class MemberService {
 		member.uploadThumbnail(null);
 
 		memberRepository.save(member);
+	}
+
+	public void findEmail(MailDTO mailDTO) {
+		memberRepository.findByEmail(mailDTO.getEmail())
+			.ifPresent(m -> {
+				throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
+			});
+	}
+
+	private Member getMember(Long memberId) {
+		return memberRepository.findById(memberId).orElseThrow(() -> {
+			throw new IllegalArgumentException("존재하지 않는 회원입니다.");
+		});
 	}
 
 	private void encodePassword(MemberSignupDTO signupDTO) {
