@@ -46,15 +46,15 @@ class MemberServiceTest {
 	@Test
 	void changPassword() {
 		//given
-		Member oldMember = memberRepository.save(createMember("nickname", "testUsername", "1234", "zxcv@nate.com", Role.ROLE_USER));
+		Member member = memberRepository.save(createMember("nickname", "testUsername", "1234", "zxcv@nate.com", Role.ROLE_USER));
 
 		PasswordDTO passwordDTO = new PasswordDTO();
 		passwordDTO.setOldPassword("1234");
 		passwordDTO.setNewPassword("1111");
-		String oldPwd = oldMember.getPassword();
+		String oldPwd = member.getPassword();
 
 		//when
-		memberService.changePassword(oldMember.getId(), passwordDTO);
+		memberService.changePassword(member.getId(), passwordDTO);
 		Member changeMember = memberRepository.findByNickname("nickname").get();
 
 		String newPwd = changeMember.getPassword();
