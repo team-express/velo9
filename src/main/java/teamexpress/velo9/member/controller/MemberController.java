@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import teamexpress.velo9.member.dto.MemberDTO;
+import teamexpress.velo9.member.dto.MemberEditDTO;
 import teamexpress.velo9.member.dto.MemberSignupDTO;
+import teamexpress.velo9.member.dto.PasswordDTO;
 import teamexpress.velo9.member.security.oauth.SessionConst;
 import teamexpress.velo9.member.service.MemberService;
 
@@ -33,5 +36,17 @@ public class MemberController {
 		Long memberId = (Long) session.getAttribute(SessionConst.LOGIN_MEMBER);
 		MemberDTO memberDTO = memberService.editMember(memberId, memberEditDTO);
 		return new ResponseEntity<>(memberDTO, HttpStatus.OK);
+	}
+
+	@PostMapping("/changePassword")
+	public void changePassword(@RequestBody PasswordDTO passwordDTO, HttpSession session) {
+		Long memberId = (Long) session.getAttribute(SessionConst.LOGIN_MEMBER);
+		memberService.changePassword(memberId, passwordDTO);
+	}
+
+	@PostMapping("/withdraw")
+	public void withdrawMember(@RequestBody PasswordDTO passwordDTO, HttpSession session) {
+		Long memberId = (Long) session.getAttribute(SessionConst.LOGIN_MEMBER);
+		memberService.withdraw(memberId, passwordDTO);
 	}
 }
