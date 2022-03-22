@@ -97,9 +97,13 @@ public class MemberService {
 	private Member checkPasswordMember(PasswordDTO passwordDTO, Long memberId) {
 		Member findMember = getMember(memberId);
 		MemberContext memberContext = (MemberContext) userDetailsService.loadUserByUsername(findMember.getUsername());
+		checkPassword(passwordDTO, memberContext);
+		return findMember;
+	}
+
+	private void checkPassword(PasswordDTO passwordDTO, MemberContext memberContext) {
 		if (!passwordEncoder.matches(passwordDTO.getOldPassword(), memberContext.getMember().getPassword())) {
 			throw new IllegalArgumentException("잘못된 비밀번호 입니다.");
 		}
-		return findMember;
 	}
 }
