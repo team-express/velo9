@@ -4,5 +4,5 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
 public interface SeriesRepositoryCustom {
-	Slice<SeriesDTO> findPostBySeriesName(String nickname, Pageable pageable);
+	Slice<Series> findPostBySeriesName(String nickname, Pageable pageable);
 }
