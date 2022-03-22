@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import teamexpress.velo9.post.dto.LookDTO;
+import teamexpress.velo9.post.dto.LoveDTO;
 import teamexpress.velo9.post.dto.PostReadDTO;
 import teamexpress.velo9.post.dto.PostSaveDTO;
 import teamexpress.velo9.post.dto.SeriesDTO;
@@ -50,5 +52,15 @@ public class PostController {
 	public ResponseEntity<Slice<PostReadDTO>> postsRead(@PathVariable String nickname, @PageableDefault(size = 10) Pageable pageable) {
 		Slice<PostReadDTO> post = postService.findReadPost(nickname, pageable);
 		return new ResponseEntity<>(post, HttpStatus.OK);
+	}
+
+	@PostMapping("/love")
+	public void love(@RequestBody LoveDTO loveDTO) {
+		postService.loveOrNot(loveDTO);
+	}
+
+	@PostMapping("/look")//차후 상세보기가 생기면 녹아들어야 할 로직
+	public void look(@RequestBody LookDTO lookDTO) {
+		postService.look(lookDTO);
 	}
 }
