@@ -63,10 +63,22 @@ class MemberServiceTest {
 		assertThat(oldPwd).isNotEqualTo(newPwd);
 	}
 
+	@Test
+	void removeMember() {
+		//given
+		Member findMember = memberRepository.findByNickname("admin").get();
+		PasswordDTO passwordDTO = new PasswordDTO();
+		passwordDTO.setOldPassword("1234");
 
+		//when
+		memberService.withdraw(findMember.getId(), passwordDTO);
+
+		//then
+		Member member = memberRepository.findByNickname("admin").orElse(null);
+		assertThat(member).isNull();
+	}
 
 	private Member createMember(String nickname, String username, String password, String email, Role roleUser) {
 		return Member.builder().nickname(nickname).blogTitle(nickname).username(username).password(passwordEncoder.encode(password)).email(email).posts(new ArrayList<>()).role(roleUser).build();
 	}
-
 }
