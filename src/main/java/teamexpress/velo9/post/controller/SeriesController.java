@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import teamexpress.velo9.post.dto.SeriesAddDTO;
 import teamexpress.velo9.post.dto.SeriesReadDTO;
@@ -19,17 +20,17 @@ public class SeriesController {
 	private final SeriesService seriesService;
 
 	@GetMapping("/getSeriesList")
-	public ResponseEntity<List<SeriesReadDTO>> getSeriesList() {
-		return new ResponseEntity<>(seriesService.getAll(), HttpStatus.OK);
+	public ResponseEntity<List<SeriesReadDTO>> getSeriesList(@RequestParam("memberId") Long memberId) {
+		return new ResponseEntity<>(seriesService.getAll(memberId), HttpStatus.OK);
 	}
 
-	@PostMapping("addSeries")
+	@PostMapping("/addSeries")
 	public void addSeries(@RequestBody SeriesAddDTO seriesAddDTO) {
 		seriesService.add(seriesAddDTO);
 	}
 
-	@PostMapping("deleteSeries")
-	public void deleteSeries(Long id){
-		seriesService.delete(id);
+	@PostMapping("/deleteSeries")
+	public void deleteSeries(@RequestParam("seriesId") Long seriesId) {
+		seriesService.delete(seriesId);
 	}
 }

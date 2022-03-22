@@ -21,25 +21,16 @@ public class SeriesService {
 	private final SeriesRepository seriesRepository;
 	private final MemberRepository memberRepository;
 
-	private void checkName(String name) {
-		List<String> names = this.getAll().stream().map(series -> series.getName())
-			.collect(Collectors.toList());
-
-		if (names.contains(name)) {
-			throw new DuplicateElementException("이미 있는 이름의 시리즈 입니다.");
-		}
-	}
-
-	public List<SeriesReadDTO> getAll() {
-		return seriesRepository.findAll().stream().map(series -> new SeriesReadDTO(series)).collect(
-			Collectors.toList());
+	public List<SeriesReadDTO> getAll(Long memberId) {
+		return seriesRepository.findAllByMember(memberRepository.findById(memberId).orElseThrow())
+			.stream().map(series -> new SeriesReadDTO(series)).collect(Collectors.toList());
 	}
 
 	@Transactional
 	public void add(SeriesAddDTO seriesAddDTO) {
-		checkName(seriesAddDTO.getName());
+		checkName(seriesAddDTO.getMemberId(), seriesAddDTO.getName());
 
-		Member member = memberRepository.findById(seriesAddDTO.getMemberId()).orElse(null);
+		Member member = memberRepository.findById(seriesAddDTO.getMemberId()).orElseThrow();
 		Series series = seriesAddDTO.toSeries(member);
 
 		seriesRepository.save(series);
@@ -48,5 +39,12 @@ public class SeriesService {
 	@Transactional
 	public void delete(Long id) {
 		seriesRepository.deleteById(id);
+	}
+
+	private void checkName(Long memberId, String name) {
+
+		if (this.getAll(memberId).stream().map(series -> series.getName()).collect(Collectors.toList()).contains(name)) {
+			throw new DuplicateElementException("이미 있는 이름의 시리즈 입니다.");
+		}
 	}
 }
