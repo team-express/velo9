@@ -47,26 +47,26 @@ public class Member extends BaseEntity {
 	@Column(name = "social_github")
 	private String socialGithub;
 
-	@OneToMany(mappedBy = "member")
+	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
 	@JsonIgnore
 	private List<Post> posts = new ArrayList<>();
 
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "member_thumbnail_id")
 	private MemberThumbnail memberThumbnail;
 
-	@OneToMany(mappedBy = "member")
+	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
 	@JsonIgnore
 	private List<Look> looks = new ArrayList<>();
 
-	@OneToMany(mappedBy = "member")
+	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
 	@JsonIgnore
 	private List<Love> loves = new ArrayList<>();
 
 	@Enumerated(value = EnumType.STRING)
 	private Role role;
 
-	@OneToMany(mappedBy = "member")
+	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
 	@JsonIgnore
 	private List<Series> series = new ArrayList<>();
 
@@ -81,5 +81,9 @@ public class Member extends BaseEntity {
 		this.socialEmail = socialEmail;
 		this.socialGithub = socialGithub;
 		return this;
+	}
+
+	public void changePassword(String encodedPassword) {
+		password = encodedPassword;
 	}
 }
