@@ -2,7 +2,6 @@ package teamexpress.velo9.post.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import teamexpress.velo9.post.domain.Post;
@@ -15,7 +14,6 @@ import teamexpress.velo9.post.domain.TagRepository;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-@Log4j2
 public class TagService {
 
 	private final PostRepository postRepository;
