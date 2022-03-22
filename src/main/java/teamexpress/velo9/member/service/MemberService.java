@@ -1,7 +1,6 @@
 package teamexpress.velo9.member.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +11,6 @@ import teamexpress.velo9.member.dto.MemberDTO;
 import teamexpress.velo9.member.dto.MemberEditDTO;
 import teamexpress.velo9.member.dto.MemberSignupDTO;
 import teamexpress.velo9.member.dto.PasswordDTO;
-import teamexpress.velo9.member.security.MemberContext;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -21,7 +19,6 @@ public class MemberService {
 
 	private final MemberRepository memberRepository;
 	private final PasswordEncoder passwordEncoder;
-	private final UserDetailsService userDetailsService;
 
 	@Transactional
 	public void join(MemberSignupDTO signupDTO) {
@@ -96,13 +93,12 @@ public class MemberService {
 
 	private Member checkPasswordMember(PasswordDTO passwordDTO, Long memberId) {
 		Member findMember = getMember(memberId);
-		MemberContext memberContext = (MemberContext) userDetailsService.loadUserByUsername(findMember.getUsername());
-		checkPassword(passwordDTO, memberContext);
+		checkPassword(passwordDTO.getOldPassword(), findMember.getPassword());
 		return findMember;
 	}
 
-	private void checkPassword(PasswordDTO passwordDTO, MemberContext memberContext) {
-		if (!passwordEncoder.matches(passwordDTO.getOldPassword(), memberContext.getMember().getPassword())) {
+	private void checkPassword(String oldPassword, String savedPassword) {
+		if (!passwordEncoder.matches(oldPassword, savedPassword)) {
 			throw new IllegalArgumentException("잘못된 비밀번호 입니다.");
 		}
 	}
