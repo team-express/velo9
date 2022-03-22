@@ -38,6 +38,15 @@ public class PostService {
 		return postThumbnail;
 	}
 
+	private Member getMember(Long memberId) {
+		if (memberId == null) {
+			throw new NullPointerException("no member is NOT NULL!!!");
+		}
+
+		return memberRepository.findById(memberId)
+			.orElseThrow(() -> new NullPointerException("no member"));
+	}
+
 	private Series getSeries(Long seriesId) {
 		Series series = null;
 
@@ -46,15 +55,6 @@ public class PostService {
 		}
 
 		return series;
-	}
-
-	private Member getMember(Long memberId) {
-		if (memberId == null) {
-			throw new NullPointerException("no member is NOT NULL!!!");
-		}
-
-		return memberRepository.findById(memberId)
-			.orElseThrow(() -> new NullPointerException("no member"));
 	}
 
 	@Transactional
@@ -82,9 +82,12 @@ public class PostService {
 	}
 
 	public Slice<SeriesDTO> findSeries(String nickname, Pageable pageable) {
-		return seriesRepository.findPostBySeriesName(nickname, pageable);
+		Slice<Series> seriesList = seriesRepository.findPostBySeriesName(nickname, pageable);
+		return seriesList.map(SeriesDTO::new);
 	}
-	public Slice<PostReadDTO> findPost(String nickname, Pageable pageable) {
-		return postRepository.findPost(nickname, pageable);
+
+	public Slice<PostReadDTO> findReadPost(String nickname, Pageable pageable) {
+		Slice<Post> posts = postRepository.findReadPost(nickname, pageable);
+		return posts.map(PostReadDTO::new);
 	}
 }

@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import teamexpress.velo9.member.controller.MemberDTO;
+import teamexpress.velo9.member.controller.MemberEditDTO;
 import teamexpress.velo9.member.domain.Member;
 import teamexpress.velo9.member.domain.MemberRepository;
 import teamexpress.velo9.member.dto.MailDTO;
@@ -18,12 +20,28 @@ public class MemberService {
 	private final PasswordEncoder passwordEncoder;
 
 	@Transactional
-	public Long join(MemberSignupDTO signupDTO) {
+	public void join(MemberSignupDTO signupDTO) {
 		checkDuplicateMember(signupDTO);
 		encodePassword(signupDTO);
 		Member member = signupDTO.toMember();
 		memberRepository.save(member);
-		return member.getId();
+	}
+
+	@Transactional
+	public MemberDTO editMember(Long memberId, MemberEditDTO memberEditDTO) {
+		Member findMember = getMember(memberId);
+		Member editMember = findMember.edit(
+			memberEditDTO.getNickname(), memberEditDTO.getIntroduce(),
+			memberEditDTO.getBlogTitle(), memberEditDTO.getSocialEmail(),
+			memberEditDTO.getSocialGithub());
+
+		return new MemberDTO(editMember);
+	}
+
+	private Member getMember(Long memberId) {
+		return memberRepository.findById(memberId).orElseThrow(() -> {
+			throw new IllegalArgumentException("찾는 회원이 없습니다.");
+		});
 	}
 
 	private void encodePassword(MemberSignupDTO signupDTO) {

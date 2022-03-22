@@ -57,7 +57,11 @@ public class Member extends BaseEntity {
 
 	@OneToMany(mappedBy = "member")
 	@JsonIgnore
-	private List<Refer> refers = new ArrayList<>();
+	private List<Look> looks = new ArrayList<>();
+
+	@OneToMany(mappedBy = "member")
+	@JsonIgnore
+	private List<Love> loves = new ArrayList<>();
 
 	@Enumerated(value = EnumType.STRING)
 	private Role role;
@@ -68,5 +72,14 @@ public class Member extends BaseEntity {
 
 	public String getRoleKey() {
 		return role.getKey();
+	}
+
+	public Member edit(String nickname, String introduce, String blogTitle, String socialEmail, String socialGithub) {
+		this.nickname = nickname;
+		this.introduce = introduce;
+		this.blogTitle = blogTitle;
+		this.socialEmail = socialEmail;
+		this.socialGithub = socialGithub;
+		return this;
 	}
 }

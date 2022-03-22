@@ -45,9 +45,9 @@ public class PostController {
 		return new ResponseEntity<>(series, HttpStatus.OK);
 	}
 
-	@GetMapping("/{nickname}")
-	public ResponseEntity<Slice<PostReadDTO>> posts(@PathVariable String nickname, @PageableDefault(size = 10) Pageable pageable) {
-		Slice<PostReadDTO> post = postService.findPost(nickname, pageable);
+	@GetMapping("/{nickname}/main")
+	public ResponseEntity<Slice<PostReadDTO>> postsRead(@PathVariable String nickname, @PageableDefault(size = 10) Pageable pageable) {
+		Slice<PostReadDTO> post = postService.findReadPost(nickname, pageable);
 		return new ResponseEntity<>(post, HttpStatus.OK);
 	}
 }
