@@ -2,15 +2,12 @@ package teamexpress.velo9.post.domain;
 
 import static teamexpress.velo9.post.domain.QPost.post;
 
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.support.PageableExecutionUtils;
-import teamexpress.velo9.post.dto.PostReadDTO;
+import org.springframework.data.domain.SliceImpl;
 
 public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 
@@ -21,21 +18,26 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 	}
 
 	@Override
-	public Slice<PostReadDTO> findPost(String nickname, Pageable pageable) {
-		List<Post> postList = queryFactory
+	public Slice<Post> findReadPost(String nickname, Pageable pageable) {
+		List<Post> content = queryFactory
 			.selectFrom(post)
+			.join(post.postThumbnail).fetchJoin()
 			.where(post.member.nickname.eq(nickname))
 			.offset(pageable.getOffset())
-			.limit(pageable.getPageSize())
+			.limit(pageable.getPageSize() + 1)
 			.fetch();
 
-		List<PostReadDTO> result =
-			postList.stream().map(PostReadDTO::new)
-				.collect(Collectors.toList());
+		boolean hasNext = isHasNext(content, pageable);
 
-		JPAQuery<Post> countQuery = queryFactory
-			.selectFrom(post);
+		return new SliceImpl<>(content, pageable, hasNext);
+	}
 
-		return PageableExecutionUtils.getPage(result, pageable, countQuery::fetchCount);
+	private boolean isHasNext(List<Post> result, Pageable pageable) {
+		boolean hasNext = false;
+		if (result.size() > pageable.getPageSize()) {
+			result.remove(pageable.getPageSize());
+			hasNext = true;
+		}
+		return hasNext;
 	}
 }

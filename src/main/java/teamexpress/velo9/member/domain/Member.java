@@ -47,7 +47,7 @@ public class Member extends BaseEntity {
 	@Column(name = "social_github")
 	private String socialGithub;
 
-	@OneToMany(mappedBy = "member")
+	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
 	@JsonIgnore
 	private List<Post> posts = new ArrayList<>();
 
@@ -55,14 +55,18 @@ public class Member extends BaseEntity {
 	@JoinColumn(name = "member_thumbnail_id")
 	private MemberThumbnail memberThumbnail;
 
-	@OneToMany(mappedBy = "member")
+	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
 	@JsonIgnore
-	private List<Refer> refers = new ArrayList<>();
+	private List<Look> looks = new ArrayList<>();
+
+	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+	@JsonIgnore
+	private List<Love> loves = new ArrayList<>();
 
 	@Enumerated(value = EnumType.STRING)
 	private Role role;
 
-	@OneToMany(mappedBy = "member")
+	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
 	@JsonIgnore
 	private List<Series> series = new ArrayList<>();
 
@@ -72,5 +76,18 @@ public class Member extends BaseEntity {
 
 	public void uploadThumbnail(MemberThumbnail memberThumbnail) {
 		this.memberThumbnail = memberThumbnail;
+	}
+
+	public Member edit(String nickname, String introduce, String blogTitle, String socialEmail, String socialGithub) {
+		this.nickname = nickname;
+		this.introduce = introduce;
+		this.blogTitle = blogTitle;
+		this.socialEmail = socialEmail;
+		this.socialGithub = socialGithub;
+		return this;
+	}
+
+	public void changePassword(String encodedPassword) {
+		password = encodedPassword;
 	}
 }
