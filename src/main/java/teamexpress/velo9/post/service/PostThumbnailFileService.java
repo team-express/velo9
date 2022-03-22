@@ -26,65 +26,6 @@ public class PostThumbnailFileService {
 	private static final String THUMBNAIL_MARK = "s_";
 	private static final int NEXT = 1;
 
-	private File getFile(String fileName) {
-		return new File(ROOT_PATH + BACKSLASH + fileName);
-	}
-
-	private String getFolder() {
-
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-		Date date = new Date();
-
-		String str = sdf.format(date);
-
-		return str.replace("-", File.separator);
-	}
-
-	private void createFile(MultipartFile uploadFile, File uploadPath,
-		String uploadFullFileName) {
-		File saveFile = new File(uploadPath, uploadFullFileName);
-
-		try {
-			uploadFile.transferTo(saveFile);
-
-			FileOutputStream thumbnail = new FileOutputStream(
-				new File(uploadPath, THUMBNAIL_MARK + uploadFullFileName));
-			Thumbnailator.createThumbnail(uploadFile.getInputStream(), thumbnail, 80, 80);
-			thumbnail.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	private String getUploadFileName(MultipartFile uploadFile) {
-		String uploadFileName = uploadFile.getOriginalFilename();
-		uploadFileName = uploadFileName.substring(uploadFileName.lastIndexOf(BACKSLASH) + NEXT);
-		return uploadFileName;
-	}
-
-	private File getUploadPath(String uploadFolderPath) {
-		File uploadPath = new File(ROOT_PATH, uploadFolderPath);
-
-		if (!uploadPath.exists()) {
-			uploadPath.mkdirs();
-		}
-
-		return uploadPath;
-	}
-
-	private void checkUploadFile(MultipartFile uploadFile) {
-		if (uploadFile == null || uploadFile.isEmpty() || PostThumbnailType.check(
-			uploadFile.getContentType())) {
-			throw new IllegalStateException("지원되지 않는 형식의 파일이거나 빈 파일입니다.");
-		}
-	}
-
-	private void checkDeleteFileName(String fileName) {
-		if (fileName == null || fileName.equals("")) {
-			throw new IllegalStateException("파일 이름이 없습니다.");
-		}
-	}
 
 	public PostThumbnailDTO upload(MultipartFile uploadFile) {
 		checkUploadFile(uploadFile);
@@ -144,5 +85,65 @@ public class PostThumbnailFileService {
 		}
 
 		return header;
+	}
+
+	private File getFile(String fileName) {
+		return new File(ROOT_PATH + BACKSLASH + fileName);
+	}
+
+	private String getFolder() {
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+		Date date = new Date();
+
+		String str = sdf.format(date);
+
+		return str.replace("-", File.separator);
+	}
+
+	private void createFile(MultipartFile uploadFile, File uploadPath,
+		String uploadFullFileName) {
+		File saveFile = new File(uploadPath, uploadFullFileName);
+
+		try {
+			uploadFile.transferTo(saveFile);
+
+			FileOutputStream thumbnail = new FileOutputStream(
+				new File(uploadPath, THUMBNAIL_MARK + uploadFullFileName));
+			Thumbnailator.createThumbnail(uploadFile.getInputStream(), thumbnail, 80, 80);
+			thumbnail.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private String getUploadFileName(MultipartFile uploadFile) {
+		String uploadFileName = uploadFile.getOriginalFilename();
+		uploadFileName = uploadFileName.substring(uploadFileName.lastIndexOf(BACKSLASH) + NEXT);
+		return uploadFileName;
+	}
+
+	private File getUploadPath(String uploadFolderPath) {
+		File uploadPath = new File(ROOT_PATH, uploadFolderPath);
+
+		if (!uploadPath.exists()) {
+			uploadPath.mkdirs();
+		}
+
+		return uploadPath;
+	}
+
+	private void checkUploadFile(MultipartFile uploadFile) {
+		if (uploadFile == null || uploadFile.isEmpty() || PostThumbnailType.check(
+			uploadFile.getContentType())) {
+			throw new IllegalStateException("지원되지 않는 형식의 파일이거나 빈 파일입니다.");
+		}
+	}
+
+	private void checkDeleteFileName(String fileName) {
+		if (fileName == null || fileName.equals("")) {
+			throw new IllegalStateException("파일 이름이 없습니다.");
+		}
 	}
 }

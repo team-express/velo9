@@ -2,7 +2,9 @@ package teamexpress.velo9.post.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import teamexpress.velo9.member.domain.Member;
 import teamexpress.velo9.post.domain.Post;
 import teamexpress.velo9.post.domain.PostAccess;
@@ -11,6 +13,7 @@ import teamexpress.velo9.post.domain.PostThumbnail;
 import teamexpress.velo9.post.domain.Series;
 
 @Data
+@NoArgsConstructor
 public class PostSaveDTO {
 
 	private static final int MAX = 150;
@@ -21,12 +24,34 @@ public class PostSaveDTO {
 	private String introduce;
 	private String content;
 	private String access;
+	private String status;
 
 	private Long memberId;
 	private Long seriesId;
 	private List<String> tagNames;
 
 	private PostThumbnailDTO postThumbnailDTO;
+
+	public PostSaveDTO(Post post) {
+		this.id = post.getId();
+		this.title = post.getTitle();
+		this.introduce = post.getIntroduce();
+		this.content = post.getContent();
+		this.access = post.getAccess().toString();
+		this.status = post.getStatus().toString();
+
+		this.memberId = post.getMember().getId();
+
+		if(post.getSeries() != null) {
+			this.seriesId = post.getSeries().getId();
+		}
+
+		this.tagNames = post.getPostTags().stream()
+			.map(postTag -> postTag.getTag().getName())
+			.collect(Collectors.toList());
+
+		postThumbnailDTO = new PostThumbnailDTO(post.getPostThumbnail());
+	}
 
 	public Post toPost(PostThumbnail postThumbnail, Series series, Member member,
 		LocalDateTime createdDate) {
@@ -37,7 +62,7 @@ public class PostSaveDTO {
 			.title(this.title)
 			.introduce(this.introduce)
 			.content(this.content)
-			.status(PostStatus.GENERAL)
+			.status(PostStatus.valueOf(this.status))
 			.access(PostAccess.valueOf(this.access))
 			.member(member)
 			.series(series)
