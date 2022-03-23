@@ -4,8 +4,12 @@ import java.time.LocalDateTime;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import teamexpress.velo9.member.domain.Member;
 
 public interface PostRepository extends JpaRepository<Post, Long>, PostRepositoryCustom {
+
 	@Query("select p.createdDate from Post p where p.id = :id")
 	LocalDateTime getCreatedDate(@Param("id") Long id);
+
+	int countByMemberAndStatus(Member member, PostStatus status);
 }

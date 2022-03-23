@@ -13,6 +13,7 @@ import teamexpress.velo9.member.domain.Member;
 import teamexpress.velo9.member.domain.MemberRepository;
 import teamexpress.velo9.post.domain.Post;
 import teamexpress.velo9.post.domain.PostRepository;
+import teamexpress.velo9.post.domain.PostStatus;
 import teamexpress.velo9.post.domain.PostThumbnail;
 import teamexpress.velo9.post.domain.PostThumbnailRepository;
 import teamexpress.velo9.post.domain.Series;
@@ -29,6 +30,8 @@ import teamexpress.velo9.post.dto.TemporaryPostWriteDTO;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class PostService {
+
+	private static final int MAX_TEMPORARY_COUNT = 5;
 
 	private final PostRepository postRepository;
 	private final PostThumbnailRepository postThumbnailRepository;
@@ -58,6 +61,8 @@ public class PostService {
 
 	@Transactional
 	public void writeNewTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {
+
+		checkCount(temporaryPostWriteDTO.getMemberId());
 
 		Member member = getMember(temporaryPostWriteDTO.getMemberId());
 		postRepository.save(temporaryPostWriteDTO.toPost(member));
@@ -140,6 +145,12 @@ public class PostService {
 				.member(member)
 				.build()
 			);
+		}
+	}
+
+	private void checkCount(Long memberId) {
+		if (postRepository.countByMemberAndStatus(memberRepository.findById(memberId).orElseThrow(), PostStatus.TEMPORARY) >= MAX_TEMPORARY_COUNT) {
+			throw new IllegalStateException("임시저장은 20개까지만 가능");
 		}
 	}
 }
