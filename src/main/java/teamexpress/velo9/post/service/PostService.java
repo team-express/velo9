@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final PostTempRepository postTempRepository; // 의존 주입
     private final PostThumbnailRepository postThumbnailRepository;
     private final SeriesRepository seriesRepository;
     private final MemberRepository memberRepository;
@@ -79,18 +78,13 @@ public class PostService {
         makeLook(member, post);
     }
 
-    // 임시 저장글 탐색, DTO 변환, 반환
     public List<TempSavedPostDTO> getTempSavedPost(Long id) {
 
-        // id와 status.TEMPORARY 조건이 일치하는 POST 조회
-        List<Post> findPosts = postTempRepository.getTempSavedPost(id);
+        List<Post> findPosts = postRepository.getTempSavedPost(id, PostStatus.TEMPORARY);
 
-        // List<엔티티> -> List<DTO>
-        List<TempSavedPostDTO> tempSavedPosts = findPosts.stream()
+        return findPosts.stream()
                 .map(p -> new TempSavedPostDTO(p))
                 .collect(Collectors.toList());
-
-        return tempSavedPosts;
     }
 
 

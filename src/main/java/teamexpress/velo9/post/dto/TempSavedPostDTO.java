@@ -5,18 +5,16 @@ import teamexpress.velo9.post.domain.Post;
 
 import java.time.LocalDateTime;
 
-
 public class TempSavedPostDTO {
 
     private String title;
-    private String introduce;
+    private String content;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd-HH-mm-ss", timezone = "Asia/Seoul")
     private LocalDateTime createdDate;
 
-
     public TempSavedPostDTO(Post post) {
         title = post.getTitle();
-        introduce = post.getIntroduce();
+        content = post.getContent();
         createdDate = post.getCreatedDate();
     }
 }

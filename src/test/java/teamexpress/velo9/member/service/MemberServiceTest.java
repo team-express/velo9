@@ -3,6 +3,8 @@ package teamexpress.velo9.member.service;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -76,6 +78,14 @@ class MemberServiceTest {
 		//then
 		Member member = memberRepository.findByNickname("admin").orElse(null);
 		assertThat(member).isNull();
+	}
+
+	@Test
+	void findAll() {
+		List<Member> members = memberRepository.findAll();
+		for (Member member : members) {
+			System.out.println("member.getId = " + member.getId());
+		}
 	}
 
 	private Member createMember(String nickname, String username, String password, String email, Role roleUser) {
