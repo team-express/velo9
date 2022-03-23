@@ -1,5 +1,6 @@
 package teamexpress.velo9.post.dto;
 
+import java.time.LocalDateTime;
 import lombok.Data;
 import teamexpress.velo9.member.domain.Member;
 import teamexpress.velo9.post.domain.Post;
@@ -15,18 +16,14 @@ public class TemporaryPostWriteDTO {
 	private Long memberId;
 	//private Long postId;
 
-	public Post toPost(Member member) {
+	public Post toPost(Member member, LocalDateTime createdDate) {
 		return Post.builder()
 			.id(this.id)
 			.title(this.title)
-			//.introduce(this.introduce)
 			.content(this.content)
 			.status(PostStatus.TEMPORARY)
-			//.access(PostAccess.valueOf(this.access))
 			.member(member)
-			//.series(series)
-			//.postThumbnail(postThumbnail)
-			//.createdDate(createdDate)
+			.createdDate(createdDate)
 			.build();
 	}
 }

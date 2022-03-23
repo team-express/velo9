@@ -54,8 +54,7 @@ public class PostSaveDTO {
 		postThumbnailDTO = new PostThumbnailDTO(post.getPostThumbnail());
 	}
 
-	public Post toPost(PostThumbnail postThumbnail, Series series, Member member,
-		LocalDateTime createdDate) {
+	public Post toPost(PostThumbnail postThumbnail, Series series, Member member, LocalDateTime createdDate) {
 		this.setIntroduce();
 		this.setAccess();
 

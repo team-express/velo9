@@ -61,11 +61,10 @@ public class PostService {
 
 	@Transactional
 	public void writeNewTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {
-
 		checkCount(temporaryPostWriteDTO.getMemberId());
 
 		Member member = getMember(temporaryPostWriteDTO.getMemberId());
-		postRepository.save(temporaryPostWriteDTO.toPost(member));
+		postRepository.save(temporaryPostWriteDTO.toPost(member, postRepository.getCreatedDate(temporaryPostWriteDTO.getId())));
 	}
 
 	@Transactional
