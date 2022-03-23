@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import teamexpress.velo9.common.domain.Result;
 import teamexpress.velo9.post.dto.SeriesAddDTO;
 import teamexpress.velo9.post.dto.SeriesReadDTO;
 import teamexpress.velo9.post.service.SeriesService;
@@ -20,8 +21,8 @@ public class SeriesController {
 	private final SeriesService seriesService;
 
 	@GetMapping("/getSeriesList")
-	public ResponseEntity<List<SeriesReadDTO>> getSeriesList(@RequestParam("memberId") Long memberId) {
-		return new ResponseEntity<>(seriesService.getAll(memberId), HttpStatus.OK);
+	public ResponseEntity<Result<List<SeriesReadDTO>>> getSeriesList(@RequestParam("memberId") Long memberId) {
+		return new ResponseEntity<>(new Result(seriesService.getAll(memberId)), HttpStatus.OK);
 	}
 
 	@PostMapping("/addSeries")
