@@ -18,6 +18,8 @@ import teamexpress.velo9.post.domain.PostThumbnail;
 import teamexpress.velo9.post.domain.PostThumbnailRepository;
 import teamexpress.velo9.post.domain.Series;
 import teamexpress.velo9.post.domain.SeriesRepository;
+import teamexpress.velo9.post.domain.TemporaryPost;
+import teamexpress.velo9.post.domain.TemporaryPostRepository;
 import teamexpress.velo9.post.dto.LookDTO;
 import teamexpress.velo9.post.dto.LoveDTO;
 import teamexpress.velo9.post.dto.PostReadDTO;
@@ -39,6 +41,7 @@ public class PostService {
 	private final MemberRepository memberRepository;
 	private final LoveRepository loveRepository;
 	private final LookRepository lookRepository;
+	private final TemporaryPostRepository temporaryPostRepository;
 
 	@Transactional
 	public Long write(PostSaveDTO postSaveDTO) {
@@ -60,11 +63,28 @@ public class PostService {
 	}
 
 	@Transactional
-	public void writeNewTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {
-		checkCount(temporaryPostWriteDTO.getMemberId());
+	public void writeTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {
 
+		if (temporaryPostWriteDTO.getId() != null) {
+			Post post = postRepository.findById(temporaryPostWriteDTO.getId()).orElseThrow();
+			if (post.getStatus().equals(PostStatus.GENERAL)) {
+				TemporaryPost temporaryPost = temporaryPostWriteDTO.toTemporaryPost();
+				if (post.getTemporaryPost() != null) {
+					temporaryPost.addId(post.getTemporaryPost().getId());
+					temporaryPostRepository.save(temporaryPost);
+				} else {
+					post.updateTemp(temporaryPostRepository.save(temporaryPost));
+					System.out.println("temporaryPost = " + temporaryPost);
+					postRepository.save(post);
+				}
+				return;
+			}
+		}
+
+		checkCount(temporaryPostWriteDTO.getMemberId());
 		Member member = getMember(temporaryPostWriteDTO.getMemberId());
 		postRepository.save(temporaryPostWriteDTO.toPost(member, postRepository.getCreatedDate(temporaryPostWriteDTO.getId())));
+
 	}
 
 	@Transactional

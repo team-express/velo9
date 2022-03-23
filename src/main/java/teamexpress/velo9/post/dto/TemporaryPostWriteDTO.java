@@ -5,6 +5,7 @@ import lombok.Data;
 import teamexpress.velo9.member.domain.Member;
 import teamexpress.velo9.post.domain.Post;
 import teamexpress.velo9.post.domain.PostStatus;
+import teamexpress.velo9.post.domain.TemporaryPost;
 
 @Data
 public class TemporaryPostWriteDTO {
@@ -12,9 +13,7 @@ public class TemporaryPostWriteDTO {
 	private Long id;
 	private String title;
 	private String content;
-
 	private Long memberId;
-	//private Long postId;
 
 	public Post toPost(Member member, LocalDateTime createdDate) {
 		return Post.builder()
@@ -24,6 +23,13 @@ public class TemporaryPostWriteDTO {
 			.status(PostStatus.TEMPORARY)
 			.member(member)
 			.createdDate(createdDate)
+			.build();
+	}
+
+	public TemporaryPost toTemporaryPost() {
+		return TemporaryPost.builder()
+			.title(this.title)
+			.content(this.content)
 			.build();
 	}
 }
