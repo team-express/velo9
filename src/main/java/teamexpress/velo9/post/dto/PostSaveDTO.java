@@ -30,6 +30,7 @@ public class PostSaveDTO {
 	private List<String> tagNames;
 
 	private PostThumbnailDTO postThumbnailDTO;
+	private TemporaryPostReadDTO temporaryPostReadDTO;
 
 	public PostSaveDTO(Post post) {
 		this.id = post.getId();
@@ -51,7 +52,12 @@ public class PostSaveDTO {
 			.map(postTag -> postTag.getTag().getName())
 			.collect(Collectors.toList());
 
-		postThumbnailDTO = new PostThumbnailDTO(post.getPostThumbnail());
+		this.postThumbnailDTO = new PostThumbnailDTO(post.getPostThumbnail());
+
+		if (post.getTemporaryPost() != null) {
+			this.temporaryPostReadDTO = new TemporaryPostReadDTO(post.getTemporaryPost());
+		}
+
 	}
 
 	public Post toPost(PostThumbnail postThumbnail, Series series, Member member, LocalDateTime createdDate) {
