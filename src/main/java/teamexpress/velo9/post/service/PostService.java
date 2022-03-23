@@ -29,6 +29,8 @@ import teamexpress.velo9.post.dto.PostSaveDTO;
 import teamexpress.velo9.post.dto.PostThumbnailDTO;
 import teamexpress.velo9.post.dto.SearchCondition;
 import teamexpress.velo9.post.dto.SeriesDTO;
+import teamexpress.velo9.post.domain.*;
+import teamexpress.velo9.post.dto.*;
 
 @Service
 @RequiredArgsConstructor
@@ -109,6 +111,15 @@ public class PostService {
 		}
 		return postRepository.search(searchCondition, pageable)
 			.map(PostMainDTO::new);
+	}
+
+	public List<TempSavedPostDTO> getTempSavedPost(Long id) {
+
+		List<Post> findPosts = postRepository.getTempSavedPost(id, PostStatus.TEMPORARY);
+
+		return findPosts.stream()
+			.map(p -> new TempSavedPostDTO(p))
+			.collect(Collectors.toList());
 	}
 
 	private PostThumbnail getPostThumbnail(PostThumbnailDTO postThumbnailDTO) {

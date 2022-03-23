@@ -11,6 +11,8 @@ import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
 import teamexpress.velo9.post.dto.SearchCondition;
 
+import java.util.List;
+
 @SpringBootTest
 @Transactional
 class PostRepositoryTest {
@@ -49,5 +51,20 @@ class PostRepositoryTest {
 		for (Post post : posts) {
 			System.out.println("post = " + post);
 		}
+	}
+
+	@Test
+	void findTempSavedPosts() {
+		// given
+		List<Post> validPosts = postRepository.getTempSavedPost(2L, PostStatus.TEMPORARY);
+		List<Post> invalidPosts = postRepository.getTempSavedPost(1L, PostStatus.TEMPORARY);
+
+		// when
+		int validPostsSize = validPosts.size();
+		int invalidPostsSize = invalidPosts.size();
+
+		// then
+		assertThat(validPostsSize).isEqualTo(100);
+		assertThat(invalidPostsSize).isEqualTo(0);
 	}
 }
