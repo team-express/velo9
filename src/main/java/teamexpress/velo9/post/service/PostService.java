@@ -68,6 +68,11 @@ public class PostService {
 		postRepository.save(temporaryPostWriteDTO.toPost(member));
 	}
 
+	@Transactional
+	public void delete(Long id) {
+		postRepository.deleteById(id);
+	}
+
 	public PostSaveDTO getPostById(Long id) {
 		Post post = postRepository.findById(id).orElse(new Post());
 		return new PostSaveDTO(post);
