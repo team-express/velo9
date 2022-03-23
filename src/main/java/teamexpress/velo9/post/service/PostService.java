@@ -74,7 +74,6 @@ public class PostService {
 					temporaryPostRepository.save(temporaryPost);
 				} else {
 					post.updateTemp(temporaryPostRepository.save(temporaryPost));
-					System.out.println("temporaryPost = " + temporaryPost);
 					postRepository.save(post);
 				}
 				return;

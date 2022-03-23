@@ -69,6 +69,7 @@ public class PostSaveDTO {
 			.series(series)
 			.postThumbnail(postThumbnail)
 			.createdDate(createdDate)
+			.temporaryPost(null)
 			.build();
 	}
 
