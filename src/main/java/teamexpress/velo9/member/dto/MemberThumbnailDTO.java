@@ -19,6 +19,12 @@ public class MemberThumbnailDTO {
 	private String name;
 	private String path;
 
+	public MemberThumbnailDTO(MemberThumbnail memberThumbnail) {
+		uuid = memberThumbnail.getUuid();
+		name = memberThumbnail.getName();
+		path = memberThumbnail.getPath();
+	}
+
 	public MemberThumbnail toMemberThumbnail() {
 
 		return MemberThumbnail.builder()

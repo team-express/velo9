@@ -1,6 +1,10 @@
 package teamexpress.velo9.post.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -19,9 +23,11 @@ import teamexpress.velo9.post.domain.Series;
 import teamexpress.velo9.post.domain.SeriesRepository;
 import teamexpress.velo9.post.dto.LookDTO;
 import teamexpress.velo9.post.dto.LoveDTO;
+import teamexpress.velo9.post.dto.PostMainDTO;
 import teamexpress.velo9.post.dto.PostReadDTO;
 import teamexpress.velo9.post.dto.PostSaveDTO;
 import teamexpress.velo9.post.dto.PostThumbnailDTO;
+import teamexpress.velo9.post.dto.SearchCondition;
 import teamexpress.velo9.post.dto.SeriesDTO;
 
 @Service
@@ -83,6 +89,26 @@ public class PostService {
 		Member member = memberRepository.findById(lookDTO.getMemberId()).orElseThrow();
 		Post post = postRepository.findById(lookDTO.getPostId()).orElseThrow();
 		makeLook(member, post);
+	}
+
+	public Page<PostMainDTO> getMainPage(Pageable pageable) {
+		Page<Post> mainPage = postRepository.findMainPage(pageable);
+		return mainPage.map(PostMainDTO::new);
+	}
+
+	public Page<PostMainDTO> searchMain(SearchCondition searchCondition, Pageable pageable) {
+
+		if (searchCondition.isTagSelect()) {
+			Page<Post> posts = postRepository.searchTag(pageable);
+
+			List<PostMainDTO> collect = posts.stream().filter(post -> post.getPostTags().stream()
+					.anyMatch(postTag -> postTag.getTag().getName().equals(searchCondition.getContent())))
+				.map(PostMainDTO::new).collect(Collectors.toList());
+			return new PageImpl<>(collect);
+
+		}
+		return postRepository.search(searchCondition, pageable)
+			.map(PostMainDTO::new);
 	}
 
 	private PostThumbnail getPostThumbnail(PostThumbnailDTO postThumbnailDTO) {
