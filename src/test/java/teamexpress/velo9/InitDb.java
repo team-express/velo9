@@ -92,6 +92,7 @@ public class InitDb {
 				postRepository.save(createPost("" + i, "" + i, member, series1, postThumbnail));
 			}
 			for (int i = 10; i < 20; i++) {
+				postRepository.save(createPost("" + i, "" + i, member, series1, postThumbnail));
 			}
 			for (int i = 20; i < 30; i++) {
 				postRepository.save(createPost("" + i, "" + i, member, series3, postThumbnail));
@@ -121,7 +122,7 @@ public class InitDb {
 		}
 
 		private Post createPost(String title, String introduce, Member member, Series series, PostThumbnail postThumbnail) {
-			return Post.builder().title(title).introduce(introduce).member(member).series(series).postThumbnail(postThumbnail).status(PostStatus.GENERAL).build();
+			return Post.builder().title(title).introduce(introduce).member(member).series(series).postThumbnail(postThumbnail).status(PostStatus.TEMPORARY).build();
 		}
 
 		private PostThumbnail createThumbnail(String path, String uuid, String name) {
