@@ -8,6 +8,7 @@ import teamexpress.velo9.post.domain.PostStatus;
 @Data
 public class TemporaryPostWriteDTO {
 
+	private Long id;
 	private String title;
 	private String content;
 
@@ -16,7 +17,7 @@ public class TemporaryPostWriteDTO {
 
 	public Post toPost(Member member) {
 		return Post.builder()
-			//.id(this.id)
+			.id(this.id)
 			.title(this.title)
 			//.introduce(this.introduce)
 			.content(this.content)
