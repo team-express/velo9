@@ -36,9 +36,12 @@ public class PostSaveDTO {
 		this.title = post.getTitle();
 		this.introduce = post.getIntroduce();
 		this.content = post.getContent();
-		this.access = post.getAccess().toString();
 
 		this.memberId = post.getMember().getId();
+
+		if (post.getAccess() != null) {
+			this.access = post.getAccess().toString();
+		}
 
 		if (post.getSeries() != null) {
 			this.seriesId = post.getSeries().getId();
@@ -54,6 +57,7 @@ public class PostSaveDTO {
 	public Post toPost(PostThumbnail postThumbnail, Series series, Member member,
 		LocalDateTime createdDate) {
 		this.setIntroduce();
+		this.setAccess();
 
 		return Post.builder()
 			.id(this.id)
@@ -69,10 +73,6 @@ public class PostSaveDTO {
 			.build();
 	}
 
-	private boolean isIntroduceNull() {
-		return this.introduce == null;
-	}
-
 	private void setIntroduce() {
 		if (!isIntroduceNull()) {
 			return;
@@ -84,7 +84,17 @@ public class PostSaveDTO {
 		this.introduce = this.content.substring(FIRST_INDEX, MAX);
 	}
 
+	private void setAccess() {
+		if (this.access == null) {
+			this.access = PostAccess.PUBLIC.toString();
+		}
+	}
+
 	private boolean smallerThanMax(String content) {
 		return content.length() < MAX;
+	}
+
+	private boolean isIntroduceNull() {
+		return this.introduce == null;
 	}
 }

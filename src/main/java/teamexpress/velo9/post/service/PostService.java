@@ -31,7 +31,7 @@ import teamexpress.velo9.post.dto.TemporaryPostWriteDTO;
 @Transactional(readOnly = true)
 public class PostService {
 
-	private static final int MAX_TEMPORARY_COUNT = 5;
+	private static final int MAX_TEMPORARY_COUNT = 20;
 
 	private final PostRepository postRepository;
 	private final PostThumbnailRepository postThumbnailRepository;
