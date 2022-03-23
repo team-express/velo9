@@ -23,6 +23,7 @@ import teamexpress.velo9.post.dto.PostReadDTO;
 import teamexpress.velo9.post.dto.PostSaveDTO;
 import teamexpress.velo9.post.dto.PostThumbnailDTO;
 import teamexpress.velo9.post.dto.SeriesDTO;
+import teamexpress.velo9.post.dto.TemporaryPostWriteDTO;
 
 @Service
 @RequiredArgsConstructor
@@ -53,6 +54,13 @@ public class PostService {
 		postRepository.save(post);
 
 		return post.getId();
+	}
+
+	@Transactional
+	public void writeNewTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {
+
+		Member member = getMember(temporaryPostWriteDTO.getMemberId());
+		postRepository.save(temporaryPostWriteDTO.toPost(member));
 	}
 
 	public PostSaveDTO getPostById(Long id) {

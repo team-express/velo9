@@ -17,6 +17,7 @@ import teamexpress.velo9.post.dto.LoveDTO;
 import teamexpress.velo9.post.dto.PostReadDTO;
 import teamexpress.velo9.post.dto.PostSaveDTO;
 import teamexpress.velo9.post.dto.SeriesDTO;
+import teamexpress.velo9.post.dto.TemporaryPostWriteDTO;
 import teamexpress.velo9.post.service.PostService;
 import teamexpress.velo9.post.service.TagService;
 
@@ -40,6 +41,12 @@ public class PostController {
 		tagService.removeUselessTags();
 
 		return new ResponseEntity<>(postId, HttpStatus.OK);
+	}
+
+	@PostMapping("/writeTemporary")
+	public void writeTemporary(@RequestBody TemporaryPostWriteDTO temporaryPostWriteDTO) {
+
+		postService.writeNewTemporary(temporaryPostWriteDTO);
 	}
 
 	@GetMapping("/{nickname}/series")

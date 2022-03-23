@@ -24,7 +24,6 @@ public class PostSaveDTO {
 	private String introduce;
 	private String content;
 	private String access;
-	private String status;
 
 	private Long memberId;
 	private Long seriesId;
@@ -38,11 +37,10 @@ public class PostSaveDTO {
 		this.introduce = post.getIntroduce();
 		this.content = post.getContent();
 		this.access = post.getAccess().toString();
-		this.status = post.getStatus().toString();
 
 		this.memberId = post.getMember().getId();
 
-		if(post.getSeries() != null) {
+		if (post.getSeries() != null) {
 			this.seriesId = post.getSeries().getId();
 		}
 
@@ -62,7 +60,7 @@ public class PostSaveDTO {
 			.title(this.title)
 			.introduce(this.introduce)
 			.content(this.content)
-			.status(PostStatus.valueOf(this.status))
+			.status(PostStatus.GENERAL)
 			.access(PostAccess.valueOf(this.access))
 			.member(member)
 			.series(series)
