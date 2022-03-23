@@ -11,127 +11,136 @@ import teamexpress.velo9.member.domain.Love;
 import teamexpress.velo9.member.domain.LoveRepository;
 import teamexpress.velo9.member.domain.Member;
 import teamexpress.velo9.member.domain.MemberRepository;
-import teamexpress.velo9.post.domain.Post;
-import teamexpress.velo9.post.domain.PostRepository;
-import teamexpress.velo9.post.domain.PostThumbnail;
-import teamexpress.velo9.post.domain.PostThumbnailRepository;
-import teamexpress.velo9.post.domain.Series;
-import teamexpress.velo9.post.domain.SeriesRepository;
-import teamexpress.velo9.post.dto.LookDTO;
-import teamexpress.velo9.post.dto.LoveDTO;
-import teamexpress.velo9.post.dto.PostReadDTO;
-import teamexpress.velo9.post.dto.PostSaveDTO;
-import teamexpress.velo9.post.dto.PostThumbnailDTO;
-import teamexpress.velo9.post.dto.SeriesDTO;
+import teamexpress.velo9.post.domain.*;
+import teamexpress.velo9.post.dto.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class PostService {
 
-	private final PostRepository postRepository;
-	private final PostThumbnailRepository postThumbnailRepository;
-	private final SeriesRepository seriesRepository;
-	private final MemberRepository memberRepository;
-	private final LoveRepository loveRepository;
-	private final LookRepository lookRepository;
+    private final PostRepository postRepository;
+    private final PostTempRepository postTempRepository; // 의존 주입
+    private final PostThumbnailRepository postThumbnailRepository;
+    private final SeriesRepository seriesRepository;
+    private final MemberRepository memberRepository;
+    private final LoveRepository loveRepository;
+    private final LookRepository lookRepository;
 
-	@Transactional
-	public Long write(PostSaveDTO postSaveDTO) {
+    @Transactional
+    public Long write(PostSaveDTO postSaveDTO) {
 
-		PostThumbnail postThumbnail = getPostThumbnail(postSaveDTO.getPostThumbnailDTO());
-		Series series = getSeries(postSaveDTO.getSeriesId());
-		Member member = getMember(postSaveDTO.getMemberId());
+        PostThumbnail postThumbnail = getPostThumbnail(postSaveDTO.getPostThumbnailDTO());
+        Series series = getSeries(postSaveDTO.getSeriesId());
+        Member member = getMember(postSaveDTO.getMemberId());
 
-		if (postThumbnail != null) {
-			postThumbnailRepository.save(postThumbnail);
-		}
+        if (postThumbnail != null) {
+            postThumbnailRepository.save(postThumbnail);
+        }
 
-		Post post = postSaveDTO.toPost(postThumbnail, series, member, postRepository.getCreatedDate(
-			postSaveDTO.getId()));
+        Post post = postSaveDTO.toPost(postThumbnail, series, member, postRepository.getCreatedDate(
+                postSaveDTO.getId()));
 
-		postRepository.save(post);
+        postRepository.save(post);
 
-		return post.getId();
-	}
+        return post.getId();
+    }
 
-	public PostSaveDTO getPostById(Long id) {
-		Post post = postRepository.findById(id).orElse(new Post());
-		return new PostSaveDTO(post);
-	}
+    public PostSaveDTO getPostById(Long id) {
+        Post post = postRepository.findById(id).orElse(new Post());
+        return new PostSaveDTO(post);
+    }
 
-	public Slice<SeriesDTO> findSeries(String nickname, Pageable pageable) {
-		Slice<Series> seriesList = seriesRepository.findPostBySeriesName(nickname, pageable);
-		return seriesList.map(SeriesDTO::new);
-	}
+    public Slice<SeriesDTO> findSeries(String nickname, Pageable pageable) {
+        Slice<Series> seriesList = seriesRepository.findPostBySeriesName(nickname, pageable);
+        return seriesList.map(SeriesDTO::new);
+    }
 
-	public Slice<PostReadDTO> findReadPost(String nickname, Pageable pageable) {
-		Slice<Post> posts = postRepository.findReadPost(nickname, pageable);
-		return posts.map(PostReadDTO::new);
-	}
+    public Slice<PostReadDTO> findReadPost(String nickname, Pageable pageable) {
+        Slice<Post> posts = postRepository.findReadPost(nickname, pageable);
+        return posts.map(PostReadDTO::new);
+    }
 
-	@Transactional
-	public void loveOrNot(LoveDTO loveDTO) {
+    @Transactional
+    public void loveOrNot(LoveDTO loveDTO) {
 
-		Member member = memberRepository.findById(loveDTO.getMemberId()).orElseThrow();
-		Post post = postRepository.findById(loveDTO.getPostId()).orElseThrow();
-		toggleLove(member, post);
-	}
+        Member member = memberRepository.findById(loveDTO.getMemberId()).orElseThrow();
+        Post post = postRepository.findById(loveDTO.getPostId()).orElseThrow();
+        toggleLove(member, post);
+    }
 
-	@Transactional
-	public void look(LookDTO lookDTO) {
-		Member member = memberRepository.findById(lookDTO.getMemberId()).orElseThrow();
-		Post post = postRepository.findById(lookDTO.getPostId()).orElseThrow();
-		makeLook(member, post);
-	}
+    @Transactional
+    public void look(LookDTO lookDTO) {
+        Member member = memberRepository.findById(lookDTO.getMemberId()).orElseThrow();
+        Post post = postRepository.findById(lookDTO.getPostId()).orElseThrow();
+        makeLook(member, post);
+    }
 
-	private PostThumbnail getPostThumbnail(PostThumbnailDTO postThumbnailDTO) {
-		PostThumbnail postThumbnail = null;
+    // 임시 저장글 탐색, DTO 변환, 반환
+    public List<TempSavedPostDTO> getTempSavedPost(Long id) {
 
-		if (postThumbnailDTO != null) {
-			postThumbnail = postThumbnailDTO.toPostThumbnail();
-		}
+        // id와 status.TEMPORARY 조건이 일치하는 POST 조회
+        List<Post> findPosts = postTempRepository.getTempSavedPost(id);
 
-		return postThumbnail;
-	}
+        // List<엔티티> -> List<DTO>
+        List<TempSavedPostDTO> tempSavedPosts = findPosts.stream()
+                .map(p -> new TempSavedPostDTO(p))
+                .collect(Collectors.toList());
 
-	private Member getMember(Long memberId) {
-		if (memberId == null) {
-			throw new NullPointerException("no member is NOT NULL!!!");
-		}
+        return tempSavedPosts;
+    }
 
-		return memberRepository.findById(memberId)
-			.orElseThrow(() -> new NullPointerException("no member"));
-	}
 
-	private Series getSeries(Long seriesId) {
+    private PostThumbnail getPostThumbnail(PostThumbnailDTO postThumbnailDTO) {
+        PostThumbnail postThumbnail = null;
 
-		if (seriesId == null) {
-			return null;
-		}
+        if (postThumbnailDTO != null) {
+            postThumbnail = postThumbnailDTO.toPostThumbnail();
+        }
 
-		return seriesRepository.findById(seriesId).orElse(null);
-	}
+        return postThumbnail;
+    }
 
-	private void toggleLove(Member member, Post post) {
-		loveRepository.findByPostAndMember(post, member).ifPresentOrElse(
-			loveRepository::delete,
-			() -> loveRepository.save(
-				Love.builder()
-					.post(post)
-					.member(member)
-					.build()
-			)
-		);
-	}
+    private Member getMember(Long memberId) {
+        if (memberId == null) {
+            throw new NullPointerException("no member is NOT NULL!!!");
+        }
 
-	private void makeLook(Member member, Post post) {
-		if (lookRepository.findByPostAndMember(post, member).isEmpty()) {
-			lookRepository.save(Look.builder()
-				.post(post)
-				.member(member)
-				.build()
-			);
-		}
-	}
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new NullPointerException("no member"));
+    }
+
+    private Series getSeries(Long seriesId) {
+
+        if (seriesId == null) {
+            return null;
+        }
+
+        return seriesRepository.findById(seriesId).orElse(null);
+    }
+
+    private void toggleLove(Member member, Post post) {
+        loveRepository.findByPostAndMember(post, member).ifPresentOrElse(
+                loveRepository::delete,
+                () -> loveRepository.save(
+                        Love.builder()
+                                .post(post)
+                                .member(member)
+                                .build()
+                )
+        );
+    }
+
+    private void makeLook(Member member, Post post) {
+        if (lookRepository.findByPostAndMember(post, member).isEmpty()) {
+            lookRepository.save(Look.builder()
+                    .post(post)
+                    .member(member)
+                    .build()
+            );
+        }
+    }
 }

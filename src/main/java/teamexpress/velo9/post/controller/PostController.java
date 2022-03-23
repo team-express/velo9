@@ -12,13 +12,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import teamexpress.velo9.post.dto.LookDTO;
-import teamexpress.velo9.post.dto.LoveDTO;
-import teamexpress.velo9.post.dto.PostReadDTO;
-import teamexpress.velo9.post.dto.PostSaveDTO;
-import teamexpress.velo9.post.dto.SeriesDTO;
+import teamexpress.velo9.common.domain.Result;
+import teamexpress.velo9.member.security.oauth.SessionConst;
+import teamexpress.velo9.post.dto.*;
 import teamexpress.velo9.post.service.PostService;
 import teamexpress.velo9.post.service.TagService;
+
+import javax.servlet.http.HttpSession;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -53,6 +55,14 @@ public class PostController {
 		Slice<PostReadDTO> post = postService.findReadPost(nickname, pageable);
 		return new ResponseEntity<>(post, HttpStatus.OK);
 	}
+
+	// 임시저장글 조회
+	@GetMapping("{nickname}/temp")
+	public Result<List<TempSavedPostDTO>> tempPostsRead(HttpSession session) {
+		Long memberId = (Long) session.getAttribute(SessionConst.LOGIN_MEMBER);
+		return new Result(postService.getTempSavedPost(memberId));
+	}
+
 
 	@PostMapping("/love")
 	public void love(@RequestBody LoveDTO loveDTO) {
