@@ -80,14 +80,6 @@ class MemberServiceTest {
 		assertThat(member).isNull();
 	}
 
-	@Test
-	void findAll() {
-		List<Member> members = memberRepository.findAll();
-		for (Member member : members) {
-			System.out.println("member.getId = " + member.getId());
-		}
-	}
-
 	private Member createMember(String nickname, String username, String password, String email, Role roleUser) {
 		return Member.builder().nickname(nickname).blogTitle(nickname).username(username).password(passwordEncoder.encode(password)).email(email).posts(new ArrayList<>()).role(roleUser).build();
 	}

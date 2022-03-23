@@ -4,9 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import teamexpress.velo9.post.domain.Post;
-import teamexpress.velo9.post.domain.PostRepository;
-import teamexpress.velo9.post.domain.PostStatus;
 import teamexpress.velo9.post.dto.TempSavedPostDTO;
 
 import java.util.List;

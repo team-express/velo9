@@ -22,119 +22,119 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class PostService {
 
-    private final PostRepository postRepository;
-    private final PostThumbnailRepository postThumbnailRepository;
-    private final SeriesRepository seriesRepository;
-    private final MemberRepository memberRepository;
-    private final LoveRepository loveRepository;
-    private final LookRepository lookRepository;
+	private final PostRepository postRepository;
+	private final PostThumbnailRepository postThumbnailRepository;
+	private final SeriesRepository seriesRepository;
+	private final MemberRepository memberRepository;
+	private final LoveRepository loveRepository;
+	private final LookRepository lookRepository;
 
-    @Transactional
-    public Long write(PostSaveDTO postSaveDTO) {
+	@Transactional
+	public Long write(PostSaveDTO postSaveDTO) {
 
-        PostThumbnail postThumbnail = getPostThumbnail(postSaveDTO.getPostThumbnailDTO());
-        Series series = getSeries(postSaveDTO.getSeriesId());
-        Member member = getMember(postSaveDTO.getMemberId());
+		PostThumbnail postThumbnail = getPostThumbnail(postSaveDTO.getPostThumbnailDTO());
+		Series series = getSeries(postSaveDTO.getSeriesId());
+		Member member = getMember(postSaveDTO.getMemberId());
 
-        if (postThumbnail != null) {
-            postThumbnailRepository.save(postThumbnail);
-        }
+		if (postThumbnail != null) {
+			postThumbnailRepository.save(postThumbnail);
+		}
 
-        Post post = postSaveDTO.toPost(postThumbnail, series, member, postRepository.getCreatedDate(
-                postSaveDTO.getId()));
+		Post post = postSaveDTO.toPost(postThumbnail, series, member, postRepository.getCreatedDate(
+			postSaveDTO.getId()));
 
-        postRepository.save(post);
+		postRepository.save(post);
 
-        return post.getId();
-    }
+		return post.getId();
+	}
 
-    public PostSaveDTO getPostById(Long id) {
-        Post post = postRepository.findById(id).orElse(new Post());
-        return new PostSaveDTO(post);
-    }
+	public PostSaveDTO getPostById(Long id) {
+		Post post = postRepository.findById(id).orElse(new Post());
+		return new PostSaveDTO(post);
+	}
 
-    public Slice<SeriesDTO> findSeries(String nickname, Pageable pageable) {
-        Slice<Series> seriesList = seriesRepository.findPostBySeriesName(nickname, pageable);
-        return seriesList.map(SeriesDTO::new);
-    }
+	public Slice<SeriesDTO> findSeries(String nickname, Pageable pageable) {
+		Slice<Series> seriesList = seriesRepository.findPostBySeriesName(nickname, pageable);
+		return seriesList.map(SeriesDTO::new);
+	}
 
-    public Slice<PostReadDTO> findReadPost(String nickname, Pageable pageable) {
-        Slice<Post> posts = postRepository.findReadPost(nickname, pageable);
-        return posts.map(PostReadDTO::new);
-    }
+	public Slice<PostReadDTO> findReadPost(String nickname, Pageable pageable) {
+		Slice<Post> posts = postRepository.findReadPost(nickname, pageable);
+		return posts.map(PostReadDTO::new);
+	}
 
-    @Transactional
-    public void loveOrNot(LoveDTO loveDTO) {
+	@Transactional
+	public void loveOrNot(LoveDTO loveDTO) {
 
-        Member member = memberRepository.findById(loveDTO.getMemberId()).orElseThrow();
-        Post post = postRepository.findById(loveDTO.getPostId()).orElseThrow();
-        toggleLove(member, post);
-    }
+		Member member = memberRepository.findById(loveDTO.getMemberId()).orElseThrow();
+		Post post = postRepository.findById(loveDTO.getPostId()).orElseThrow();
+		toggleLove(member, post);
+	}
 
-    @Transactional
-    public void look(LookDTO lookDTO) {
-        Member member = memberRepository.findById(lookDTO.getMemberId()).orElseThrow();
-        Post post = postRepository.findById(lookDTO.getPostId()).orElseThrow();
-        makeLook(member, post);
-    }
+	@Transactional
+	public void look(LookDTO lookDTO) {
+		Member member = memberRepository.findById(lookDTO.getMemberId()).orElseThrow();
+		Post post = postRepository.findById(lookDTO.getPostId()).orElseThrow();
+		makeLook(member, post);
+	}
 
-    public List<TempSavedPostDTO> getTempSavedPost(Long id) {
+	public List<TempSavedPostDTO> getTempSavedPost(Long id) {
 
-        List<Post> findPosts = postRepository.getTempSavedPost(id, PostStatus.TEMPORARY);
+		List<Post> findPosts = postRepository.getTempSavedPost(id, PostStatus.TEMPORARY);
 
-        return findPosts.stream()
-                .map(p -> new TempSavedPostDTO(p))
-                .collect(Collectors.toList());
-    }
+		return findPosts.stream()
+			.map(p -> new TempSavedPostDTO(p))
+			.collect(Collectors.toList());
+	}
 
 
-    private PostThumbnail getPostThumbnail(PostThumbnailDTO postThumbnailDTO) {
-        PostThumbnail postThumbnail = null;
+	private PostThumbnail getPostThumbnail(PostThumbnailDTO postThumbnailDTO) {
+		PostThumbnail postThumbnail = null;
 
-        if (postThumbnailDTO != null) {
-            postThumbnail = postThumbnailDTO.toPostThumbnail();
-        }
+		if (postThumbnailDTO != null) {
+			postThumbnail = postThumbnailDTO.toPostThumbnail();
+		}
 
-        return postThumbnail;
-    }
+		return postThumbnail;
+	}
 
-    private Member getMember(Long memberId) {
-        if (memberId == null) {
-            throw new NullPointerException("no member is NOT NULL!!!");
-        }
+	private Member getMember(Long memberId) {
+		if (memberId == null) {
+			throw new NullPointerException("no member is NOT NULL!!!");
+		}
 
-        return memberRepository.findById(memberId)
-                .orElseThrow(() -> new NullPointerException("no member"));
-    }
+		return memberRepository.findById(memberId)
+			.orElseThrow(() -> new NullPointerException("no member"));
+	}
 
-    private Series getSeries(Long seriesId) {
+	private Series getSeries(Long seriesId) {
 
-        if (seriesId == null) {
-            return null;
-        }
+		if (seriesId == null) {
+			return null;
+		}
 
-        return seriesRepository.findById(seriesId).orElse(null);
-    }
+		return seriesRepository.findById(seriesId).orElse(null);
+	}
 
-    private void toggleLove(Member member, Post post) {
-        loveRepository.findByPostAndMember(post, member).ifPresentOrElse(
-                loveRepository::delete,
-                () -> loveRepository.save(
-                        Love.builder()
-                                .post(post)
-                                .member(member)
-                                .build()
-                )
-        );
-    }
+	private void toggleLove(Member member, Post post) {
+		loveRepository.findByPostAndMember(post, member).ifPresentOrElse(
+			loveRepository::delete,
+			() -> loveRepository.save(
+				Love.builder()
+					.post(post)
+					.member(member)
+					.build()
+			)
+		);
+	}
 
-    private void makeLook(Member member, Post post) {
-        if (lookRepository.findByPostAndMember(post, member).isEmpty()) {
-            lookRepository.save(Look.builder()
-                    .post(post)
-                    .member(member)
-                    .build()
-            );
-        }
-    }
+	private void makeLook(Member member, Post post) {
+		if (lookRepository.findByPostAndMember(post, member).isEmpty()) {
+			lookRepository.save(Look.builder()
+				.post(post)
+				.member(member)
+				.build()
+			);
+		}
+	}
 }
