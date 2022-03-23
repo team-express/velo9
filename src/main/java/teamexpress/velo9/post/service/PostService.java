@@ -11,18 +11,11 @@ import teamexpress.velo9.member.domain.Love;
 import teamexpress.velo9.member.domain.LoveRepository;
 import teamexpress.velo9.member.domain.Member;
 import teamexpress.velo9.member.domain.MemberRepository;
-import teamexpress.velo9.post.domain.Post;
-import teamexpress.velo9.post.domain.PostRepository;
-import teamexpress.velo9.post.domain.PostThumbnail;
-import teamexpress.velo9.post.domain.PostThumbnailRepository;
-import teamexpress.velo9.post.domain.Series;
-import teamexpress.velo9.post.domain.SeriesRepository;
-import teamexpress.velo9.post.dto.LookDTO;
-import teamexpress.velo9.post.dto.LoveDTO;
-import teamexpress.velo9.post.dto.PostReadDTO;
-import teamexpress.velo9.post.dto.PostSaveDTO;
-import teamexpress.velo9.post.dto.PostThumbnailDTO;
-import teamexpress.velo9.post.dto.SeriesDTO;
+import teamexpress.velo9.post.domain.*;
+import teamexpress.velo9.post.dto.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -84,6 +77,16 @@ public class PostService {
 		Post post = postRepository.findById(lookDTO.getPostId()).orElseThrow();
 		makeLook(member, post);
 	}
+
+	public List<TempSavedPostDTO> getTempSavedPost(Long id) {
+
+		List<Post> findPosts = postRepository.getTempSavedPost(id, PostStatus.TEMPORARY);
+
+		return findPosts.stream()
+			.map(p -> new TempSavedPostDTO(p))
+			.collect(Collectors.toList());
+	}
+
 
 	private PostThumbnail getPostThumbnail(PostThumbnailDTO postThumbnailDTO) {
 		PostThumbnail postThumbnail = null;
