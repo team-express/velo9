@@ -6,4 +6,6 @@ import teamexpress.velo9.post.domain.Post;
 
 public interface LoveRepository extends JpaRepository<Love, Long> {
 	Optional<Love> findByPostAndMember(Post post, Member member);
+
+	int countByPost(Post post);
 }

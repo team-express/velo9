@@ -82,13 +82,17 @@ public class PostService {
 
 		Member member = memberRepository.findById(loveDTO.getMemberId()).orElseThrow();
 		Post post = postRepository.findById(loveDTO.getPostId()).orElseThrow();
+
 		toggleLove(member, post);
+		postRepository.updateLoveCount(loveRepository.countByPost(post));
 	}
 
 	@Transactional
 	public void look(LookDTO lookDTO) {
+
 		Member member = memberRepository.findById(lookDTO.getMemberId()).orElseThrow();
 		Post post = postRepository.findById(lookDTO.getPostId()).orElseThrow();
+
 		makeLook(member, post);
 	}
 
@@ -97,7 +101,7 @@ public class PostService {
 		return mainPage.map(PostMainDTO::new);
 	}
 
-	public Page<PostMainDTO> searchTag(SearchCondition searchCondition, Pageable pageable) {
+	public Page<PostMainDTO> searchMain(SearchCondition searchCondition, Pageable pageable) {
 		return postRepository.search(searchCondition, pageable).map(PostMainDTO::new);
 	}
 
@@ -157,6 +161,7 @@ public class PostService {
 				.member(member)
 				.build()
 			);
+			postRepository.plusViewCount();
 		}
 	}
 }
