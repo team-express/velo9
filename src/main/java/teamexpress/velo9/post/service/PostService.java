@@ -66,24 +66,11 @@ public class PostService {
 	public void writeTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {
 
 		if (temporaryPostWriteDTO.getId() != null) {
-			Post post = postRepository.findById(temporaryPostWriteDTO.getId()).orElseThrow();
-			if (post.getStatus().equals(PostStatus.GENERAL)) {
-				TemporaryPost temporaryPost = temporaryPostWriteDTO.toTemporaryPost();
-				if (post.getTemporaryPost() != null) {
-					temporaryPost.addId(post.getTemporaryPost().getId());
-					temporaryPostRepository.save(temporaryPost);
-				} else {
-					post.updateTemp(temporaryPostRepository.save(temporaryPost));
-					postRepository.save(post);
-				}
-				return;
-			}
+			writeAlternativeTemporary(temporaryPostWriteDTO);
+			return;
 		}
 
-		checkCount(temporaryPostWriteDTO.getMemberId());
-		Member member = getMember(temporaryPostWriteDTO.getMemberId());
-		postRepository.save(temporaryPostWriteDTO.toPost(member, postRepository.getCreatedDate(temporaryPostWriteDTO.getId())));
-
+		writeNewTemporary(temporaryPostWriteDTO);
 	}
 
 	@Transactional
@@ -149,6 +136,33 @@ public class PostService {
 		return seriesRepository.findById(seriesId).orElse(null);
 	}
 
+	private void writeAlternativeTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {
+
+		Post post = postRepository.findById(temporaryPostWriteDTO.getId()).orElseThrow();
+
+		if (post.getStatus().equals(PostStatus.TEMPORARY)) {
+			writeNewTemporary(temporaryPostWriteDTO);
+			return;
+		}
+
+		if (post.getTemporaryPost() != null) {
+			temporaryPostWriteDTO.setAlternativeId(post.getTemporaryPost().getId());
+		}
+
+		TemporaryPost temporaryPost = temporaryPostWriteDTO.toTemporaryPost();
+		temporaryPostRepository.save(temporaryPost);
+		postRepository.updateTempPost(post.getId(), temporaryPost);
+	}
+
+	private void writeNewTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {
+
+		Long memberId = temporaryPostWriteDTO.getMemberId();
+
+		checkCount(memberId);
+		Member member = getMember(memberId);
+		postRepository.save(temporaryPostWriteDTO.toPost(member, postRepository.getCreatedDate(temporaryPostWriteDTO.getId())));
+	}
+
 	private void toggleLove(Member member, Post post) {
 		loveRepository.findByPostAndMember(post, member).ifPresentOrElse(
 			loveRepository::delete,
@@ -173,7 +187,7 @@ public class PostService {
 
 	private void checkCount(Long memberId) {
 		if (postRepository.countByMemberAndStatus(memberRepository.findById(memberId).orElseThrow(), PostStatus.TEMPORARY) >= MAX_TEMPORARY_COUNT) {
-			throw new IllegalStateException("임시저장은 20개까지만 가능");
+			throw new IllegalStateException("임시저장은 " + MAX_TEMPORARY_COUNT + "개까지만 가능");
 		}
 	}
 }

@@ -15,6 +15,8 @@ public class TemporaryPostWriteDTO {
 	private String content;
 	private Long memberId;
 
+	private Long alternativeId;
+
 	public Post toPost(Member member, LocalDateTime createdDate) {
 		return Post.builder()
 			.id(this.id)
@@ -28,6 +30,7 @@ public class TemporaryPostWriteDTO {
 
 	public TemporaryPost toTemporaryPost() {
 		return TemporaryPost.builder()
+			.id(alternativeId)
 			.title(this.title)
 			.content(this.content)
 			.build();

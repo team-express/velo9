@@ -79,8 +79,4 @@ public class Post {
 	@LastModifiedDate
 	@Column(name = "updated_date")
 	private LocalDateTime updatedDate;
-
-	public void updateTemp(TemporaryPost temporaryPost) {
-		this.temporaryPost = temporaryPost;
-	}
 }

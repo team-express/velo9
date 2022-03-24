@@ -24,8 +24,4 @@ public class TemporaryPost extends BaseEntity {
 	private Long id;
 	private String title;
 	private String content;
-
-	public void addId(Long id) {
-		this.id = id;
-	}
 }
