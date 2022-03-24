@@ -1,5 +1,7 @@
 package teamexpress.velo9.post.controller;
 
+import java.util.List;
+import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -12,11 +14,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import teamexpress.velo9.common.domain.Result;
+import teamexpress.velo9.member.security.oauth.SessionConst;
 import teamexpress.velo9.post.dto.LookDTO;
 import teamexpress.velo9.post.dto.LoveDTO;
 import teamexpress.velo9.post.dto.PostReadDTO;
 import teamexpress.velo9.post.dto.PostSaveDTO;
 import teamexpress.velo9.post.dto.SeriesDTO;
+import teamexpress.velo9.post.dto.TempSavedPostDTO;
 import teamexpress.velo9.post.dto.TemporaryPostWriteDTO;
 import teamexpress.velo9.post.service.PostService;
 import teamexpress.velo9.post.service.TagService;
@@ -63,6 +68,12 @@ public class PostController {
 	public ResponseEntity<Slice<PostReadDTO>> postsRead(@PathVariable String nickname, @PageableDefault(size = 10) Pageable pageable) {
 		Slice<PostReadDTO> post = postService.findReadPost(nickname, pageable);
 		return new ResponseEntity<>(post, HttpStatus.OK);
+	}
+
+	@GetMapping("/temp")
+	public ResponseEntity<Result<List<TempSavedPostDTO>>> tempPostsRead(HttpSession session) {
+		Long memberId = (Long) session.getAttribute(SessionConst.LOGIN_MEMBER);
+		return new ResponseEntity<>(new Result(postService.getTempSavedPost(memberId)), HttpStatus.OK);
 	}
 
 	@PostMapping("/love")

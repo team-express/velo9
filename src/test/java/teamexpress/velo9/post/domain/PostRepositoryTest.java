@@ -9,6 +9,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @SpringBootTest
 @Transactional
 class PostRepositoryTest {
@@ -18,7 +20,7 @@ class PostRepositoryTest {
 
 	@Test
 	void findPost() {
-	    //given
+		//given
 		String nickname = "admin";
 		PageRequest pageRequest = PageRequest.of(0, 10);
 
@@ -32,5 +34,20 @@ class PostRepositoryTest {
 		assertThat(numberOfElements).isEqualTo(10);
 		assertThat(findPost).extracting("title").contains("1", "2", "3", "4", "5", "6", "7", "8", "9");
 		assertThat(findPost).extracting("introduce").contains("1", "2", "3", "4", "5", "6", "7", "8", "9");
+	}
+
+	@Test
+	void findTempSavedPosts() {
+		// given
+		List<Post> validPosts = postRepository.getTempSavedPost(2L, PostStatus.TEMPORARY);
+		List<Post> invalidPosts = postRepository.getTempSavedPost(1L, PostStatus.TEMPORARY);
+
+		// when
+		int validPostsSize = validPosts.size();
+		int invalidPostsSize = invalidPosts.size();
+
+		// then
+		assertThat(validPostsSize).isEqualTo(100);
+		assertThat(invalidPostsSize).isEqualTo(0);
 	}
 }
