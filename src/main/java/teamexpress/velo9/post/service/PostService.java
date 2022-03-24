@@ -1,5 +1,6 @@
 package teamexpress.velo9.post.service;
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -136,5 +137,18 @@ public class PostService {
 				.build()
 			);
 		}
+	}
+
+	// 특정 member가 좋아요를 남긴 Post 모두 찾아오기
+	public List<LovePostDTO> getLovePosts(Long memberId) {
+
+		// 특정 member가 포함된 love를 찾고, 해당하는 post 정보를 DTO로 전달
+
+		Member findMember = memberRepository.findById(memberId).orElseThrow(() -> new NullPointerException());
+		List<Love> loves = findMember.getLoves();
+
+		return loves.stream()
+			.map(love -> new LovePostDTO(love.getPost()))
+			.collect(Collectors.toList());
 	}
 }

@@ -1,12 +1,16 @@
 package teamexpress.velo9;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import teamexpress.velo9.member.domain.Love;
+import teamexpress.velo9.member.domain.LoveRepository;
 import teamexpress.velo9.member.domain.Member;
 import teamexpress.velo9.member.domain.MemberRepository;
 import teamexpress.velo9.member.domain.Role;
@@ -45,6 +49,7 @@ public class InitDb {
 		private final PostThumbnailRepository postThumbnailRepository;
 		private final TagRepository tagRepository;
 		private final PostTagRepository postTagRepository;
+		private final LoveRepository loveRepository;
 
 		public void dbInit1() {
 			memberRepository.save(createMember("jinwook", "jinwook", "1234", "test@nate.com", Role.ROLE_USER));
@@ -89,10 +94,11 @@ public class InitDb {
 			postThumbnailRepository.save(postThumbnail);
 
 			for (int i = 0; i < 10; i++) {
-				postRepository.save(createPost("" + i, "" + i, member, series1, postThumbnail));
+				Post savedPost = postRepository.save(createPost("" + i, "" + i, member, series1, postThumbnail));
+				loveRepository.save(createLove(member, savedPost)); // love 샘플 데이터 추가
 			}
 			for (int i = 10; i < 20; i++) {
-				postRepository.save(createPost("" + i, "" + i, member, series1, postThumbnail));
+				postRepository.save(createPost("" + i, "" + i, member, series2, postThumbnail));
 			}
 			for (int i = 20; i < 30; i++) {
 				postRepository.save(createPost("" + i, "" + i, member, series3, postThumbnail));
@@ -119,6 +125,7 @@ public class InitDb {
 				postRepository.save(createPost("" + i, "" + i, member, series10, postThumbnail));
 			}
 
+
 		}
 
 		private Post createPost(String title, String introduce, Member member, Series series, PostThumbnail postThumbnail) {
@@ -135,6 +142,11 @@ public class InitDb {
 
 		private Member createMember(String nickname, String username, String password, String email, Role roleUser) {
 			return Member.builder().nickname(nickname).blogTitle(nickname).username(username).password(passwordEncoder.encode(password)).email(email).posts(new ArrayList<>()).role(roleUser).build();
+		}
+
+		// Love 빌더
+		private Love createLove(Member member, Post post) {
+			return Love.builder().member(member).post(post).build();
 		}
 	}
 }

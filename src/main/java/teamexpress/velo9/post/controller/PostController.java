@@ -70,4 +70,14 @@ public class PostController {
 	public void look(@RequestBody LookDTO lookDTO) {
 		postService.look(lookDTO);
 	}
+
+	@GetMapping("/archive/like")
+	public ResponseEntity<Result<List<LovePostDTO>>> lovePostRead(HttpSession session) {
+		Long memberId = (Long) session.getAttribute(SessionConst.LOGIN_MEMBER); // memberId 가져오기
+		System.out.println("memberId = " + memberId);
+
+		List<LovePostDTO> lovePosts = postService.getLovePosts(memberId); // memberId로 좋아요 표시한 포스트 전체 가져오기
+
+		return new ResponseEntity<>(new Result(lovePosts), HttpStatus.OK); // 결과 반환
+	}
 }
