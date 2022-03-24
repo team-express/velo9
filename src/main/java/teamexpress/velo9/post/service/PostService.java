@@ -7,7 +7,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import teamexpress.velo9.member.domain.Look;
@@ -167,27 +166,8 @@ public class PostService {
 		}
 	}
 
-
-	// 네이티브 쿼리로 페이징
-	public List<LovePostDTO> getLovePosts(Long memberId, Long lastPostId) {
-		PageRequest pageRequest = PageRequest.of(0, 20, Sort.by("id").descending());
-		List<Post> lovePosts = loveRepository.findByJoinLove(memberId, lastPostId, pageRequest);
-
-		return lovePosts.stream()
-			.map(p -> new LovePostDTO(p))
-			.collect(Collectors.toList());
+	public Slice<LovePostDTO> getLovePosts(Long memberId, PageRequest page) {
+		Slice<Post> lovePosts = postRepository.findByJoinLove(2L, page);
+		return lovePosts.map(LovePostDTO::new);
 	}
-
-
-	// 특정 member가 좋아요를 남긴 Post 모두 찾아오기
-//	public List<LovePostDTO> getLovePosts(Long memberId) {
-//		// 특정 member가 포함된 love를 찾고, 해당하는 post 정보를 DTO로 전달
-//		Member findMember = memberRepository.findById(memberId).orElseThrow(() -> new NullPointerException());
-//
-//		List<Love> loves = findMember.getLoves();
-//
-//		return loves.stream()
-//			.map(love -> new LovePostDTO(love.getPost()))
-//			.collect(Collectors.toList());
-//	}
 }

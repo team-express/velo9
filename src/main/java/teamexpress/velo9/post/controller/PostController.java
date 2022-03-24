@@ -18,7 +18,6 @@ import teamexpress.velo9.member.security.oauth.SessionConst;
 import teamexpress.velo9.post.dto.*;
 import teamexpress.velo9.post.service.PostService;
 import teamexpress.velo9.post.service.TagService;
-
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
@@ -84,11 +83,10 @@ public class PostController {
 	}
 
 	@GetMapping("/archive/like")
-	public ResponseEntity<Result<List<LovePostDTO>>> lovePostRead(HttpSession session) {
-		Long memberId = (Long) session.getAttribute(SessionConst.LOGIN_MEMBER); // memberId 가져오기
-
-		List<LovePostDTO> lovePosts = postService.getLovePosts(memberId, 3L); // memberId로 좋아요 표시한 포스트 전체 가져오기
-
-		return new ResponseEntity<>(new Result(lovePosts), HttpStatus.OK); // 결과 반환
+	public ResponseEntity<Result<List<LovePostDTO>>> lovePostRead(HttpSession session, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size) {
+		Long memberId = (Long) session.getAttribute(SessionConst.LOGIN_MEMBER);
+		PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Direction.DESC, "createdDate"));
+		Slice<LovePostDTO> lovePosts = postService.getLovePosts(memberId, pageRequest);
+		return new ResponseEntity<>(new Result(lovePosts), HttpStatus.OK);
 	}
 }
