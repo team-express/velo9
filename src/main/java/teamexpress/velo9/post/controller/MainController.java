@@ -38,12 +38,21 @@ public class MainController {
 		@RequestParam(defaultValue = "20") int size,
 		@RequestParam(defaultValue = "createdDate") String sortValue) {
 
-		PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Direction.DESC, sortValue));
-
+		PageRequest pageRequest = getPageRequest(page, size, sortValue);
 		SearchCondition searchCondition = new SearchCondition(tagSelect, content);
-		Page<PostMainDTO> mainSearchPage = postService.searchMain(searchCondition, pageRequest);
+		Page<PostMainDTO> mainSearchPage = postService.searchTag(searchCondition, pageRequest);
 
 		return new ResponseEntity<>(mainSearchPage, HttpStatus.OK);
+	}
+
+	private PageRequest getPageRequest(int page, int size, String sortValue) {
+		Sort sort = Sort.by(Direction.DESC, sortValue);
+
+		if (sortValue.equals("descending")) {
+			sort = Sort.by(Direction.ASC, "createdDate");
+		}
+
+		return PageRequest.of(page, size, sort);
 	}
 
 }

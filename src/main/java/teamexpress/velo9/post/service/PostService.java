@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -17,6 +16,7 @@ import teamexpress.velo9.member.domain.Member;
 import teamexpress.velo9.member.domain.MemberRepository;
 import teamexpress.velo9.post.domain.Post;
 import teamexpress.velo9.post.domain.PostRepository;
+import teamexpress.velo9.post.domain.PostStatus;
 import teamexpress.velo9.post.domain.PostThumbnail;
 import teamexpress.velo9.post.domain.PostThumbnailRepository;
 import teamexpress.velo9.post.domain.Series;
@@ -29,8 +29,7 @@ import teamexpress.velo9.post.dto.PostSaveDTO;
 import teamexpress.velo9.post.dto.PostThumbnailDTO;
 import teamexpress.velo9.post.dto.SearchCondition;
 import teamexpress.velo9.post.dto.SeriesDTO;
-import teamexpress.velo9.post.domain.*;
-import teamexpress.velo9.post.dto.*;
+import teamexpress.velo9.post.dto.TempSavedPostDTO;
 
 @Service
 @RequiredArgsConstructor
@@ -98,19 +97,8 @@ public class PostService {
 		return mainPage.map(PostMainDTO::new);
 	}
 
-	public Page<PostMainDTO> searchMain(SearchCondition searchCondition, Pageable pageable) {
-
-		if (searchCondition.isTagSelect()) {
-			Page<Post> posts = postRepository.searchTag(pageable);
-
-			List<PostMainDTO> collect = posts.stream().filter(post -> post.getPostTags().stream()
-					.anyMatch(postTag -> postTag.getTag().getName().equals(searchCondition.getContent())))
-				.map(PostMainDTO::new).collect(Collectors.toList());
-			return new PageImpl<>(collect);
-
-		}
-		return postRepository.search(searchCondition, pageable)
-			.map(PostMainDTO::new);
+	public Page<PostMainDTO> searchTag(SearchCondition searchCondition, Pageable pageable) {
+		return postRepository.search(searchCondition, pageable).map(PostMainDTO::new);
 	}
 
 	public List<TempSavedPostDTO> getTempSavedPost(Long id) {

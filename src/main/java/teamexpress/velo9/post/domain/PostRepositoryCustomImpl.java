@@ -49,6 +49,7 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 			.selectFrom(post)
 			.join(post.member).fetchJoin()
 			.join(post.postThumbnail).fetchJoin()
+			.where(post.access.eq(PostAccess.PUBLIC))
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize());
 
@@ -76,25 +77,6 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 		JPAQuery<Post> countQuery = queryFactory.selectFrom(post);
 
 		return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
-	}
-
-	@Override
-	public Page<Post> searchTag(Pageable pageable) {
-
-		JPAQuery<Post> query = queryFactory
-			.selectFrom(post)
-			.join(post.member).fetchJoin()
-			.join(post.postThumbnail).fetchJoin()
-			.join(post.postTags).fetchJoin()
-				.offset(pageable.getOffset())
-				.limit(pageable.getPageSize());
-
-		List<Post> content = getQuerydsl().applyPagination(pageable, query).fetch();
-
-		JPAQuery<Post> countQuery = queryFactory.selectFrom(post);
-
-		return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
-
 	}
 
 	private boolean isHasNext(List<Post> result, Pageable pageable) {
