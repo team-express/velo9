@@ -46,7 +46,6 @@ class PostServiceTest {
 		for (LovePostDTO lovePost : lovePosts) {
 			System.out.println("lovePost.getTitle() = " + lovePost.getTitle());
 			System.out.println("lovePost.getIntroduce() = " + lovePost.getIntroduce());
-
 		}
 
 

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
@@ -25,9 +26,11 @@ import teamexpress.velo9.post.domain.SeriesRepository;
 import teamexpress.velo9.post.dto.LookDTO;
 import teamexpress.velo9.post.dto.LoveDTO;
 import teamexpress.velo9.post.dto.LovePostDTO;
+import teamexpress.velo9.post.dto.PostMainDTO;
 import teamexpress.velo9.post.dto.PostReadDTO;
 import teamexpress.velo9.post.dto.PostSaveDTO;
 import teamexpress.velo9.post.dto.PostThumbnailDTO;
+import teamexpress.velo9.post.dto.SearchCondition;
 import teamexpress.velo9.post.dto.SeriesDTO;
 import teamexpress.velo9.post.dto.TempSavedPostDTO;
 
@@ -95,6 +98,15 @@ public class PostService {
 		makeLook(member, post);
 	}
 
+	public Page<PostMainDTO> getMainPage(Pageable pageable) {
+		Page<Post> mainPage = postRepository.findMainPage(pageable);
+		return mainPage.map(PostMainDTO::new);
+	}
+
+	public Page<PostMainDTO> searchMain(SearchCondition searchCondition, Pageable pageable) {
+		return postRepository.search(searchCondition, pageable).map(PostMainDTO::new);
+	}
+
 	public List<TempSavedPostDTO> getTempSavedPost(Long id) {
 
 		List<Post> findPosts = postRepository.getTempSavedPost(id, PostStatus.TEMPORARY);
@@ -103,7 +115,6 @@ public class PostService {
 			.map(p -> new TempSavedPostDTO(p))
 			.collect(Collectors.toList());
 	}
-
 
 	private PostThumbnail getPostThumbnail(PostThumbnailDTO postThumbnailDTO) {
 		PostThumbnail postThumbnail = null;

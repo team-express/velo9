@@ -1,9 +1,10 @@
 package teamexpress.velo9.post.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.web.PageableDefault;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,14 +45,25 @@ public class PostController {
 	}
 
 	@GetMapping("/{nickname}/series")
-	public ResponseEntity<Slice<SeriesDTO>> series(@PathVariable String nickname, @PageableDefault(size = 5) Pageable pageable) {
-		Slice<SeriesDTO> series = postService.findSeries(nickname, pageable);
+	public ResponseEntity<Slice<SeriesDTO>> series(
+		@PathVariable String nickname,
+		@RequestParam(defaultValue = "0") int page,
+		@RequestParam(defaultValue = "5") int size) {
+
+		PageRequest pageRequest = PageRequest.of(page, size);
+
+		Slice<SeriesDTO> series = postService.findSeries(nickname, pageRequest);
 		return new ResponseEntity<>(series, HttpStatus.OK);
 	}
 
 	@GetMapping("/{nickname}/main")
-	public ResponseEntity<Slice<PostReadDTO>> postsRead(@PathVariable String nickname, @PageableDefault(size = 10) Pageable pageable) {
-		Slice<PostReadDTO> post = postService.findReadPost(nickname, pageable);
+	public ResponseEntity<Slice<PostReadDTO>> postsRead(@PathVariable String nickname,
+		@RequestParam(defaultValue = "0") int page,
+		@RequestParam(defaultValue = "10") int size) {
+
+		PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Direction.DESC, "createdDate"));
+
+		Slice<PostReadDTO> post = postService.findReadPost(nickname, pageRequest);
 		return new ResponseEntity<>(post, HttpStatus.OK);
 	}
 
