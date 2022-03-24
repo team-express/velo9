@@ -40,7 +40,7 @@ public class MainController {
 
 		PageRequest pageRequest = getPageRequest(page, size, sortValue);
 		SearchCondition searchCondition = new SearchCondition(tagSelect, content);
-		Page<PostMainDTO> mainSearchPage = postService.searchTag(searchCondition, pageRequest);
+		Page<PostMainDTO> mainSearchPage = postService.searchMain(searchCondition, pageRequest);
 
 		return new ResponseEntity<>(mainSearchPage, HttpStatus.OK);
 	}
