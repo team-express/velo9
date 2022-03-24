@@ -75,7 +75,7 @@ public class PostController {
 	public ResponseEntity<Result<List<LovePostDTO>>> lovePostRead(HttpSession session) {
 		Long memberId = (Long) session.getAttribute(SessionConst.LOGIN_MEMBER); // memberId 가져오기
 
-		List<LovePostDTO> lovePosts = postService.getLovePosts(memberId); // memberId로 좋아요 표시한 포스트 전체 가져오기
+		List<LovePostDTO> lovePosts = postService.getLovePosts(memberId, 3L); // memberId로 좋아요 표시한 포스트 전체 가져오기
 
 		return new ResponseEntity<>(new Result(lovePosts), HttpStatus.OK); // 결과 반환
 	}

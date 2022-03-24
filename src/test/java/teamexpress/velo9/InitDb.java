@@ -129,7 +129,7 @@ public class InitDb {
 		}
 
 		private Post createPost(String title, String introduce, Member member, Series series, PostThumbnail postThumbnail) {
-			return Post.builder().title(title).introduce(introduce).member(member).series(series).postThumbnail(postThumbnail).status(PostStatus.TEMPORARY).build();
+			return Post.builder().title(title).introduce(introduce).member(member).series(series).postThumbnail(postThumbnail).status(PostStatus.GENERAL).build();
 		}
 
 		private PostThumbnail createThumbnail(String path, String uuid, String name) {
