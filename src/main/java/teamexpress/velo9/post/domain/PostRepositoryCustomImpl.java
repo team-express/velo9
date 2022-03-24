@@ -28,14 +28,13 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 
 	@Override
 	public Slice<Post> findReadPost(String nickname, Pageable pageable) {
-		JPAQuery<Post> query = queryFactory.selectFrom(post)
+		List<Post> content = queryFactory.selectFrom(post)
 			.join(post.postThumbnail).fetchJoin()
 			.where(post.member.nickname.eq(nickname))
-			.where(post.status.eq(PostStatus.GENERAL))
+			.where(openPost())
 			.offset(pageable.getOffset())
-			.limit(pageable.getPageSize() + 1);
-
-		List<Post> content = getQuerydsl().applyPagination(pageable, query).fetch();
+			.limit(pageable.getPageSize() + 1)
+			.fetch();
 
 		boolean hasNext = isHasNext(content, pageable);
 
@@ -49,7 +48,7 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 			.selectFrom(post)
 			.join(post.member).fetchJoin()
 			.join(post.postThumbnail).fetchJoin()
-			.where(post.access.eq(PostAccess.PUBLIC))
+			.where(openPost())
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize());
 
@@ -69,6 +68,7 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 			.join(post.member).fetchJoin()
 			.join(post.postThumbnail).fetchJoin()
 			.where(searchContent(condition.getContent()))
+			.where(openPost())
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize());
 
@@ -98,6 +98,18 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 
 	private BooleanBuilder contentContains(String content) {
 		return nullSafeBuilder(() -> post.content.contains(content));
+	}
+
+	private BooleanBuilder openPost() {
+		return status().and(access());
+	}
+
+	private BooleanBuilder status() {
+		return nullSafeBuilder(() -> post.status.eq(PostStatus.GENERAL));
+	}
+
+	private BooleanBuilder access() {
+		return nullSafeBuilder(() -> post.access.eq(PostAccess.PUBLIC));
 	}
 
 	private static BooleanBuilder nullSafeBuilder(Supplier<BooleanExpression> f) {
