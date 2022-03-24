@@ -6,7 +6,7 @@ import teamexpress.velo9.post.domain.PostTag;
 @Data
 public class TagDTO {
 
-	String tagName;
+	private String tagName;
 
 	public TagDTO(PostTag postTag) {
 		tagName = postTag.getTag().getName();
