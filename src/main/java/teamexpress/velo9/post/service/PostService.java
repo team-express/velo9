@@ -64,6 +64,8 @@ public class PostService {
 			postSaveDTO.getId()));
 
 		postRepository.save(post);
+		postRepository.updateLoveCount(post, loveRepository.countByPost(post));
+		postRepository.updateViewCount(post, lookRepository.countByPost(post));
 
 		return post.getId();
 	}
@@ -116,6 +118,7 @@ public class PostService {
 		Post post = postRepository.findById(lookDTO.getPostId()).orElseThrow();
 
 		makeLook(member, post);
+		postRepository.updateViewCount(post, lookRepository.countByPost(post));
 	}
 
 	public Page<PostMainDTO> getMainPage(Pageable pageable) {
@@ -210,7 +213,7 @@ public class PostService {
 				.member(member)
 				.build()
 			);
-			postRepository.plusViewCount(post);
+//			postRepository.plusViewCount(post);
 		}
 	}
 
