@@ -2,8 +2,6 @@ package teamexpress.velo9.post.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.Data;
 import teamexpress.velo9.post.domain.Post;
 
