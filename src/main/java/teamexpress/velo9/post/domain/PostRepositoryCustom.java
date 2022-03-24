@@ -7,6 +7,5 @@ import teamexpress.velo9.post.dto.SearchCondition;
 
 public interface PostRepositoryCustom {
 	Slice<Post> findReadPost(String nickname, Pageable pageable);
-	Page<Post> findMainPage(Pageable pageable);
 	Page<Post> search(SearchCondition condition, Pageable pageable);
 }

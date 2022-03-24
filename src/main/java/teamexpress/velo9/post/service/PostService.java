@@ -96,11 +96,6 @@ public class PostService {
 		makeLook(member, post);
 	}
 
-	public Page<PostMainDTO> getMainPage(Pageable pageable) {
-		Page<Post> mainPage = postRepository.findMainPage(pageable);
-		return mainPage.map(PostMainDTO::new);
-	}
-
 	public Page<PostMainDTO> searchMain(SearchCondition searchCondition, Pageable pageable) {
 		return postRepository.search(searchCondition, pageable).map(PostMainDTO::new);
 	}
@@ -110,7 +105,7 @@ public class PostService {
 		List<Post> findPosts = postRepository.getTempSavedPost(id, PostStatus.TEMPORARY);
 
 		return findPosts.stream()
-			.map(p -> new TempSavedPostDTO(p))
+			.map(TempSavedPostDTO::new)
 			.collect(Collectors.toList());
 	}
 
