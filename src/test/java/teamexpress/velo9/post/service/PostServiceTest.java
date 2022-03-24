@@ -42,6 +42,7 @@ class PostServiceTest {
 
 		// when
 		int lovePostsSize = lovePosts.size();
+
 		LovePostDTO findLovePostDTO = lovePosts.stream()
 			.filter(p -> p.getTitle().equals("1"))
 			.findFirst()
@@ -50,7 +51,5 @@ class PostServiceTest {
 		// then
 		assertThat(lovePostsSize).isEqualTo(10);
 		assertThat(findLovePostDTO.getIntroduce()).isEqualTo("1");
-
-
 	}
 }

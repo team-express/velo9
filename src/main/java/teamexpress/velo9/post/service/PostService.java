@@ -43,7 +43,6 @@ public class PostService {
 
 	@Transactional
 	public Long write(PostSaveDTO postSaveDTO) {
-
 		PostThumbnail postThumbnail = getPostThumbnail(postSaveDTO.getPostThumbnailDTO());
 		Series series = getSeries(postSaveDTO.getSeriesId());
 		Member member = getMember(postSaveDTO.getMemberId());
@@ -159,7 +158,6 @@ public class PostService {
 	public List<LovePostDTO> getLovePosts(Long memberId) {
 
 		// 특정 member가 포함된 love를 찾고, 해당하는 post 정보를 DTO로 전달
-
 		Member findMember = memberRepository.findById(memberId).orElseThrow(() -> new NullPointerException());
 		List<Love> loves = findMember.getLoves();
 
