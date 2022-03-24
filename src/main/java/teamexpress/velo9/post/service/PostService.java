@@ -213,7 +213,6 @@ public class PostService {
 				.member(member)
 				.build()
 			);
-//			postRepository.plusViewCount(post);
 		}
 	}
 
