@@ -1,5 +1,7 @@
 package teamexpress.velo9.post.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -11,11 +13,20 @@ import teamexpress.velo9.member.domain.Love;
 import teamexpress.velo9.member.domain.LoveRepository;
 import teamexpress.velo9.member.domain.Member;
 import teamexpress.velo9.member.domain.MemberRepository;
-import teamexpress.velo9.post.domain.*;
-import teamexpress.velo9.post.dto.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import teamexpress.velo9.post.domain.Post;
+import teamexpress.velo9.post.domain.PostRepository;
+import teamexpress.velo9.post.domain.PostStatus;
+import teamexpress.velo9.post.domain.PostThumbnail;
+import teamexpress.velo9.post.domain.PostThumbnailRepository;
+import teamexpress.velo9.post.domain.Series;
+import teamexpress.velo9.post.domain.SeriesRepository;
+import teamexpress.velo9.post.dto.LookDTO;
+import teamexpress.velo9.post.dto.LoveDTO;
+import teamexpress.velo9.post.dto.PostReadDTO;
+import teamexpress.velo9.post.dto.PostSaveDTO;
+import teamexpress.velo9.post.dto.PostThumbnailDTO;
+import teamexpress.velo9.post.dto.SeriesDTO;
+import teamexpress.velo9.post.dto.TempSavedPostDTO;
 
 @Service
 @RequiredArgsConstructor
@@ -68,13 +79,17 @@ public class PostService {
 
 		Member member = memberRepository.findById(loveDTO.getMemberId()).orElseThrow();
 		Post post = postRepository.findById(loveDTO.getPostId()).orElseThrow();
+
 		toggleLove(member, post);
+		postRepository.updateLoveCount(loveRepository.countByPost(post));
 	}
 
 	@Transactional
 	public void look(LookDTO lookDTO) {
+
 		Member member = memberRepository.findById(lookDTO.getMemberId()).orElseThrow();
 		Post post = postRepository.findById(lookDTO.getPostId()).orElseThrow();
+
 		makeLook(member, post);
 	}
 
@@ -135,6 +150,7 @@ public class PostService {
 				.member(member)
 				.build()
 			);
+			postRepository.plusViewCount();
 		}
 	}
 }
