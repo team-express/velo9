@@ -106,7 +106,7 @@ public class PostService {
 		Post post = postRepository.findById(loveDTO.getPostId()).orElseThrow();
 
 		toggleLove(member, post);
-		postRepository.updateLoveCount(loveRepository.countByPost(post));
+		postRepository.updateLoveCount(post, loveRepository.countByPost(post));
 	}
 
 	@Transactional
@@ -210,7 +210,7 @@ public class PostService {
 				.member(member)
 				.build()
 			);
-			postRepository.plusViewCount();
+			postRepository.plusViewCount(post);
 		}
 	}
 

@@ -2,7 +2,6 @@ package teamexpress.velo9.post.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -22,11 +21,11 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
 	@Query("select p from Post p where p.member.id = :id and p.status =:status")
 	List<Post> getTempSavedPost(@Param("id") Long id, @Param("status") PostStatus status);
 
-	@Query("update Post p set p.loveCount = :loveCount")
+	@Query("update Post p set p.loveCount = :loveCount where p = :post")
 	@Modifying
-	void updateLoveCount(@Param("loveCount") int loveCount);
+	void updateLoveCount(@Param("post") Post post, @Param("loveCount") int loveCount);
 
-	@Query("update Post p set p.viewCount = p.viewCount+1")
+	@Query("update Post p set p.viewCount = p.viewCount+1 where p = :post")
 	@Modifying
-	void plusViewCount();
+	void plusViewCount(@Param("post") Post post);
 }
