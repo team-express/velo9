@@ -115,6 +115,21 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 		return new SliceImpl<>(content, pageable, hasNext);
 	}
 
+	@Override
+	public Slice<Post> findByJoinSeries(Long memberId, String seriesName, Pageable pageable) {
+		JPAQuery<Post> query = queryFactory
+			.selectFrom(post)
+			.where(post.member.id.eq(memberId))
+			.where(post.series.name.eq(seriesName))
+			.offset(pageable.getOffset());
+
+		List<Post> content = getQuerydsl().applyPagination(pageable, query).limit(pageable.getPageSize() + 1).fetch();
+
+		boolean hasNext = isHasNext(content, pageable);
+
+		return new SliceImpl<>(content, pageable, hasNext);
+	}
+
 	private boolean isHasNext(List<Post> result, Pageable pageable) {
 		boolean hasNext = false;
 		if (result.size() > pageable.getPageSize()) {

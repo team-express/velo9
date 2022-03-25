@@ -32,6 +32,7 @@ import teamexpress.velo9.post.dto.PostSaveDTO;
 import teamexpress.velo9.post.dto.PostThumbnailDTO;
 import teamexpress.velo9.post.dto.SearchCondition;
 import teamexpress.velo9.post.dto.SeriesDTO;
+import teamexpress.velo9.post.dto.SeriesPostSummaryDTO;
 import teamexpress.velo9.post.dto.TempSavedPostDTO;
 
 @Service
@@ -175,5 +176,11 @@ public class PostService {
 	public Slice<LookPostDTO> getLookPosts(Long memberId, PageRequest page) {
 		Slice<Post> lookPosts = postRepository.findByJoinLook(2L, page);
 		return lookPosts.map(LookPostDTO::new);
+	}
+
+	public Slice<SeriesPostSummaryDTO> findSeriesPost(Long memberId, String seriesName, PageRequest page) {
+		// memberId와 seriesName이 일치하는 모든 Post 조회
+		Slice<Post> seriesPosts =  postRepository.findByJoinSeries(2L, seriesName, page);
+		return seriesPosts.map(SeriesPostSummaryDTO::new);
 	}
 }
