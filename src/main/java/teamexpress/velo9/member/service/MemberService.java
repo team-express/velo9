@@ -7,9 +7,11 @@ import org.springframework.transaction.annotation.Transactional;
 import teamexpress.velo9.member.domain.Member;
 import teamexpress.velo9.member.domain.MemberRepository;
 import teamexpress.velo9.member.domain.MemberThumbnail;
+import teamexpress.velo9.member.dto.FindInfoDTO;
 import teamexpress.velo9.member.dto.MailDTO;
 import teamexpress.velo9.member.dto.MemberDTO;
 import teamexpress.velo9.member.dto.MemberEditDTO;
+import teamexpress.velo9.member.dto.MemberNewPwDTO;
 import teamexpress.velo9.member.dto.MemberSignupDTO;
 import teamexpress.velo9.member.dto.MemberThumbnailDTO;
 import teamexpress.velo9.member.dto.PasswordDTO;
@@ -80,11 +82,39 @@ public class MemberService {
 		memberRepository.save(member);
 	}
 
+	public String findIdByEmail(FindInfoDTO findInfoDTO) {
+		Member findMember = memberRepository.findByEmail(findInfoDTO.getEmail())
+			.orElseThrow(() -> {
+				throw new IllegalArgumentException("존재하지 않는 회원입니다.");
+			});
+		return findMember.getUsername();
+	}
+
 	public void findEmail(MailDTO mailDTO) {
 		memberRepository.findByEmail(mailDTO.getEmail())
 			.ifPresent(m -> {
 				throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
 			});
+	}
+
+	public Member findPw(FindInfoDTO findInfoDTO) {
+		Member findEmailMember = memberRepository.findByEmail(findInfoDTO.getEmail()).orElseThrow(() -> {
+			throw new IllegalArgumentException("존재하지 않는 회원입니다.");
+		});
+		Member findUsernameMember = memberRepository.findByUsername(findInfoDTO.getUsername()).orElseThrow(() -> {
+			throw new IllegalArgumentException("존재하지 않는 회원입니다.");
+		});
+
+		if (findEmailMember != findUsernameMember) {
+			throw new IllegalArgumentException("아이디 또는 이메일이 일치하지 않습니다.");
+		}
+		return findUsernameMember;
+	}
+
+	public void changeNewPw(MemberNewPwDTO memberNewPwDTO) {
+		Member member = getMember(memberNewPwDTO.getId());
+		String encodedPassword = passwordEncoder.encode(member.getPassword());
+		memberRepository.changePw(encodedPassword);
 	}
 
 	private Member getMember(Long memberId) {
