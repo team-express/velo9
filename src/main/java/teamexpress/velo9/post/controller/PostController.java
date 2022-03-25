@@ -68,8 +68,7 @@ public class PostController {
 
 	@GetMapping("/temp")
 	public ResponseEntity<Result<List<TempSavedPostDTO>>> tempPostsRead(HttpSession session) {
-		Long memberId = getMemberId(session);
-		return new ResponseEntity<>(new Result(postService.getTempSavedPost(memberId)), HttpStatus.OK);
+		return new ResponseEntity<>(new Result(postService.getTempSavedPost(getMemberId(session))), HttpStatus.OK);
 	}
 
 	@PostMapping("/love")
