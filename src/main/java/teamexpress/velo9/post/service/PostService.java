@@ -23,6 +23,7 @@ import teamexpress.velo9.post.domain.PostThumbnailRepository;
 import teamexpress.velo9.post.domain.Series;
 import teamexpress.velo9.post.domain.SeriesRepository;
 import teamexpress.velo9.post.dto.LookDTO;
+import teamexpress.velo9.post.dto.LookPostDTO;
 import teamexpress.velo9.post.dto.LoveDTO;
 import teamexpress.velo9.post.dto.LovePostDTO;
 import teamexpress.velo9.post.dto.PostMainDTO;
@@ -169,5 +170,10 @@ public class PostService {
 	public Slice<LovePostDTO> getLovePosts(Long memberId, PageRequest page) {
 		Slice<Post> lovePosts = postRepository.findByJoinLove(2L, page);
 		return lovePosts.map(LovePostDTO::new);
+	}
+
+	public Slice<LookPostDTO> getLookPosts(Long memberId, PageRequest page) {
+		Slice<Post> lookPosts = postRepository.findByJoinLook(2L, page);
+		return lookPosts.map(LookPostDTO::new);
 	}
 }

@@ -11,15 +11,16 @@ import org.springframework.transaction.annotation.Transactional;
 import teamexpress.velo9.post.dto.LovePostDTO;
 import teamexpress.velo9.post.dto.TempSavedPostDTO;
 import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
+
 
 @SpringBootTest
 @Transactional
 class PostServiceTest {
 
-	@Autowired
-	private PostService postService;
+
+    @Autowired
+    private PostService postService;
 
 
 	@Test
@@ -55,3 +56,4 @@ class PostServiceTest {
 		assertThat(findLovePostDTO.getTitle()).isEqualTo("99");
 	}
 }
+
