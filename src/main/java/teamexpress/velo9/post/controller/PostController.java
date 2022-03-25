@@ -35,7 +35,6 @@ public class PostController {
 
 	@PostMapping("/write")
 	public ResponseEntity<Long> write(@RequestBody PostSaveDTO postSaveDTO) {
-
 		Long postId = postService.write(postSaveDTO);
 		tagService.addTags(postId, postSaveDTO.getTagNames());
 		tagService.removeUselessTags();
@@ -83,10 +82,14 @@ public class PostController {
 	}
 
 	@GetMapping("/archive/like")
-	public ResponseEntity<Result<List<LovePostDTO>>> lovePostRead(HttpSession session, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size) {
+	public ResponseEntity<Slice<LovePostDTO>> lovePostRead(HttpSession session,
+		@RequestParam(defaultValue = "0") int page,
+		@RequestParam(defaultValue = "20") int size) {
+
 		Long memberId = (Long) session.getAttribute(SessionConst.LOGIN_MEMBER);
 		PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Direction.DESC, "createdDate"));
+
 		Slice<LovePostDTO> lovePosts = postService.getLovePosts(memberId, pageRequest);
-		return new ResponseEntity<>(new Result(lovePosts), HttpStatus.OK);
+		return new ResponseEntity<>(lovePosts, HttpStatus.OK);
 	}
 }
