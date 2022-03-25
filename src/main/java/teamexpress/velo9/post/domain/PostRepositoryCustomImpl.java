@@ -3,6 +3,7 @@ package teamexpress.velo9.post.domain;
 import static teamexpress.velo9.member.domain.QLook.look;
 import static teamexpress.velo9.member.domain.QLove.love;
 import static teamexpress.velo9.post.domain.QPost.post;
+import static teamexpress.velo9.post.domain.QPostTag.postTag;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -80,6 +81,27 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 	}
 
 	@Override
+	public Page<Post> searchTag(SearchCondition condition, Pageable pageable) {
+
+		JPAQuery<Post> query = queryFactory
+			.selectFrom(post)
+			.join(post.member).fetchJoin()
+			.join(post.postThumbnail).fetchJoin()
+			.leftJoin(postTag)
+			.on(post.id.eq(postTag.post.id))
+			.where(searchTagContent(condition.getContent()))
+			.where(openPost())
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize());
+
+		List<Post> content = getQuerydsl().applyPagination(pageable, query).fetch();
+
+		JPAQuery<Post> countQuery = queryFactory.selectFrom(post);
+
+		return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
+	}
+
+	@Override
 	public Slice<Post> findByJoinLove(Long memberId, Pageable pageable) {
 		JPAQuery<Post> query = queryFactory
 			.selectFrom(post)
@@ -134,6 +156,10 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 
 	private BooleanBuilder contentContains(String content) {
 		return nullSafeBuilder(() -> post.content.contains(content));
+	}
+
+	private BooleanBuilder searchTagContent(String content) {
+		return nullSafeBuilder(() -> postTag.tag.name.contains(content));
 	}
 
 	private BooleanBuilder openPost() {

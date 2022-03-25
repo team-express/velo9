@@ -9,6 +9,7 @@ public interface PostRepositoryCustom {
 	Slice<Post> findReadPost(String nickname, Pageable pageable);
 	Page<Post> findMainPage(Pageable pageable);
 	Page<Post> search(SearchCondition condition, Pageable pageable);
+	Page<Post> searchTag(SearchCondition condition, Pageable pageable);
 	Slice<Post> findByJoinLove(Long memberId, Pageable pageable);
 	Slice<Post> findByJoinLook(Long memberId, Pageable pageable);
 }

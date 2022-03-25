@@ -104,6 +104,9 @@ public class PostService {
 	}
 
 	public Page<PostMainDTO> searchMain(SearchCondition searchCondition, Pageable pageable) {
+		if (searchCondition.isTagSelect()) {
+			return postRepository.searchTag(searchCondition, pageable).map(PostMainDTO::new);
+		}
 		return postRepository.search(searchCondition, pageable).map(PostMainDTO::new);
 	}
 
