@@ -173,7 +173,7 @@ public class PostService {
 	}
 
 	public Slice<LookPostDTO> getLookPosts(Long memberId, PageRequest page) {
-		Slice<Post> lookPosts = postRepository.findByJoinLooK(2L, page);
+		Slice<Post> lookPosts = postRepository.findByJoinLook(2L, page);
 		return lookPosts.map(LookPostDTO::new);
 	}
 }

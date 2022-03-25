@@ -98,7 +98,7 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 	}
 
 	@Override
-	public Slice<Post> findByJoinLooK(Long memberId, Pageable pageable) {
+	public Slice<Post> findByJoinLook(Long memberId, Pageable pageable) {
 		JPAQuery<Post> query = queryFactory
 			.selectFrom(post)
 			.join(look)
