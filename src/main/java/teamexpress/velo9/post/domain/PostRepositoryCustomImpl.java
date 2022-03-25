@@ -1,5 +1,6 @@
 package teamexpress.velo9.post.domain;
 
+import static teamexpress.velo9.member.domain.QLove.love;
 import static teamexpress.velo9.post.domain.QPost.post;
 
 import com.querydsl.core.BooleanBuilder;
@@ -43,7 +44,6 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 
 	@Override
 	public Page<Post> findMainPage(Pageable pageable) {
-
 		JPAQuery<Post> query = queryFactory
 			.selectFrom(post)
 			.join(post.member).fetchJoin()
@@ -62,7 +62,6 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 
 	@Override
 	public Page<Post> search(SearchCondition condition, Pageable pageable) {
-
 		JPAQuery<Post> query = queryFactory
 			.selectFrom(post)
 			.join(post.member).fetchJoin()
@@ -77,6 +76,24 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 		JPAQuery<Post> countQuery = queryFactory.selectFrom(post);
 
 		return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
+	}
+
+	@Override
+	public Slice<Post> findByJoinLove(Long memberId, Pageable pageable) {
+		JPAQuery<Post> query = queryFactory
+			.selectFrom(post)
+			.join(love)
+			.on(post.id.eq(love.post.id))
+			.join(post.member)
+			.on(post.member.id.eq(love.member.id))
+			.where(post.member.id.eq(memberId))
+			.offset(pageable.getOffset());
+
+		List<Post> content = getQuerydsl().applyPagination(pageable, query).limit(pageable.getPageSize() + 1).fetch();
+
+		boolean hasNext = isHasNext(content, pageable);
+
+		return new SliceImpl<>(content, pageable, hasNext);
 	}
 
 	private boolean isHasNext(List<Post> result, Pageable pageable) {
