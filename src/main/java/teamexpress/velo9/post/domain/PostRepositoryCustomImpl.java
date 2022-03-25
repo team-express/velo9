@@ -1,5 +1,6 @@
 package teamexpress.velo9.post.domain;
 
+import static teamexpress.velo9.member.domain.QLook.look;
 import static teamexpress.velo9.member.domain.QLove.love;
 import static teamexpress.velo9.post.domain.QPost.post;
 
@@ -86,6 +87,24 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 			.on(post.id.eq(love.post.id))
 			.join(post.member)
 			.on(post.member.id.eq(love.member.id))
+			.where(post.member.id.eq(memberId))
+			.offset(pageable.getOffset());
+
+		List<Post> content = getQuerydsl().applyPagination(pageable, query).limit(pageable.getPageSize() + 1).fetch();
+
+		boolean hasNext = isHasNext(content, pageable);
+
+		return new SliceImpl<>(content, pageable, hasNext);
+	}
+
+	@Override
+	public Slice<Post> findByJoinLooK(Long memberId, Pageable pageable) {
+		JPAQuery<Post> query = queryFactory
+			.selectFrom(post)
+			.join(look)
+			.on(post.id.eq(look.post.id))
+			.join(post.member)
+			.on(post.member.id.eq(look.member.id))
 			.where(post.member.id.eq(memberId))
 			.offset(pageable.getOffset());
 

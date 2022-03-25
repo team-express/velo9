@@ -11,4 +11,5 @@ public interface PostRepositoryCustom {
 	Page<Post> findMainPage(Pageable pageable);
 	Page<Post> search(SearchCondition condition, Pageable pageable);
 	Slice<Post> findByJoinLove(Long memberId, Pageable pageable);
+	Slice<Post> findByJoinLooK(Long memberId, Pageable pageable);
 }

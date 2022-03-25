@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import teamexpress.velo9.common.domain.Result;
+import teamexpress.velo9.member.domain.Look;
 import teamexpress.velo9.member.security.oauth.SessionConst;
 import teamexpress.velo9.post.dto.*;
 import teamexpress.velo9.post.service.PostService;
@@ -67,7 +68,7 @@ public class PostController {
 
 	@GetMapping("/temp")
 	public ResponseEntity<Result<List<TempSavedPostDTO>>> tempPostsRead(HttpSession session) {
-		Long memberId = (Long) session.getAttribute(SessionConst.LOGIN_MEMBER);
+		Long memberId = getMemberId(session);
 		return new ResponseEntity<>(new Result(postService.getTempSavedPost(memberId)), HttpStatus.OK);
 	}
 
@@ -86,10 +87,24 @@ public class PostController {
 		@RequestParam(defaultValue = "0") int page,
 		@RequestParam(defaultValue = "20") int size) {
 
-		Long memberId = (Long) session.getAttribute(SessionConst.LOGIN_MEMBER);
 		PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Direction.DESC, "createdDate"));
 
-		Slice<LovePostDTO> lovePosts = postService.getLovePosts(memberId, pageRequest);
+		Slice<LovePostDTO> lovePosts = postService.getLovePosts(getMemberId(session), pageRequest);
 		return new ResponseEntity<>(lovePosts, HttpStatus.OK);
+	}
+
+	@GetMapping("/archive/recent")
+	public ResponseEntity<Slice<LookPostDTO>> lookPostRead(HttpSession session,
+		@RequestParam(defaultValue = "0") int page,
+		@RequestParam(defaultValue = "20") int size) {
+
+		PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Direction.DESC, "createdDate"));
+
+		Slice<LookPostDTO> lookPosts = postService.getLookPosts(getMemberId(session), pageRequest);
+		return new ResponseEntity<>(lookPosts, HttpStatus.OK);
+	}
+
+	private Long getMemberId(HttpSession session) {
+		return (Long) session.getAttribute(SessionConst.LOGIN_MEMBER);
 	}
 }
