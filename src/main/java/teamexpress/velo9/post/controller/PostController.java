@@ -1,9 +1,10 @@
 package teamexpress.velo9.post.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.web.PageableDefault;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +18,6 @@ import teamexpress.velo9.member.security.oauth.SessionConst;
 import teamexpress.velo9.post.dto.*;
 import teamexpress.velo9.post.service.PostService;
 import teamexpress.velo9.post.service.TagService;
-
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
@@ -35,7 +35,6 @@ public class PostController {
 
 	@PostMapping("/write")
 	public ResponseEntity<Long> write(@RequestBody PostSaveDTO postSaveDTO) {
-
 		Long postId = postService.write(postSaveDTO);
 		tagService.addTags(postId, postSaveDTO.getTagNames());
 		tagService.removeUselessTags();
@@ -44,14 +43,25 @@ public class PostController {
 	}
 
 	@GetMapping("/{nickname}/series")
-	public ResponseEntity<Slice<SeriesDTO>> series(@PathVariable String nickname, @PageableDefault(size = 5) Pageable pageable) {
-		Slice<SeriesDTO> series = postService.findSeries(nickname, pageable);
+	public ResponseEntity<Slice<SeriesDTO>> series(
+		@PathVariable String nickname,
+		@RequestParam(defaultValue = "0") int page,
+		@RequestParam(defaultValue = "5") int size) {
+
+		PageRequest pageRequest = PageRequest.of(page, size);
+
+		Slice<SeriesDTO> series = postService.findSeries(nickname, pageRequest);
 		return new ResponseEntity<>(series, HttpStatus.OK);
 	}
 
 	@GetMapping("/{nickname}/main")
-	public ResponseEntity<Slice<PostReadDTO>> postsRead(@PathVariable String nickname, @PageableDefault(size = 10) Pageable pageable) {
-		Slice<PostReadDTO> post = postService.findReadPost(nickname, pageable);
+	public ResponseEntity<Slice<PostReadDTO>> postsRead(@PathVariable String nickname,
+		@RequestParam(defaultValue = "0") int page,
+		@RequestParam(defaultValue = "10") int size) {
+
+		PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Direction.DESC, "createdDate"));
+
+		Slice<PostReadDTO> post = postService.findReadPost(nickname, pageRequest);
 		return new ResponseEntity<>(post, HttpStatus.OK);
 	}
 
@@ -69,5 +79,17 @@ public class PostController {
 	@PostMapping("/look")//차후 상세보기가 생기면 녹아들어야 할 로직
 	public void look(@RequestBody LookDTO lookDTO) {
 		postService.look(lookDTO);
+	}
+
+	@GetMapping("/archive/like")
+	public ResponseEntity<Slice<LovePostDTO>> lovePostRead(HttpSession session,
+		@RequestParam(defaultValue = "0") int page,
+		@RequestParam(defaultValue = "20") int size) {
+
+		Long memberId = (Long) session.getAttribute(SessionConst.LOGIN_MEMBER);
+		PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Direction.DESC, "createdDate"));
+
+		Slice<LovePostDTO> lovePosts = postService.getLovePosts(memberId, pageRequest);
+		return new ResponseEntity<>(lovePosts, HttpStatus.OK);
 	}
 }

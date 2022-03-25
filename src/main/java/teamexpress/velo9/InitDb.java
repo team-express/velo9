@@ -1,8 +1,6 @@
 package teamexpress.velo9;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
@@ -25,7 +23,7 @@ import teamexpress.velo9.post.domain.SeriesRepository;
 import teamexpress.velo9.post.domain.Tag;
 import teamexpress.velo9.post.domain.TagRepository;
 
-@Profile("test")
+
 @Component
 @RequiredArgsConstructor
 public class InitDb {
