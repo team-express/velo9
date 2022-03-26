@@ -169,18 +169,17 @@ public class PostService {
 	}
 
 	public Slice<LovePostDTO> getLovePosts(Long memberId, PageRequest page) {
-		Slice<Post> lovePosts = postRepository.findByJoinLove(2L, page);
+		Slice<Post> lovePosts = postRepository.findByJoinLove(memberId, page);
 		return lovePosts.map(LovePostDTO::new);
 	}
 
 	public Slice<LookPostDTO> getLookPosts(Long memberId, PageRequest page) {
-		Slice<Post> lookPosts = postRepository.findByJoinLook(2L, page);
+		Slice<Post> lookPosts = postRepository.findByJoinLook(memberId, page);
 		return lookPosts.map(LookPostDTO::new);
 	}
 
 	public Slice<SeriesPostSummaryDTO> findSeriesPost(Long memberId, String seriesName, PageRequest page) {
-		// memberId와 seriesName이 일치하는 모든 Post 조회
-		Slice<Post> seriesPosts =  postRepository.findByJoinSeries(2L, seriesName, page);
+		Slice<Post> seriesPosts =  postRepository.findByJoinSeries(memberId, seriesName, page);
 		return seriesPosts.map(SeriesPostSummaryDTO::new);
 	}
 }
