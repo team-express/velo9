@@ -68,28 +68,9 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 			.selectFrom(post)
 			.join(post.member).fetchJoin()
 			.join(post.postThumbnail).fetchJoin()
-			.where(searchContent(condition.getContent()))
-			.where(openPost())
-			.offset(pageable.getOffset())
-			.limit(pageable.getPageSize());
-
-		List<Post> content = getQuerydsl().applyPagination(pageable, query).fetch();
-
-		JPAQuery<Post> countQuery = queryFactory.selectFrom(post);
-
-		return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
-	}
-
-	@Override
-	public Page<Post> searchTag(SearchCondition condition, Pageable pageable) {
-
-		JPAQuery<Post> query = queryFactory
-			.selectFrom(post)
-			.join(post.member).fetchJoin()
-			.join(post.postThumbnail).fetchJoin()
 			.leftJoin(postTag)
 			.on(post.id.eq(postTag.post.id))
-			.where(searchTagContent(condition.getContent()))
+			.where(searchMain(condition))
 			.where(openPost())
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize());
@@ -146,6 +127,10 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 		return hasNext;
 	}
 
+	private BooleanBuilder searchMain(SearchCondition condition) {
+		return condition.isTagSelect() ? searchTagContent(condition.getContent()) : searchContent(condition.getContent());
+	}
+
 	private BooleanBuilder searchContent(String content) {
 		return titleContains(content).or(contentContains(content));
 	}
@@ -174,7 +159,7 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 		return nullSafeBuilder(() -> post.access.eq(PostAccess.PUBLIC));
 	}
 
-	private static BooleanBuilder nullSafeBuilder(Supplier<BooleanExpression> f) {
+	private BooleanBuilder nullSafeBuilder(Supplier<BooleanExpression> f) {
 		try {
 			return new BooleanBuilder(f.get());
 		} catch (NullPointerException e) {
