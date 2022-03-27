@@ -13,6 +13,7 @@ import teamexpress.velo9.member.dto.MemberEditDTO;
 import teamexpress.velo9.member.dto.MemberSignupDTO;
 import teamexpress.velo9.member.dto.MemberThumbnailDTO;
 import teamexpress.velo9.member.dto.PasswordDTO;
+import teamexpress.velo9.member.dto.SocialSignupDTO;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -87,6 +88,24 @@ public class MemberService {
 			});
 	}
 
+	public Member joinSocial(SocialSignupDTO socialSignupDTO, Long memberId) {
+
+		Member member = getMember(memberId);
+
+		String encodePassword = passwordEncoder.encode(socialSignupDTO.getPassword());
+		member.registerSocialMember(
+			socialSignupDTO.getUsername(),
+			encodePassword,
+			socialSignupDTO.getNickname(),
+			socialSignupDTO.getBlogTitle());
+
+		return member;
+	}
+
+	public boolean checkSignup(Member joinMember) {
+		return checkRegister(joinMember);
+	}
+
 	private Member getMember(Long memberId) {
 		return memberRepository.findById(memberId).orElseThrow(() -> {
 			throw new IllegalArgumentException("존재하지 않는 회원입니다.");
@@ -133,5 +152,13 @@ public class MemberService {
 		if (!passwordEncoder.matches(oldPassword, savedPassword)) {
 			throw new IllegalArgumentException("잘못된 비밀번호 입니다.");
 		}
+	}
+
+	private boolean checkRegister(Member member) {
+		if (member.getUsername() == null || member.getPassword() == null || member.getNickname() == null) {
+			memberRepository.delete(member);
+			return false;
+		}
+		return true;
 	}
 }
