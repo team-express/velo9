@@ -12,6 +12,4 @@ public class SocialSignupDTO {
 	private String password;
 	@NotBlank
 	private String nickname;
-	private String blogTitle;
-
 }

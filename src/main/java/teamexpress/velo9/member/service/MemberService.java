@@ -25,7 +25,7 @@ public class MemberService {
 
 	@Transactional
 	public void join(MemberSignupDTO signupDTO) {
-		checkDuplicateMember(signupDTO);
+		checkDuplicateMember(signupDTO.getUsername(), signupDTO.getNickname());
 		encodePassword(signupDTO);
 		Member member = signupDTO.toMember();
 		memberRepository.save(member);
@@ -91,13 +91,12 @@ public class MemberService {
 	public Member joinSocial(SocialSignupDTO socialSignupDTO, Long memberId) {
 
 		Member member = getMember(memberId);
-
+		checkDuplicateMember(socialSignupDTO.getUsername(), socialSignupDTO.getNickname());
 		String encodePassword = passwordEncoder.encode(socialSignupDTO.getPassword());
 		member.registerSocialMember(
 			socialSignupDTO.getUsername(),
 			encodePassword,
-			socialSignupDTO.getNickname(),
-			socialSignupDTO.getBlogTitle());
+			socialSignupDTO.getNickname());
 
 		return member;
 	}
@@ -116,9 +115,9 @@ public class MemberService {
 		signupDTO.setPassword(passwordEncoder.encode(signupDTO.getPassword()));
 	}
 
-	private void checkDuplicateMember(MemberSignupDTO signupDTO) {
-		validateUsername(signupDTO.getUsername());
-		validateNickname(signupDTO.getNickname());
+	private void checkDuplicateMember(String username, String nickname) {
+		validateUsername(username);
+		validateNickname(nickname);
 	}
 
 	private void validateUsername(String username) {
