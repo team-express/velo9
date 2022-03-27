@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.function.Supplier;
 import javax.persistence.EntityManager;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -29,7 +30,7 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 	}
 
 	@Override
-	public Slice<Post> findReadPost(String nickname, Pageable pageable) {
+	public Slice<Post> findPost(String nickname, Pageable pageable) {
 		List<Post> content = queryFactory.selectFrom(post)
 			.join(post.postThumbnail).fetchJoin()
 			.where(post.member.nickname.eq(nickname))
@@ -113,6 +114,18 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 		boolean hasNext = isHasNext(content, pageable);
 
 		return new SliceImpl<>(content, pageable, hasNext);
+	}
+
+	@Override
+	public Page<Post> findReadPost(Long postId) {
+
+		List<Post> content = queryFactory
+			.selectFrom(post)
+			.join(post.member).fetchJoin()
+			.where(post.id.eq(postId))
+			.fetch();
+
+		return new PageImpl<>(content);
 	}
 
 	private boolean isHasNext(List<Post> result, Pageable pageable) {
