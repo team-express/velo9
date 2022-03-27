@@ -72,10 +72,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 		memberThumbnailRepository.save(memberThumbnail);
 
 		Member member = Member.builder()
-			.nickname(attributes.getNickname())
 			.email(attributes.getEmail())
 			.role(Role.ROLE_SOCIAL)
-			.blogTitle(attributes.getNickname())
 			.memberThumbnail(memberThumbnail)
 			.build();
 

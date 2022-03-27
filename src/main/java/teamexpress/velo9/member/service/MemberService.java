@@ -88,9 +88,10 @@ public class MemberService {
 			});
 	}
 
+	@Transactional
 	public Member joinSocial(SocialSignupDTO socialSignupDTO, Long memberId) {
 
-		Member member = getMember(memberId);
+		Member member = getMember(4L);
 		checkDuplicateMember(socialSignupDTO.getUsername(), socialSignupDTO.getNickname());
 		String encodePassword = passwordEncoder.encode(socialSignupDTO.getPassword());
 		member.registerSocialMember(

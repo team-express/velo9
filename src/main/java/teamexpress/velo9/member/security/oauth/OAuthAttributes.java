@@ -1,7 +1,6 @@
 package teamexpress.velo9.member.security.oauth;
 
 import java.util.Map;
-import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -11,15 +10,13 @@ public class OAuthAttributes {
 	private Map<String, Object> attributes;
 	private String nameAttributeKey;
 	private String email;
-	private String nickname;
 	private String picture;
 
 	@Builder
 	public OAuthAttributes(Map<String, Object> attributes, String nameAttributeKey,
-		String email, String nickname, String picture) {
+		String email, String picture) {
 		this.attributes = attributes;
 		this.nameAttributeKey = nameAttributeKey;
-		this.nickname = nickname;
 		this.email = email;
 		this.picture = picture;
 	}
@@ -38,7 +35,6 @@ public class OAuthAttributes {
 		return OAuthAttributes.builder()
 			.email((String) attributes.get("email"))
 			.picture((String) attributes.get("avatar_url"))
-			.nickname(UUID.randomUUID().toString())
 			.attributes(attributes)
 			.nameAttributeKey(userNameAttributeName)
 			.build();
@@ -49,7 +45,6 @@ public class OAuthAttributes {
 		return OAuthAttributes.builder()
 			.email((String) attributes.get("email"))
 			.picture((String) attributes.get("picture"))
-			.nickname(UUID.randomUUID().toString())
 			.attributes(attributes)
 			.nameAttributeKey(userNameAttributeName)
 			.build();
