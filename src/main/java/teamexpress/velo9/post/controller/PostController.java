@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import teamexpress.velo9.common.domain.Result;
 import teamexpress.velo9.member.security.oauth.SessionConst;
 import teamexpress.velo9.post.dto.LookDTO;
+import teamexpress.velo9.post.dto.LookPostDTO;
 import teamexpress.velo9.post.dto.LoveDTO;
+import teamexpress.velo9.post.dto.LovePostDTO;
 import teamexpress.velo9.post.dto.PostReadDTO;
 import teamexpress.velo9.post.dto.PostSaveDTO;
 import teamexpress.velo9.post.dto.SeriesDTO;
@@ -41,7 +43,6 @@ public class PostController {
 
 	@PostMapping("/write")
 	public ResponseEntity<Long> write(@RequestBody PostSaveDTO postSaveDTO) {
-
 		Long postId = postService.write(postSaveDTO);
 		tagService.addTags(postId, postSaveDTO.getTagNames());
 		tagService.removeUselessTags();
@@ -84,8 +85,7 @@ public class PostController {
 
 	@GetMapping("/temp")
 	public ResponseEntity<Result<List<TempSavedPostDTO>>> tempPostsRead(HttpSession session) {
-		Long memberId = (Long) session.getAttribute(SessionConst.LOGIN_MEMBER);
-		return new ResponseEntity<>(new Result(postService.getTempSavedPost(memberId)), HttpStatus.OK);
+		return new ResponseEntity<>(new Result(postService.getTempSavedPost(getMemberId(session))), HttpStatus.OK);
 	}
 
 	@PostMapping("/love")
@@ -96,5 +96,31 @@ public class PostController {
 	@PostMapping("/look")//차후 상세보기가 생기면 녹아들어야 할 로직
 	public void look(@RequestBody LookDTO lookDTO) {
 		postService.look(lookDTO);
+	}
+
+	@GetMapping("/archive/like")
+	public ResponseEntity<Slice<LovePostDTO>> lovePostRead(HttpSession session,
+		@RequestParam(defaultValue = "0") int page,
+		@RequestParam(defaultValue = "20") int size) {
+
+		PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Direction.DESC, "createdDate"));
+
+		Slice<LovePostDTO> lovePosts = postService.getLovePosts(getMemberId(session), pageRequest);
+		return new ResponseEntity<>(lovePosts, HttpStatus.OK);
+	}
+
+	@GetMapping("/archive/recent")
+	public ResponseEntity<Slice<LookPostDTO>> lookPostRead(HttpSession session,
+		@RequestParam(defaultValue = "0") int page,
+		@RequestParam(defaultValue = "20") int size) {
+
+		PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Direction.DESC, "createdDate"));
+
+		Slice<LookPostDTO> lookPosts = postService.getLookPosts(getMemberId(session), pageRequest);
+		return new ResponseEntity<>(lookPosts, HttpStatus.OK);
+	}
+
+	private Long getMemberId(HttpSession session) {
+		return (Long) session.getAttribute(SessionConst.LOGIN_MEMBER);
 	}
 }
