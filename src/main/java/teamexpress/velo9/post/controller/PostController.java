@@ -72,6 +72,20 @@ public class PostController {
 		return new ResponseEntity<>(series, HttpStatus.OK);
 	}
 
+	@GetMapping("/{nickname}/series/{seriesName}")
+	public ResponseEntity<Slice<SeriesPostSummaryDTO>> seriesPost(
+		@PathVariable String seriesName,
+		@RequestParam(defaultValue = "0") int page,
+		@RequestParam(defaultValue = "10") int size,
+		@RequestParam(defaultValue = "descending") String sortCondition,
+		HttpSession session) {
+
+		PageRequest pageRequest = getPageRequest(page, size, sortCondition);
+
+		Slice<SeriesPostSummaryDTO> seriesPost = postService.findSeriesPost(getMemberId(session), seriesName, pageRequest);
+		return new ResponseEntity<>(seriesPost, HttpStatus.OK);
+	}
+
 	@GetMapping("/{nickname}/main")
 	public ResponseEntity<Slice<PostReadDTO>> postsRead(@PathVariable String nickname,
 		@RequestParam(defaultValue = "0") int page,
@@ -122,5 +136,15 @@ public class PostController {
 
 	private Long getMemberId(HttpSession session) {
 		return (Long) session.getAttribute(SessionConst.LOGIN_MEMBER);
+	}
+
+	private PageRequest getPageRequest(int page, int size, String sortCondition) {
+		Sort sort = Sort.by(Direction.DESC, "createdDate");
+
+		if (sortCondition.equals("ascending")) {
+			sort = Sort.by(Direction.ASC, "createdDate");
+		}
+
+		return PageRequest.of(page, size, sort);
 	}
 }
