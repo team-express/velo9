@@ -111,10 +111,11 @@ public class MemberService {
 		return findUsernameMember;
 	}
 
+	@Transactional
 	public void changeNewPw(MemberNewPwDTO memberNewPwDTO) {
 		Member member = getMember(memberNewPwDTO.getId());
 		String encodedPassword = passwordEncoder.encode(member.getPassword());
-		memberRepository.changePw(encodedPassword);
+		member.changePassword(encodedPassword);
 	}
 
 	private Member getMember(Long memberId) {
