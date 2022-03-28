@@ -22,16 +22,6 @@ public class MainController {
 
 	@GetMapping("/")
 	public ResponseEntity<Page<PostMainDTO>> mainPage(
-		@RequestParam(defaultValue = "0") int page,
-		@RequestParam(defaultValue = "20") int size) {
-
-		PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Direction.DESC, "createdDate"));
-		Page<PostMainDTO> mainPage = postService.getMainPage(pageRequest);
-		return new ResponseEntity<>(mainPage, HttpStatus.OK);
-	}
-
-	@GetMapping("/searchMain")
-	public ResponseEntity<Page<PostMainDTO>> searchMain(
 		@RequestParam(required = false) boolean tagSelect,
 		@RequestParam(required = false) String content,
 		@RequestParam(defaultValue = "0") int page,
@@ -48,11 +38,10 @@ public class MainController {
 	private PageRequest getPageRequest(int page, int size, String sortValue) {
 		Sort sort = Sort.by(Direction.DESC, sortValue);
 
-		if (sortValue.equals("descending")) {
+		if (sortValue.equals("olderDate")) {
 			sort = Sort.by(Direction.ASC, "createdDate");
 		}
 
 		return PageRequest.of(page, size, sort);
 	}
-
 }
