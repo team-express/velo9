@@ -54,8 +54,6 @@ public class PostController {
 		return new ResponseEntity<>(series, HttpStatus.OK);
 	}
 
-
-	// 특정 시리즈에 포함된 전체 글 목록 조회
 	@GetMapping("/{nickname}/series/{seriesName}")
 	public ResponseEntity<Slice<SeriesPostSummaryDTO>> seriesPost(
 		@PathVariable String seriesName,
@@ -69,7 +67,6 @@ public class PostController {
 		Slice<SeriesPostSummaryDTO> seriesPost = postService.findSeriesPost(getMemberId(session), seriesName, pageRequest);
 		return new ResponseEntity<>(seriesPost, HttpStatus.OK);
 	}
-
 
 	@GetMapping("/{nickname}/main")
 	public ResponseEntity<Slice<PostReadDTO>> postsRead(@PathVariable String nickname,
