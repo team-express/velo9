@@ -180,7 +180,7 @@ public class PostService {
 
 		TemporaryPost temporaryPost = temporaryPostWriteDTO.toTemporaryPost();
 		temporaryPostRepository.save(temporaryPost);
-		postRepository.addTempPost(post.getId(), temporaryPost);
+		postRepository.updateTempPost(post.getId(), temporaryPost);
 	}
 
 	private void writeNewTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {

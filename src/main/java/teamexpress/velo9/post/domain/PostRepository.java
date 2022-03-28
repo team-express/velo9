@@ -16,7 +16,7 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
 
 	@Query("update Post p set p.temporaryPost = :tmp where p.id = :id")
 	@Modifying
-	void addTempPost(@Param("id") Long id, @Param("tmp") TemporaryPost temporaryPost);
+	void updateTempPost(@Param("id") Long id, @Param("tmp") TemporaryPost temporaryPost);
 
 	@Query("select p from Post p where p.member.id = :id and p.status =:status")
 	List<Post> getTempSavedPost(@Param("id") Long id, @Param("status") PostStatus status);
