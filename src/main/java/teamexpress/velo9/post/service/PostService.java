@@ -32,6 +32,7 @@ import teamexpress.velo9.post.dto.PostSaveDTO;
 import teamexpress.velo9.post.dto.PostThumbnailDTO;
 import teamexpress.velo9.post.dto.SearchCondition;
 import teamexpress.velo9.post.dto.SeriesDTO;
+import teamexpress.velo9.post.dto.SeriesPostSummaryDTO;
 import teamexpress.velo9.post.dto.TempSavedPostDTO;
 
 @Service
@@ -163,12 +164,17 @@ public class PostService {
 	}
 
 	public Slice<LovePostDTO> getLovePosts(Long memberId, PageRequest page) {
-		Slice<Post> lovePosts = postRepository.findByJoinLove(2L, page);
+		Slice<Post> lovePosts = postRepository.findByJoinLove(memberId, page);
 		return lovePosts.map(LovePostDTO::new);
 	}
 
 	public Slice<LookPostDTO> getLookPosts(Long memberId, PageRequest page) {
-		Slice<Post> lookPosts = postRepository.findByJoinLook(2L, page);
+		Slice<Post> lookPosts = postRepository.findByJoinLook(memberId, page);
 		return lookPosts.map(LookPostDTO::new);
+	}
+
+	public Slice<SeriesPostSummaryDTO> findSeriesPost(Long memberId, String seriesName, PageRequest page) {
+		Slice<Post> seriesPosts =  postRepository.findByJoinSeries(memberId, seriesName, page);
+		return seriesPosts.map(SeriesPostSummaryDTO::new);
 	}
 }
