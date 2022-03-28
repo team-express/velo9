@@ -3,6 +3,7 @@ package teamexpress.velo9.post.domain;
 import static teamexpress.velo9.member.domain.QLook.look;
 import static teamexpress.velo9.member.domain.QLove.love;
 import static teamexpress.velo9.post.domain.QPost.post;
+import static teamexpress.velo9.post.domain.QPostTag.postTag;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -49,7 +50,9 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 			.selectFrom(post)
 			.join(post.member).fetchJoin()
 			.join(post.postThumbnail).fetchJoin()
-			.where(searchContent(condition.getContent()))
+			.leftJoin(postTag)
+			.on(post.id.eq(postTag.post.id))
+			.where(searchMain(condition))
 			.where(openPost())
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize());
@@ -106,6 +109,10 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 		return hasNext;
 	}
 
+	private BooleanBuilder searchMain(SearchCondition condition) {
+		return condition.isTagSelect() ? searchTagContent(condition.getContent()) : searchContent(condition.getContent());
+	}
+
 	private BooleanBuilder searchContent(String content) {
 		return titleContains(content).or(contentContains(content));
 	}
@@ -116,6 +123,10 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 
 	private BooleanBuilder contentContains(String content) {
 		return nullSafeBuilder(() -> post.content.contains(content));
+	}
+
+	private BooleanBuilder searchTagContent(String content) {
+		return nullSafeBuilder(() -> postTag.tag.name.contains(content));
 	}
 
 	private BooleanBuilder openPost() {
@@ -130,7 +141,7 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 		return nullSafeBuilder(() -> post.access.eq(PostAccess.PUBLIC));
 	}
 
-	private static BooleanBuilder nullSafeBuilder(Supplier<BooleanExpression> f) {
+	private BooleanBuilder nullSafeBuilder(Supplier<BooleanExpression> f) {
 		try {
 			return new BooleanBuilder(f.get());
 		} catch (NullPointerException e) {
