@@ -41,7 +41,7 @@ public class PostSaveDTO {
 		this.memberId = post.getMember().getId();
 
 		if (post.getAccess() != null) {
-			this.access = post.getAccess().toString();
+			this.access = post.getAccess().name();
 		}
 
 		if (post.getSeries() != null) {
@@ -92,7 +92,7 @@ public class PostSaveDTO {
 
 	private void setAccess() {
 		if (this.access == null) {
-			this.access = PostAccess.PUBLIC.toString();
+			this.access = PostAccess.PUBLIC.name();
 		}
 	}
 

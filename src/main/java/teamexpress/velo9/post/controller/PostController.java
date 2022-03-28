@@ -24,6 +24,7 @@ import teamexpress.velo9.post.dto.LovePostDTO;
 import teamexpress.velo9.post.dto.PostReadDTO;
 import teamexpress.velo9.post.dto.PostSaveDTO;
 import teamexpress.velo9.post.dto.SeriesDTO;
+import teamexpress.velo9.post.dto.SeriesPostSummaryDTO;
 import teamexpress.velo9.post.dto.TempSavedPostDTO;
 import teamexpress.velo9.post.dto.TemporaryPostWriteDTO;
 import teamexpress.velo9.post.service.PostService;

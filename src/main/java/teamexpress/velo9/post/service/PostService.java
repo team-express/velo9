@@ -3,8 +3,8 @@ package teamexpress.velo9.post.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -180,7 +180,7 @@ public class PostService {
 
 		TemporaryPost temporaryPost = temporaryPostWriteDTO.toTemporaryPost();
 		temporaryPostRepository.save(temporaryPost);
-		postRepository.updateTempPost(post.getId(), temporaryPost);
+		postRepository.addTempPost(post.getId(), temporaryPost);
 	}
 
 	private void writeNewTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {
@@ -231,7 +231,7 @@ public class PostService {
 	}
 
 	public Slice<SeriesPostSummaryDTO> findSeriesPost(Long memberId, String seriesName, PageRequest page) {
-		Slice<Post> seriesPosts =  postRepository.findByJoinSeries(memberId, seriesName, page);
+		Slice<Post> seriesPosts = postRepository.findByJoinSeries(memberId, seriesName, page);
 		return seriesPosts.map(SeriesPostSummaryDTO::new);
 	}
 }
