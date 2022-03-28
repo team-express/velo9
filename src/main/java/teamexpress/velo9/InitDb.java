@@ -1,6 +1,7 @@
 package teamexpress.velo9;
 
 import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,6 +17,8 @@ import teamexpress.velo9.member.domain.Role;
 import teamexpress.velo9.post.domain.Post;
 import teamexpress.velo9.post.domain.PostRepository;
 import teamexpress.velo9.post.domain.PostStatus;
+import teamexpress.velo9.post.domain.PostTag;
+import teamexpress.velo9.post.domain.PostTagRepository;
 import teamexpress.velo9.post.domain.PostThumbnail;
 import teamexpress.velo9.post.domain.PostThumbnailRepository;
 import teamexpress.velo9.post.domain.Series;
@@ -47,6 +50,7 @@ public class InitDb {
 		private final TagRepository tagRepository;
 		private final LoveRepository loveRepository;
 		private final LookRepository lookRepository;
+		private final PostTagRepository postTagRepository;
 
 		public void dbInit1() {
 			memberRepository.save(createMember("jinwook", "jinwook", "1234", "test@nate.com", Role.ROLE_USER));
@@ -94,31 +98,41 @@ public class InitDb {
 				Post savedPost = postRepository.save(createPost("" + i, "" + i, member, series1, postThumbnail));
 				loveRepository.save(createLove(member, savedPost));
 				lookRepository.save(createLook(member, savedPost));
+				postTagRepository.save(createTagPost(savedPost, tag1));
+				postTagRepository.save(createTagPost(savedPost, tag2));
+				postTagRepository.save(createTagPost(savedPost, tag3));
+
 			}
 			for (int i = 10; i < 20; i++) {
-				Post savedPost = postRepository.save(createPost("" + i, "" + i, member, series2, postThumbnail));
+				Post savedPost = postRepository.save(createPost("" + i, "" + i, member, series1, postThumbnail));
 				loveRepository.save(createLove(member, savedPost));
 				lookRepository.save(createLook(member, savedPost));
+				postTagRepository.save(createTagPost(savedPost, tag2));
 			}
 			for (int i = 20; i < 30; i++) {
-				Post savedPost = postRepository.save(createPost("" + i, "" + i, member, series3, postThumbnail));
+				Post savedPost = postRepository.save(createPost("" + i, "" + i, member, series1, postThumbnail));
 				loveRepository.save(createLove(member, savedPost));
 				lookRepository.save(createLook(member, savedPost));
+				postTagRepository.save(createTagPost(savedPost, tag3));
 			}
 			for (int i = 30; i < 40; i++) {
-				Post savedPost = postRepository.save(createPost("" + i, "" + i, member, series4, postThumbnail));
+				Post savedPost = postRepository.save(createPost("" + i, "" + i, member, series1, postThumbnail));
 				loveRepository.save(createLove(member, savedPost));
 				lookRepository.save(createLook(member, savedPost));
+
 			}
 			for (int i = 40; i < 50; i++) {
-				Post savedPost = postRepository.save(createPost("" + i, "" + i, member, series5, postThumbnail));
+				Post savedPost = postRepository.save(createPost("" + i, "" + i, member, series1, postThumbnail));
 				loveRepository.save(createLove(member, savedPost));
 				lookRepository.save(createLook(member, savedPost));
+
 			}
 			for (int i = 50; i < 60; i++) {
 				Post savedPost = postRepository.save(createPost("" + i, "" + i, member, series6, postThumbnail));
 				loveRepository.save(createLove(member, savedPost));
 				lookRepository.save(createLook(member, savedPost));
+				postTagRepository.save(createTagPost(savedPost, tag2));
+				postTagRepository.save(createTagPost(savedPost, tag3));
 			}
 			for (int i = 60; i < 70; i++) {
 				Post savedPost = postRepository.save(createPost("" + i, "" + i, member, series7, postThumbnail));
@@ -164,6 +178,10 @@ public class InitDb {
 
 		private Look createLook(Member member, Post post) {
 			return Look.builder().member(member).post(post).build();
+		}
+
+		private PostTag createTagPost(Post post, Tag tag) {
+			return PostTag.builder().post(post).tag(tag).build();
 		}
 	}
 }
