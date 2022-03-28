@@ -89,21 +89,15 @@ public class MemberService {
 	}
 
 	@Transactional
-	public Member joinSocial(SocialSignupDTO socialSignupDTO, Long memberId) {
+	public void joinSocial(SocialSignupDTO socialSignupDTO, Long memberId) {
 
-		Member member = getMember(4L);
+		Member member = getMember(memberId);
 		checkDuplicateMember(socialSignupDTO.getUsername(), socialSignupDTO.getNickname());
 		String encodePassword = passwordEncoder.encode(socialSignupDTO.getPassword());
 		member.registerSocialMember(
 			socialSignupDTO.getUsername(),
 			encodePassword,
 			socialSignupDTO.getNickname());
-
-		return member;
-	}
-
-	public boolean checkSignup(Member joinMember) {
-		return checkRegister(joinMember);
 	}
 
 	private Member getMember(Long memberId) {
@@ -152,13 +146,5 @@ public class MemberService {
 		if (!passwordEncoder.matches(oldPassword, savedPassword)) {
 			throw new IllegalArgumentException("잘못된 비밀번호 입니다.");
 		}
-	}
-
-	private boolean checkRegister(Member member) {
-		if (member.getUsername() == null || member.getPassword() == null || member.getNickname() == null) {
-			memberRepository.delete(member);
-			return false;
-		}
-		return true;
 	}
 }

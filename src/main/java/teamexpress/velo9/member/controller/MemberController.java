@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import teamexpress.velo9.member.domain.Member;
 import teamexpress.velo9.member.dto.MemberDTO;
 import teamexpress.velo9.member.dto.MemberEditDTO;
 import teamexpress.velo9.member.dto.MemberSignupDTO;
@@ -55,9 +54,6 @@ public class MemberController {
 	@PostMapping("/socialSignup")
 	public void socialSignup(@Validated @RequestBody SocialSignupDTO socialSignupDTO, HttpSession session) {
 		Long memberId = (Long) session.getAttribute(SessionConst.LOGIN_MEMBER);
-		Member joinMember = memberService.joinSocial(socialSignupDTO, memberId);
-		if (memberService.checkSignup(joinMember)) {
-			session.setAttribute(SessionConst.LOGIN_MEMBER, joinMember.getId());
-		}
+		memberService.joinSocial(socialSignupDTO, memberId);
 	}
 }
