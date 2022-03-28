@@ -3,7 +3,6 @@ package teamexpress.velo9;
 import java.util.ArrayList;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +23,6 @@ import teamexpress.velo9.post.domain.SeriesRepository;
 import teamexpress.velo9.post.domain.Tag;
 import teamexpress.velo9.post.domain.TagRepository;
 
-@Profile("test")
 @Component
 @RequiredArgsConstructor
 public class InitDb {

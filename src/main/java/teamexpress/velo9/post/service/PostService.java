@@ -3,6 +3,7 @@ package teamexpress.velo9.post.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -22,7 +23,9 @@ import teamexpress.velo9.post.domain.PostThumbnailRepository;
 import teamexpress.velo9.post.domain.Series;
 import teamexpress.velo9.post.domain.SeriesRepository;
 import teamexpress.velo9.post.dto.LookDTO;
+import teamexpress.velo9.post.dto.LookPostDTO;
 import teamexpress.velo9.post.dto.LoveDTO;
+import teamexpress.velo9.post.dto.LovePostDTO;
 import teamexpress.velo9.post.dto.PostMainDTO;
 import teamexpress.velo9.post.dto.PostReadDTO;
 import teamexpress.velo9.post.dto.PostSaveDTO;
@@ -45,7 +48,6 @@ public class PostService {
 
 	@Transactional
 	public Long write(PostSaveDTO postSaveDTO) {
-
 		PostThumbnail postThumbnail = getPostThumbnail(postSaveDTO.getPostThumbnailDTO());
 		Series series = getSeries(postSaveDTO.getSeriesId());
 		Member member = getMember(postSaveDTO.getMemberId());
@@ -158,5 +160,15 @@ public class PostService {
 			);
 			postRepository.plusViewCount();
 		}
+	}
+
+	public Slice<LovePostDTO> getLovePosts(Long memberId, PageRequest page) {
+		Slice<Post> lovePosts = postRepository.findByJoinLove(2L, page);
+		return lovePosts.map(LovePostDTO::new);
+	}
+
+	public Slice<LookPostDTO> getLookPosts(Long memberId, PageRequest page) {
+		Slice<Post> lookPosts = postRepository.findByJoinLook(2L, page);
+		return lookPosts.map(LookPostDTO::new);
 	}
 }
