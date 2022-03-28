@@ -32,3 +32,4 @@ public class SeriesPostSummaryDTO {
 			.collect(Collectors.toList());
 	}
 }
+
