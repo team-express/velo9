@@ -1,5 +1,7 @@
 package teamexpress.velo9.post.controller;
 
+import java.util.List;
+import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
@@ -15,11 +17,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import teamexpress.velo9.common.domain.Result;
 import teamexpress.velo9.member.security.oauth.SessionConst;
-import teamexpress.velo9.post.dto.*;
+import teamexpress.velo9.post.dto.LookDTO;
+import teamexpress.velo9.post.dto.LookPostDTO;
+import teamexpress.velo9.post.dto.LoveDTO;
+import teamexpress.velo9.post.dto.LovePostDTO;
+import teamexpress.velo9.post.dto.PostReadDTO;
+import teamexpress.velo9.post.dto.PostSaveDTO;
+import teamexpress.velo9.post.dto.SeriesDTO;
+import teamexpress.velo9.post.dto.SeriesPostSummaryDTO;
+import teamexpress.velo9.post.dto.TempSavedPostDTO;
+import teamexpress.velo9.post.dto.TemporaryPostWriteDTO;
 import teamexpress.velo9.post.service.PostService;
 import teamexpress.velo9.post.service.TagService;
-import javax.servlet.http.HttpSession;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -40,6 +49,16 @@ public class PostController {
 		tagService.removeUselessTags();
 
 		return new ResponseEntity<>(postId, HttpStatus.OK);
+	}
+
+	@PostMapping("/writeTemporary")
+	public void writeTemporary(@RequestBody TemporaryPostWriteDTO temporaryPostWriteDTO) {
+		postService.writeTemporary(temporaryPostWriteDTO);
+	}
+
+	@PostMapping("/delete")
+	public void delete(@RequestParam("postId") Long id) {
+		postService.delete(id);
 	}
 
 	@GetMapping("/{nickname}/series")

@@ -1,7 +1,6 @@
 package teamexpress.velo9;
 
 import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
