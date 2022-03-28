@@ -58,7 +58,11 @@ public class Post {
 	@JoinColumn(name = "post_thumbnail_id")
 	private PostThumbnail postThumbnail;
 
-	@OneToMany(mappedBy = "post")
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "temporary_post_id")
+	private TemporaryPost temporaryPost;
+
+	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
 	@JsonIgnore
 	private List<PostTag> postTags = new ArrayList<>();
 
