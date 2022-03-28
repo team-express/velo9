@@ -1,6 +1,9 @@
 package teamexpress.velo9.post.domain;
 
+import static teamexpress.velo9.member.domain.QLook.look;
+import static teamexpress.velo9.member.domain.QLove.love;
 import static teamexpress.velo9.post.domain.QPost.post;
+import static teamexpress.velo9.post.domain.QPostTag.postTag;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -42,32 +45,14 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 	}
 
 	@Override
-	public Page<Post> findMainPage(Pageable pageable) {
-
-		JPAQuery<Post> query = queryFactory
-			.selectFrom(post)
-			.join(post.member).fetchJoin()
-			.join(post.postThumbnail).fetchJoin()
-			.where(openPost())
-			.offset(pageable.getOffset())
-			.limit(pageable.getPageSize());
-
-		List<Post> content = getQuerydsl().applyPagination(pageable, query).fetch();
-
-		JPAQuery<Post> countQuery = queryFactory.
-			selectFrom(post);
-
-		return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
-	}
-
-	@Override
 	public Page<Post> search(SearchCondition condition, Pageable pageable) {
-
 		JPAQuery<Post> query = queryFactory
 			.selectFrom(post)
 			.join(post.member).fetchJoin()
 			.join(post.postThumbnail).fetchJoin()
-			.where(searchContent(condition.getContent()))
+			.leftJoin(postTag)
+			.on(post.id.eq(postTag.post.id))
+			.where(searchMain(condition))
 			.where(openPost())
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize());
@@ -79,6 +64,42 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 		return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
 	}
 
+	@Override
+	public Slice<Post> findByJoinLove(Long memberId, Pageable pageable) {
+		JPAQuery<Post> query = queryFactory
+			.selectFrom(post)
+			.join(love)
+			.on(post.id.eq(love.post.id))
+			.join(post.member)
+			.on(post.member.id.eq(love.member.id))
+			.where(post.member.id.eq(memberId))
+			.offset(pageable.getOffset());
+
+		List<Post> content = getQuerydsl().applyPagination(pageable, query).limit(pageable.getPageSize() + 1).fetch();
+
+		boolean hasNext = isHasNext(content, pageable);
+
+		return new SliceImpl<>(content, pageable, hasNext);
+	}
+
+	@Override
+	public Slice<Post> findByJoinLook(Long memberId, Pageable pageable) {
+		JPAQuery<Post> query = queryFactory
+			.selectFrom(post)
+			.join(look)
+			.on(post.id.eq(look.post.id))
+			.join(post.member)
+			.on(post.member.id.eq(look.member.id))
+			.where(post.member.id.eq(memberId))
+			.offset(pageable.getOffset());
+
+		List<Post> content = getQuerydsl().applyPagination(pageable, query).limit(pageable.getPageSize() + 1).fetch();
+
+		boolean hasNext = isHasNext(content, pageable);
+
+		return new SliceImpl<>(content, pageable, hasNext);
+	}
+
 	private boolean isHasNext(List<Post> result, Pageable pageable) {
 		boolean hasNext = false;
 		if (result.size() > pageable.getPageSize()) {
@@ -86,6 +107,10 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 			hasNext = true;
 		}
 		return hasNext;
+	}
+
+	private BooleanBuilder searchMain(SearchCondition condition) {
+		return condition.isTagSelect() ? searchTagContent(condition.getContent()) : searchContent(condition.getContent());
 	}
 
 	private BooleanBuilder searchContent(String content) {
@@ -100,6 +125,10 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 		return nullSafeBuilder(() -> post.content.contains(content));
 	}
 
+	private BooleanBuilder searchTagContent(String content) {
+		return nullSafeBuilder(() -> postTag.tag.name.contains(content));
+	}
+
 	private BooleanBuilder openPost() {
 		return status().and(access());
 	}
@@ -112,7 +141,7 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 		return nullSafeBuilder(() -> post.access.eq(PostAccess.PUBLIC));
 	}
 
-	private static BooleanBuilder nullSafeBuilder(Supplier<BooleanExpression> f) {
+	private BooleanBuilder nullSafeBuilder(Supplier<BooleanExpression> f) {
 		try {
 			return new BooleanBuilder(f.get());
 		} catch (NullPointerException e) {
