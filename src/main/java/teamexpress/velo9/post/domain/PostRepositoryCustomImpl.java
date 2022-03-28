@@ -45,24 +45,6 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 	}
 
 	@Override
-	public Page<Post> findMainPage(Pageable pageable) {
-		JPAQuery<Post> query = queryFactory
-			.selectFrom(post)
-			.join(post.member).fetchJoin()
-			.join(post.postThumbnail).fetchJoin()
-			.where(openPost())
-			.offset(pageable.getOffset())
-			.limit(pageable.getPageSize());
-
-		List<Post> content = getQuerydsl().applyPagination(pageable, query).fetch();
-
-		JPAQuery<Post> countQuery = queryFactory.
-			selectFrom(post);
-
-		return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
-	}
-
-	@Override
 	public Page<Post> search(SearchCondition condition, Pageable pageable) {
 		JPAQuery<Post> query = queryFactory
 			.selectFrom(post)
