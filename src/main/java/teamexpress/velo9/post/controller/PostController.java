@@ -130,6 +130,7 @@ public class PostController {
 	public ResponseEntity<Page<ReadDTO>> readPost(@PathVariable Long postId) {
 		Page<ReadDTO> content = postService.findReadPost(postId);
 		return new ResponseEntity<>(content, HttpStatus.OK);
+//		postService.findReadPostTest(postId);
 	}
 
 	private Long getMemberId(HttpSession session) {

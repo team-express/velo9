@@ -1,5 +1,6 @@
 package teamexpress.velo9.post.domain;
 
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -12,4 +13,9 @@ public interface PostRepositoryCustom {
 	Slice<Post> findByJoinLook(Long memberId, Pageable pageable);
 	Page<Post> findReadPost(Long postId);
 	Slice<Post> findByJoinSeries(Long memberId, String seriesName, Pageable pageable);
+
+	Post findPrevPost(Post findPost);
+	Post findNextPost(Post findPost);
+
+	List<Post> findPrevNextPost(Post findPost);
 }

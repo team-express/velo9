@@ -18,10 +18,9 @@ public class ReadDTO {
 	private LocalDateTime createdDate;
 	private PostMemberDTO memberDTO;
 	private List<TagDTO> postTags;
-	private String prevTitle;
-	private String nextTitle;
+	private TransferPostDTO transferPostDTO;
 
-	public ReadDTO(Post post) {
+	public ReadDTO(Post post, Post prevPost, Post nextPost) {
 		title = post.getTitle();
 		seriesName = seriesNullCheck(post);
 		content = post.getContent();
@@ -29,9 +28,11 @@ public class ReadDTO {
 		createdDate = post.getCreatedDate();
 		memberDTO = new PostMemberDTO(post.getMember());
 		postTags = post.getPostTags().stream().map(TagDTO::new).collect(Collectors.toList());
+		transferPostDTO= new TransferPostDTO(prevPost, nextPost);
 	}
 
 	private String seriesNullCheck(Post post) {
-		return post.getSeries() == null ? null : post.getSeries().getName();
+		return post.getSeries() == null ? "존재하지 않습니다." : post.getSeries().getName();
 	}
+
 }

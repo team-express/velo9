@@ -1,5 +1,6 @@
 package teamexpress.velo9.post.domain;
 
+import static com.querydsl.jpa.JPAExpressions.select;
 import static teamexpress.velo9.member.domain.QLook.look;
 import static teamexpress.velo9.member.domain.QLove.love;
 import static teamexpress.velo9.post.domain.QPost.post;
@@ -174,5 +175,76 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 		} catch (NullPointerException e) {
 			return new BooleanBuilder();
 		}
+	}
+
+	@Override
+	public Post findPrevPost(Post findPost) {
+		return queryFactory
+			.select(post)
+			.from(post)
+			.where(post.id.in(
+				select(post.id.min())
+					.from(post)
+					.where(post.id.gt(findPost.getId()).and(findSeries(findPost)))))
+			.fetchOne();
+	}
+
+	@Override
+	public Post findNextPost(Post findPost) {
+		return queryFactory
+			.select(post)
+			.from(post)
+			.where(post.id.eq(
+				select(post.id.max())
+					.from(post)
+					.where(post.id.lt(findPost.getId()).and(findSeries(findPost)))))
+			.fetchOne();
+
+	}
+
+	@Override
+	public List<Post> findPrevNextPost(Post findPost) {
+		return queryFactory
+			.select(post)
+			.from(post)
+			.where(post.id.eq(
+				select(post.id.max())
+					.from(post)
+					.where(post.id.lt(findPost.getId()).and(findSeries(findPost))))
+				.or(post.id.eq(
+					select(post.id.min())
+					.from(post)
+					.where(post.id.gt(findPost.getId()).and(findSeries(findPost))))))
+			.fetch();
+
+//		return queryFactory
+//			.select(post)
+//			.from(post)
+//			.where(post.id.goe(JPAExpressions
+//					.select(post.id.max())
+//					.from(post)
+//					.where(post.id.lt(findPost.getId()).and(findSeries(findPost))))
+//				.and(findSeries(findPost)))
+//			.limit(3)
+//			.fetch();
+	}
+
+	private BooleanBuilder findSeries(Post findPost) {
+		if (findPost.getSeries() != null) {
+			return eqTotal(findPost);
+		}
+		return new BooleanBuilder();
+	}
+
+	private BooleanBuilder eqTotal(Post findPost) {
+		return eqSeries(findPost).and(eqMember(findPost));
+	}
+
+	private BooleanBuilder eqSeries(Post findPost) {
+		return nullSafeBuilder(() -> post.series.eq(findPost.getSeries()));
+	}
+
+	private BooleanBuilder eqMember(Post findPost) {
+		return nullSafeBuilder(() -> post.member.eq(findPost.getMember()));
 	}
 }

@@ -176,8 +176,20 @@ public class PostService {
 		return lookPosts.map(LookPostDTO::new);
 	}
 
+	/**
+	 * post가 series에 속해있으면 그 series에 속한 이전 post, 다음 post를 보내줘야 함.
+	 * post가 series에 속해있지 않다면 단순히 이전 post, 다음 post를 보내주면 된다.
+	 */
 	public Page<ReadDTO> findReadPost(Long postId) {
-		return postRepository.findReadPost(postId).map(ReadDTO::new);
+		Post findPost = postRepository.findById(postId).orElseThrow();
+		Post nextPost = postRepository.findPrevPost(findPost);
+		Post prevPost = postRepository.findNextPost(findPost);
+		return postRepository.findReadPost(postId).map(post -> new ReadDTO(post, prevPost, nextPost));
+	}
+
+	public void findReadPostTest(Long postId) {
+		Post findPost = postRepository.findById(postId).orElseThrow();
+		List<Post> post = postRepository.findPrevNextPost(findPost);
 	}
 
 	public Slice<SeriesPostSummaryDTO> findSeriesPost(Long memberId, String seriesName, PageRequest page) {
