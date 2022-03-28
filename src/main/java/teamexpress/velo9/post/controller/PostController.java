@@ -26,6 +26,7 @@ import teamexpress.velo9.post.dto.PostReadDTO;
 import teamexpress.velo9.post.dto.PostSaveDTO;
 import teamexpress.velo9.post.dto.ReadDTO;
 import teamexpress.velo9.post.dto.SeriesDTO;
+import teamexpress.velo9.post.dto.SeriesPostSummaryDTO;
 import teamexpress.velo9.post.dto.TempSavedPostDTO;
 import teamexpress.velo9.post.service.PostService;
 import teamexpress.velo9.post.service.TagService;
@@ -61,6 +62,20 @@ public class PostController {
 
 		Slice<SeriesDTO> series = postService.findSeries(nickname, pageRequest);
 		return new ResponseEntity<>(series, HttpStatus.OK);
+	}
+
+	@GetMapping("/{nickname}/series/{seriesName}")
+	public ResponseEntity<Slice<SeriesPostSummaryDTO>> seriesPost(
+		@PathVariable String seriesName,
+		@RequestParam(defaultValue = "0") int page,
+		@RequestParam(defaultValue = "10") int size,
+		@RequestParam(defaultValue = "descending") String sortCondition,
+		HttpSession session) {
+
+		PageRequest pageRequest = getPageRequest(page, size, sortCondition);
+
+		Slice<SeriesPostSummaryDTO> seriesPost = postService.findSeriesPost(getMemberId(session), seriesName, pageRequest);
+		return new ResponseEntity<>(seriesPost, HttpStatus.OK);
 	}
 
 	@GetMapping("/{nickname}/main")
@@ -119,5 +134,15 @@ public class PostController {
 
 	private Long getMemberId(HttpSession session) {
 		return (Long) session.getAttribute(SessionConst.LOGIN_MEMBER);
+	}
+
+	private PageRequest getPageRequest(int page, int size, String sortCondition) {
+		Sort sort = Sort.by(Direction.DESC, "createdDate");
+
+		if (sortCondition.equals("ascending")) {
+			sort = Sort.by(Direction.ASC, "createdDate");
+		}
+
+		return PageRequest.of(page, size, sort);
 	}
 }
