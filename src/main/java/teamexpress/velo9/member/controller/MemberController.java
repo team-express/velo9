@@ -43,6 +43,12 @@ public class MemberController {
 		memberService.join(memberSignupDTO);
 	}
 
+	@GetMapping("/setting")
+	public ResponseEntity<MemberDTO> editMember(Long memberId) {
+		MemberDTO memberDTO = memberService.getLoginMember(memberId);
+		return new ResponseEntity<>(memberDTO, HttpStatus.OK);
+	}
+
 	@PostMapping("/setting")
 	public ResponseEntity<MemberDTO> editMember(@RequestBody MemberEditDTO memberEditDTO, HttpSession session) {
 		Long memberId = (Long) session.getAttribute(SessionConst.LOGIN_MEMBER);

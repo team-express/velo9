@@ -108,17 +108,24 @@ public class MemberService {
 	}
 
 	public Member findPw(FindInfoDTO findInfoDTO) {
-		Member findEmailMember = memberRepository.findByEmail(findInfoDTO.getEmail()).orElseThrow(() -> {
-			throw new IllegalArgumentException("존재하지 않는 회원입니다.");
-		});
-		Member findUsernameMember = memberRepository.findByUsername(findInfoDTO.getUsername()).orElseThrow(() -> {
+		Member findEmailMember =
+			memberRepository.findByEmail(findInfoDTO.getEmail()).orElseThrow(() -> {
 			throw new IllegalArgumentException("존재하지 않는 회원입니다.");
 		});
 
+		Member findUsernameMember =
+			memberRepository.findByUsername(findInfoDTO.getUsername()).orElseThrow(() -> {
+			throw new IllegalArgumentException("존재하지 않는 회원입니다.");
+		});
+
+		checkEmailUsername(findEmailMember, findUsernameMember);
+		return findUsernameMember;
+	}
+
+	private void checkEmailUsername(Member findEmailMember, Member findUsernameMember) {
 		if (findEmailMember != findUsernameMember) {
 			throw new IllegalArgumentException("아이디 또는 이메일이 일치하지 않습니다.");
 		}
-		return findUsernameMember;
 	}
 
 	@Transactional
@@ -174,5 +181,10 @@ public class MemberService {
 		if (!passwordEncoder.matches(oldPassword, savedPassword)) {
 			throw new IllegalArgumentException("잘못된 비밀번호 입니다.");
 		}
+	}
+
+	public MemberDTO getLoginMember(Long memberId) {
+		Member member = getMember(memberId);
+		return new MemberDTO(member);
 	}
 }

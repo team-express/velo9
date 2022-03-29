@@ -35,6 +35,10 @@ import teamexpress.velo9.post.service.TagService;
 @RequiredArgsConstructor
 public class PostController {
 
+	private static final int SERIES_SIZE = 5;
+	private static final int SIZE = 10;
+	private static final int ARCHIVE_SIZE = 20;
+
 	private final PostService postService;
 	private final TagService tagService;
 
@@ -65,10 +69,9 @@ public class PostController {
 	@GetMapping("/{nickname}/series")
 	public ResponseEntity<Slice<SeriesDTO>> series(
 		@PathVariable String nickname,
-		@RequestParam(defaultValue = "0") int page,
-		@RequestParam(defaultValue = "5") int size) {
+		@RequestParam(defaultValue = "0") int page) {
 
-		PageRequest pageRequest = PageRequest.of(page, size);
+		PageRequest pageRequest = PageRequest.of(page, SERIES_SIZE);
 
 		Slice<SeriesDTO> series = postService.findSeries(nickname, pageRequest);
 		return new ResponseEntity<>(series, HttpStatus.OK);
@@ -78,11 +81,10 @@ public class PostController {
 	public ResponseEntity<Slice<SeriesPostSummaryDTO>> seriesPost(
 		@PathVariable String seriesName,
 		@RequestParam(defaultValue = "0") int page,
-		@RequestParam(defaultValue = "10") int size,
 		@RequestParam(defaultValue = "descending") String sortCondition,
 		HttpSession session) {
 
-		PageRequest pageRequest = getPageRequest(page, size, sortCondition);
+		PageRequest pageRequest = getPageRequest(page, sortCondition);
 
 		Slice<SeriesPostSummaryDTO> seriesPost = postService.findSeriesPost(getMemberId(session), seriesName, pageRequest);
 		return new ResponseEntity<>(seriesPost, HttpStatus.OK);
@@ -90,10 +92,9 @@ public class PostController {
 
 	@GetMapping("/{nickname}/main")
 	public ResponseEntity<Slice<PostReadDTO>> postsRead(@PathVariable String nickname,
-		@RequestParam(defaultValue = "0") int page,
-		@RequestParam(defaultValue = "10") int size) {
+		@RequestParam(defaultValue = "0") int page) {
 
-		PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Direction.DESC, "createdDate"));
+		PageRequest pageRequest = PageRequest.of(page, SIZE, Sort.by(Direction.DESC, "createdDate"));
 
 		Slice<PostReadDTO> post = postService.findPost(nickname, pageRequest);
 		return new ResponseEntity<>(post, HttpStatus.OK);
@@ -111,10 +112,9 @@ public class PostController {
 
 	@GetMapping("/archive/like")
 	public ResponseEntity<Slice<LovePostDTO>> lovePostRead(HttpSession session,
-		@RequestParam(defaultValue = "0") int page,
-		@RequestParam(defaultValue = "20") int size) {
+		@RequestParam(defaultValue = "0") int page) {
 
-		PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Direction.DESC, "createdDate"));
+		PageRequest pageRequest = PageRequest.of(page, ARCHIVE_SIZE, Sort.by(Direction.DESC, "createdDate"));
 
 		Slice<LovePostDTO> lovePosts = postService.getLovePosts(getMemberId(session), pageRequest);
 		return new ResponseEntity<>(lovePosts, HttpStatus.OK);
@@ -122,10 +122,9 @@ public class PostController {
 
 	@GetMapping("/archive/recent")
 	public ResponseEntity<Slice<LookPostDTO>> lookPostRead(HttpSession session,
-		@RequestParam(defaultValue = "0") int page,
-		@RequestParam(defaultValue = "20") int size) {
+		@RequestParam(defaultValue = "0") int page) {
 
-		PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Direction.DESC, "createdDate"));
+		PageRequest pageRequest = PageRequest.of(page, ARCHIVE_SIZE, Sort.by(Direction.DESC, "createdDate"));
 
 		Slice<LookPostDTO> lookPosts = postService.getLookPosts(getMemberId(session), pageRequest);
 		return new ResponseEntity<>(lookPosts, HttpStatus.OK);
@@ -143,10 +142,10 @@ public class PostController {
 		return (Long) session.getAttribute(SessionConst.LOGIN_MEMBER);
 	}
 
-	private PageRequest getPageRequest(int page, int size, String sortValue) {
+	private PageRequest getPageRequest(int page, String sortValue) {
 		Sort sort = sortValue.equals(("old")) ?
 			Sort.by(Direction.ASC, "createdDate") : Sort.by(Direction.DESC, sortValue);
 
-		return PageRequest.of(page, size, sort);
+		return PageRequest.of(page, SIZE, sort);
 	}
 }
