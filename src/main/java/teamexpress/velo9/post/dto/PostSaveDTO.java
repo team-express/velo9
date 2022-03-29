@@ -24,25 +24,27 @@ public class PostSaveDTO {
 	private String introduce;
 	private String content;
 	private String access;
-	private String status;
 
 	private Long memberId;
 	private Long seriesId;
 	private List<String> tagNames;
 
 	private PostThumbnailDTO postThumbnailDTO;
+	private TemporaryPostReadDTO temporaryPostReadDTO;
 
 	public PostSaveDTO(Post post) {
 		this.id = post.getId();
 		this.title = post.getTitle();
 		this.introduce = post.getIntroduce();
 		this.content = post.getContent();
-		this.access = post.getAccess().toString();
-		this.status = post.getStatus().toString();
 
 		this.memberId = post.getMember().getId();
 
-		if(post.getSeries() != null) {
+		if (post.getAccess() != null) {
+			this.access = post.getAccess().name();
+		}
+
+		if (post.getSeries() != null) {
 			this.seriesId = post.getSeries().getId();
 		}
 
@@ -50,29 +52,31 @@ public class PostSaveDTO {
 			.map(postTag -> postTag.getTag().getName())
 			.collect(Collectors.toList());
 
-		postThumbnailDTO = new PostThumbnailDTO(post.getPostThumbnail());
+		this.postThumbnailDTO = new PostThumbnailDTO(post.getPostThumbnail());
+
+		if (post.getTemporaryPost() != null) {
+			this.temporaryPostReadDTO = new TemporaryPostReadDTO(post.getTemporaryPost());
+		}
+
 	}
 
-	public Post toPost(PostThumbnail postThumbnail, Series series, Member member,
-		LocalDateTime createdDate) {
+	public Post toPost(PostThumbnail postThumbnail, Series series, Member member, LocalDateTime createdDate) {
 		this.setIntroduce();
+		this.setAccess();
 
 		return Post.builder()
 			.id(this.id)
 			.title(this.title)
 			.introduce(this.introduce)
 			.content(this.content)
-			.status(PostStatus.valueOf(this.status))
+			.status(PostStatus.GENERAL)
 			.access(PostAccess.valueOf(this.access))
 			.member(member)
 			.series(series)
 			.postThumbnail(postThumbnail)
 			.createdDate(createdDate)
+			.temporaryPost(null)
 			.build();
-	}
-
-	private boolean isIntroduceNull() {
-		return this.introduce == null;
 	}
 
 	private void setIntroduce() {
@@ -86,7 +90,17 @@ public class PostSaveDTO {
 		this.introduce = this.content.substring(FIRST_INDEX, MAX);
 	}
 
+	private void setAccess() {
+		if (this.access == null) {
+			this.access = PostAccess.PUBLIC.name();
+		}
+	}
+
 	private boolean smallerThanMax(String content) {
 		return content.length() < MAX;
+	}
+
+	private boolean isIntroduceNull() {
+		return this.introduce == null;
 	}
 }
