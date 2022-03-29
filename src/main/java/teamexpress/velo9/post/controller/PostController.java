@@ -1,5 +1,7 @@
 package teamexpress.velo9.post.controller;
 
+import java.util.List;
+import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
@@ -14,13 +16,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import teamexpress.velo9.common.domain.Result;
-import teamexpress.velo9.member.domain.Look;
 import teamexpress.velo9.member.security.oauth.SessionConst;
-import teamexpress.velo9.post.dto.*;
+import teamexpress.velo9.post.dto.LookDTO;
+import teamexpress.velo9.post.dto.LookPostDTO;
+import teamexpress.velo9.post.dto.LoveDTO;
+import teamexpress.velo9.post.dto.LovePostDTO;
+import teamexpress.velo9.post.dto.PostReadDTO;
+import teamexpress.velo9.post.dto.PostSaveDTO;
+import teamexpress.velo9.post.dto.SeriesDTO;
+import teamexpress.velo9.post.dto.SeriesPostSummaryDTO;
+import teamexpress.velo9.post.dto.TempSavedPostDTO;
+import teamexpress.velo9.post.dto.TemporaryPostWriteDTO;
 import teamexpress.velo9.post.service.PostService;
 import teamexpress.velo9.post.service.TagService;
-import javax.servlet.http.HttpSession;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,6 +51,16 @@ public class PostController {
 		return new ResponseEntity<>(postId, HttpStatus.OK);
 	}
 
+	@PostMapping("/writeTemporary")
+	public void writeTemporary(@RequestBody TemporaryPostWriteDTO temporaryPostWriteDTO) {
+		postService.writeTemporary(temporaryPostWriteDTO);
+	}
+
+	@PostMapping("/delete")
+	public void delete(@RequestParam("postId") Long id) {
+		postService.delete(id);
+	}
+
 	@GetMapping("/{nickname}/series")
 	public ResponseEntity<Slice<SeriesDTO>> series(
 		@PathVariable String nickname,
@@ -53,6 +71,20 @@ public class PostController {
 
 		Slice<SeriesDTO> series = postService.findSeries(nickname, pageRequest);
 		return new ResponseEntity<>(series, HttpStatus.OK);
+	}
+
+	@GetMapping("/{nickname}/series/{seriesName}")
+	public ResponseEntity<Slice<SeriesPostSummaryDTO>> seriesPost(
+		@PathVariable String seriesName,
+		@RequestParam(defaultValue = "0") int page,
+		@RequestParam(defaultValue = "10") int size,
+		@RequestParam(defaultValue = "descending") String sortCondition,
+		HttpSession session) {
+
+		PageRequest pageRequest = getPageRequest(page, size, sortCondition);
+
+		Slice<SeriesPostSummaryDTO> seriesPost = postService.findSeriesPost(getMemberId(session), seriesName, pageRequest);
+		return new ResponseEntity<>(seriesPost, HttpStatus.OK);
 	}
 
 	@GetMapping("/{nickname}/main")
@@ -105,5 +137,15 @@ public class PostController {
 
 	private Long getMemberId(HttpSession session) {
 		return (Long) session.getAttribute(SessionConst.LOGIN_MEMBER);
+	}
+
+	private PageRequest getPageRequest(int page, int size, String sortCondition) {
+		Sort sort = Sort.by(Direction.DESC, "createdDate");
+
+		if (sortCondition.equals("ascending")) {
+			sort = Sort.by(Direction.ASC, "createdDate");
+		}
+
+		return PageRequest.of(page, size, sort);
 	}
 }
