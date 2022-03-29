@@ -193,8 +193,7 @@ public class PostService {
 	}
 
 	private void makeLook(Member member, Post post) {
-		lookRepository.findByPostAndMember(post, member).ifPresentOrElse(
-			x -> {},
+		lookRepository.findByPostAndMember(post, member).orElseGet(
 			() -> lookRepository.save(Look.builder()
 				.post(post)
 				.member(member)
