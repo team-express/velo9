@@ -25,8 +25,7 @@ public class PostThumbnailTask {
 
 	private final PostThumbnailRepository postThumbnailRepository;
 
-	private String getFolderYesterDay() {
-
+	private String getFolderYesterday() {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 		Calendar cal = Calendar.getInstance();
@@ -42,22 +41,21 @@ public class PostThumbnailTask {
 	public void deleteUnusedFiles() {
 		List<PostThumbnail> fileList = postThumbnailRepository.getOldFiles();
 
-		List<Path> fileListPaths = fileList.stream()
-			.map(vo -> Paths.get(ROOT_PATH, vo.getPath(),
-				vo.getUuid() + NAME_SEPARATOR + vo.getName()))
+		List<Path> fileListPaths = fileList.stream().map(
+				vo -> Paths.get(ROOT_PATH, vo.getPath(), vo.getUuid() + NAME_SEPARATOR + vo.getName()))
 			.collect(Collectors.toList());
 
-		fileList.stream()
-			.map(
-				vo -> Paths.get(ROOT_PATH, vo.getPath(),
+		fileList.stream().map(
+				vo -> Paths.get(ROOT_PATH,
+					vo.getPath(),
 					THUMBNAIL_MARK + vo.getUuid() + NAME_SEPARATOR + vo.getName()))
-			.forEach(p -> fileListPaths.add(p));
+			.forEach(fileListPaths::add);
 
-		File targetDir = Paths.get(ROOT_PATH, getFolderYesterDay()).toFile();
+		File targetDir = Paths.get(ROOT_PATH, getFolderYesterday()).toFile();
 
-		File[] removeFiles = targetDir.listFiles(
-			file -> fileListPaths.contains(file.toPath()) == false);
+		File[] removeFiles =
+			targetDir.listFiles(file -> !fileListPaths.contains(file.toPath()));
 
-		Arrays.stream(removeFiles).forEach(file -> file.delete());
+		Arrays.stream(removeFiles).forEach(File::delete);
 	}
 }

@@ -18,14 +18,14 @@ public class PostThumbnailFileController {
 
 	@GetMapping("/displayPostThumbnail")
 	public ResponseEntity<byte[]> display(String fileName) {
-		return new ResponseEntity<>(postThumbnailFileService.getImage(fileName),
+		return new ResponseEntity<>(
+			postThumbnailFileService.getImage(fileName),
 			postThumbnailFileService.getHeader(fileName),
 			HttpStatus.OK);
 	}
 
 	@PostMapping("/uploadPostThumbnail")
 	public ResponseEntity<PostThumbnailDTO> upload(MultipartFile uploadFile) {
-
 		PostThumbnailDTO postThumbnailDTO = postThumbnailFileService.upload(uploadFile);
 
 		return new ResponseEntity<>(postThumbnailDTO, HttpStatus.OK);
@@ -33,7 +33,6 @@ public class PostThumbnailFileController {
 
 	@PostMapping("/deletePostThumbnail")
 	public ResponseEntity<String> delete(String fileName) {
-
 		postThumbnailFileService.deleteFile(fileName);
 
 		return new ResponseEntity<>("deleted", HttpStatus.OK);

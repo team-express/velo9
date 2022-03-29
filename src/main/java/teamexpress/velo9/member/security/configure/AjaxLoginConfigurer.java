@@ -12,8 +12,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import teamexpress.velo9.member.security.filter.AjaxLoginProcessingFilter;
 
-public final class AjaxLoginConfigurer<H extends HttpSecurityBuilder<H>> extends
-	AbstractAuthenticationFilterConfigurer<H, AjaxLoginConfigurer<H>, AjaxLoginProcessingFilter> {
+public final class AjaxLoginConfigurer<H extends HttpSecurityBuilder<H>>
+	extends AbstractAuthenticationFilterConfigurer<H, AjaxLoginConfigurer<H>, AjaxLoginProcessingFilter> {
 
 	private AuthenticationSuccessHandler successHandler;
 	private AuthenticationFailureHandler failureHandler;
@@ -30,7 +30,6 @@ public final class AjaxLoginConfigurer<H extends HttpSecurityBuilder<H>> extends
 
 	@Override
 	public void configure(H http) {
-
 		if (authenticationManager == null) {
 			authenticationManager = http.getSharedObject(AuthenticationManager.class);
 		}
@@ -40,15 +39,17 @@ public final class AjaxLoginConfigurer<H extends HttpSecurityBuilder<H>> extends
 
 		SessionAuthenticationStrategy sessionAuthenticationStrategy
 			= http.getSharedObject(SessionAuthenticationStrategy.class);
+
 		if (sessionAuthenticationStrategy != null) {
-			getAuthenticationFilter().setSessionAuthenticationStrategy(
-				sessionAuthenticationStrategy);
+			getAuthenticationFilter().setSessionAuthenticationStrategy(sessionAuthenticationStrategy);
 		}
 
 		RememberMeServices rememberMeServices = http.getSharedObject(RememberMeServices.class);
+
 		if (rememberMeServices != null) {
 			getAuthenticationFilter().setRememberMeServices(rememberMeServices);
 		}
+
 		http.setSharedObject(AjaxLoginProcessingFilter.class, getAuthenticationFilter());
 		http.addFilterBefore(getAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 	}

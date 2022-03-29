@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import teamexpress.velo9.common.domain.Result;
 import teamexpress.velo9.member.security.oauth.SessionConst;
-import teamexpress.velo9.post.dto.LookDTO;
 import teamexpress.velo9.post.dto.LookPostDTO;
 import teamexpress.velo9.post.dto.LoveDTO;
 import teamexpress.velo9.post.dto.LovePostDTO;
@@ -110,11 +109,6 @@ public class PostController {
 		postService.loveOrNot(loveDTO);
 	}
 
-	@PostMapping("/look")//차후 상세보기가 생기면 녹아들어야 할 로직
-	public void look(@RequestBody LookDTO lookDTO) {
-		postService.look(lookDTO);
-	}
-
 	@GetMapping("/archive/like")
 	public ResponseEntity<Slice<LovePostDTO>> lovePostRead(HttpSession session,
 		@RequestParam(defaultValue = "0") int page,
@@ -138,8 +132,9 @@ public class PostController {
 	}
 
 	@GetMapping("/{nickname}/read/{postId}")
-	public ResponseEntity<Page<ReadDTO>> readPost(@PathVariable Long postId) {
+	public ResponseEntity<Page<ReadDTO>> readPost(@PathVariable Long postId, @RequestParam Long memberId) {
 		Page<ReadDTO> content = postService.findReadPost(postId);
+		postService.look(postId, memberId);
 		return new ResponseEntity<>(content, HttpStatus.OK);
 //		postService.findReadPostTest(postId);
 	}
@@ -148,12 +143,9 @@ public class PostController {
 		return (Long) session.getAttribute(SessionConst.LOGIN_MEMBER);
 	}
 
-	private PageRequest getPageRequest(int page, int size, String sortCondition) {
-		Sort sort = Sort.by(Direction.DESC, "createdDate");
-
-		if (sortCondition.equals("ascending")) {
-			sort = Sort.by(Direction.ASC, "createdDate");
-		}
+	private PageRequest getPageRequest(int page, int size, String sortValue) {
+		Sort sort = sortValue.equals(("old")) ?
+			Sort.by(Direction.ASC, "createdDate") : Sort.by(Direction.DESC, sortValue);
 
 		return PageRequest.of(page, size, sort);
 	}

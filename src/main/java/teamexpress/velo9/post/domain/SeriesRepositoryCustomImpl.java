@@ -19,7 +19,6 @@ public class SeriesRepositoryCustomImpl implements SeriesRepositoryCustom {
 
 	@Override
 	public Slice<Series> findPostBySeriesName(String nickname, Pageable pageable) {
-
 		List<Series> content = queryFactory
 			.selectFrom(series)
 			.where(series.member.nickname.eq(nickname)

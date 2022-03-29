@@ -19,7 +19,10 @@ public class AjaxAuthenticationFailureHandler implements AuthenticationFailureHa
 	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	@Override
-	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
+	public void onAuthenticationFailure(
+		HttpServletRequest request,
+		HttpServletResponse response,
+		AuthenticationException exception) throws IOException {
 
 		String errorMessage = "Invalid Username or Password";
 		response.setStatus(HttpStatus.UNAUTHORIZED.value());

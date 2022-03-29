@@ -27,7 +27,6 @@ public class MemberThumbnailFileUploader {
 	private static final String BACKSLASH = "\\";
 	private static final String uploadFileName = "default.png";
 
-
 	public MemberThumbnailDTO upload(String urlStr) {
 		MemberThumbnailDTO memberThumbnailDTO = getThumbnailInfo();
 
@@ -41,6 +40,7 @@ public class MemberThumbnailFileUploader {
 			ImageIO.write(img, "png", file);
 
 			File thumbnail = new File(uploadPath, memberThumbnailDTO.getSFileName());
+
 			Thumbnailator.createThumbnail(file, thumbnail, img.getWidth(), img.getHeight());
 
 		} catch (Exception e) {
@@ -113,7 +113,6 @@ public class MemberThumbnailFileUploader {
 	}
 
 	private String getFolder() {
-
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 		Date date = new Date();
@@ -153,8 +152,7 @@ public class MemberThumbnailFileUploader {
 
 
 	private void checkUploadFile(MultipartFile uploadFile) {
-		if (uploadFile == null || uploadFile.isEmpty() || PostThumbnailType.check(
-			uploadFile.getContentType())) {
+		if (uploadFile == null || uploadFile.isEmpty() || PostThumbnailType.check(uploadFile.getContentType())) {
 			throw new IllegalStateException("지원되지 않는 형식의 파일이거나 빈 파일입니다.");
 		}
 	}
@@ -166,17 +164,19 @@ public class MemberThumbnailFileUploader {
 	}
 
 	private void createFile(MultipartFile uploadFile, MemberThumbnailDTO memberThumbnailDTO) {
-
 		File uploadPath = getUploadPath(memberThumbnailDTO.getPath());
 		File saveFile = new File(uploadPath, memberThumbnailDTO.getFileName());
 
 		try {
 			uploadFile.transferTo(saveFile);
 
-			FileOutputStream thumbnail = new FileOutputStream(
-				new File(uploadPath, memberThumbnailDTO.getSFileName()));
+			FileOutputStream thumbnail =
+				new FileOutputStream(new File(uploadPath, memberThumbnailDTO.getSFileName()));
+
 			Thumbnailator.createThumbnail(uploadFile.getInputStream(), thumbnail, 80, 80);
+
 			thumbnail.close();
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
