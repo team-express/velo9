@@ -82,11 +82,12 @@ public class PostController {
 		@PathVariable String seriesName,
 		@RequestParam(defaultValue = "0") int page,
 		@RequestParam(defaultValue = "descending") String sortCondition,
+		@RequestParam Long memberId,
 		HttpSession session) {
 
 		PageRequest pageRequest = getPageRequest(page, sortCondition);
 
-		Slice<SeriesPostSummaryDTO> seriesPost = postService.findSeriesPost(getMemberId(session), seriesName, pageRequest);
+		Slice<SeriesPostSummaryDTO> seriesPost = postService.findSeriesPost(memberId, seriesName, pageRequest);
 		return new ResponseEntity<>(seriesPost, HttpStatus.OK);
 	}
 
@@ -101,8 +102,8 @@ public class PostController {
 	}
 
 	@GetMapping("/temp")
-	public ResponseEntity<Result<List<TempSavedPostDTO>>> tempPostsRead(HttpSession session) {
-		return new ResponseEntity<>(new Result(postService.getTempSavedPost(getMemberId(session))), HttpStatus.OK);
+	public ResponseEntity<Result<List<TempSavedPostDTO>>> tempPostsRead(@RequestParam Long memberId, HttpSession session) {
+		return new ResponseEntity<>(new Result(postService.getTempSavedPost(memberId)), HttpStatus.OK);
 	}
 
 	@PostMapping("/love")
@@ -111,22 +112,24 @@ public class PostController {
 	}
 
 	@GetMapping("/archive/like")
-	public ResponseEntity<Slice<LovePostDTO>> lovePostRead(HttpSession session,
-		@RequestParam(defaultValue = "0") int page) {
+	public ResponseEntity<Slice<LovePostDTO>> lovePostRead(
+		@RequestParam(defaultValue = "0") int page,
+		@RequestParam Long memberId) {
 
 		PageRequest pageRequest = PageRequest.of(page, ARCHIVE_SIZE, Sort.by(Direction.DESC, "createdDate"));
 
-		Slice<LovePostDTO> lovePosts = postService.getLovePosts(getMemberId(session), pageRequest);
+		Slice<LovePostDTO> lovePosts = postService.getLovePosts(memberId, pageRequest);
 		return new ResponseEntity<>(lovePosts, HttpStatus.OK);
 	}
 
 	@GetMapping("/archive/recent")
-	public ResponseEntity<Slice<LookPostDTO>> lookPostRead(HttpSession session,
-		@RequestParam(defaultValue = "0") int page) {
+	public ResponseEntity<Slice<LookPostDTO>> lookPostRead(
+		@RequestParam(defaultValue = "0") int page,
+		@RequestParam Long memberId) {
 
 		PageRequest pageRequest = PageRequest.of(page, ARCHIVE_SIZE, Sort.by(Direction.DESC, "createdDate"));
 
-		Slice<LookPostDTO> lookPosts = postService.getLookPosts(getMemberId(session), pageRequest);
+		Slice<LookPostDTO> lookPosts = postService.getLookPosts(memberId, pageRequest);
 		return new ResponseEntity<>(lookPosts, HttpStatus.OK);
 	}
 
@@ -136,10 +139,6 @@ public class PostController {
 		postService.look(postId, memberId);
 		return new ResponseEntity<>(content, HttpStatus.OK);
 //		postService.findReadPostTest(postId);
-	}
-
-	private Long getMemberId(HttpSession session) {
-		return (Long) session.getAttribute(SessionConst.LOGIN_MEMBER);
 	}
 
 	private PageRequest getPageRequest(int page, String sortValue) {

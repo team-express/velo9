@@ -3,7 +3,6 @@ package teamexpress.velo9.member.controller;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import teamexpress.velo9.member.domain.Member;
 import teamexpress.velo9.member.dto.FindInfoDTO;
@@ -21,7 +21,6 @@ import teamexpress.velo9.member.dto.MemberNewPwDTO;
 import teamexpress.velo9.member.dto.MemberSignupDTO;
 import teamexpress.velo9.member.dto.PasswordDTO;
 import teamexpress.velo9.member.dto.SocialSignupDTO;
-import teamexpress.velo9.member.security.oauth.SessionConst;
 import teamexpress.velo9.member.service.MailService;
 import teamexpress.velo9.member.service.MemberService;
 
@@ -50,27 +49,23 @@ public class MemberController {
 	}
 
 	@PostMapping("/setting")
-	public ResponseEntity<MemberDTO> editMember(@RequestBody MemberEditDTO memberEditDTO, HttpSession session) {
-		Long memberId = (Long) session.getAttribute(SessionConst.LOGIN_MEMBER);
+	public ResponseEntity<MemberDTO> editMember(@RequestBody MemberEditDTO memberEditDTO, @RequestParam Long memberId) {
 		MemberDTO memberDTO = memberService.editMember(memberId, memberEditDTO);
 		return new ResponseEntity<>(memberDTO, HttpStatus.OK);
 	}
 
 	@PostMapping("/changePassword")
-	public void changePassword(@RequestBody PasswordDTO passwordDTO, HttpSession session) {
-		Long memberId = (Long) session.getAttribute(SessionConst.LOGIN_MEMBER);
+	public void changePassword(@RequestBody PasswordDTO passwordDTO, @RequestParam Long memberId) {
 		memberService.changePassword(memberId, passwordDTO);
 	}
 
 	@PostMapping("/withdraw")
-	public void withdrawMember(@RequestBody PasswordDTO passwordDTO, HttpSession session) {
-		Long memberId = (Long) session.getAttribute(SessionConst.LOGIN_MEMBER);
+	public void withdrawMember(@RequestBody PasswordDTO passwordDTO, @RequestParam Long memberId) {
 		memberService.withdraw(memberId, passwordDTO);
 	}
 
 	@PostMapping("/socialSignup")
-	public void socialSignup(@Validated @RequestBody SocialSignupDTO socialSignupDTO, HttpSession session) {
-		Long memberId = (Long) session.getAttribute(SessionConst.LOGIN_MEMBER);
+	public void socialSignup(@Validated @RequestBody SocialSignupDTO socialSignupDTO, @RequestParam Long memberId) {
 		memberService.joinSocial(socialSignupDTO, memberId);
 	}
 
