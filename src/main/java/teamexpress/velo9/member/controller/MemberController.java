@@ -20,6 +20,7 @@ import teamexpress.velo9.member.dto.MemberEditDTO;
 import teamexpress.velo9.member.dto.MemberNewPwDTO;
 import teamexpress.velo9.member.dto.MemberSignupDTO;
 import teamexpress.velo9.member.dto.PasswordDTO;
+import teamexpress.velo9.member.dto.SocialSignupDTO;
 import teamexpress.velo9.member.security.oauth.SessionConst;
 import teamexpress.velo9.member.service.MailService;
 import teamexpress.velo9.member.service.MemberService;
@@ -59,6 +60,12 @@ public class MemberController {
 	public void withdrawMember(@RequestBody PasswordDTO passwordDTO, HttpSession session) {
 		Long memberId = (Long) session.getAttribute(SessionConst.LOGIN_MEMBER);
 		memberService.withdraw(memberId, passwordDTO);
+	}
+
+	@PostMapping("/socialSignup")
+	public void socialSignup(@Validated @RequestBody SocialSignupDTO socialSignupDTO, HttpSession session) {
+		Long memberId = (Long) session.getAttribute(SessionConst.LOGIN_MEMBER);
+		memberService.joinSocial(socialSignupDTO, memberId);
 	}
 
 	@PostMapping("/sendMail")

@@ -90,4 +90,11 @@ public class Member extends BaseEntity {
 	public void changePassword(String encodedPassword) {
 		password = encodedPassword;
 	}
+
+	public void registerSocialMember(String username, String password, String nickname) {
+		this.username = username;
+		this.password = password;
+		this.nickname = nickname;
+		this.blogTitle = nickname;
+	}
 }

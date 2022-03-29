@@ -15,6 +15,7 @@ import teamexpress.velo9.member.dto.MemberNewPwDTO;
 import teamexpress.velo9.member.dto.MemberSignupDTO;
 import teamexpress.velo9.member.dto.MemberThumbnailDTO;
 import teamexpress.velo9.member.dto.PasswordDTO;
+import teamexpress.velo9.member.dto.SocialSignupDTO;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -26,7 +27,7 @@ public class MemberService {
 
 	@Transactional
 	public void join(MemberSignupDTO signupDTO) {
-		checkDuplicateMember(signupDTO);
+		checkDuplicateMember(signupDTO.getUsername(), signupDTO.getNickname());
 		encodePassword(signupDTO);
 		Member member = signupDTO.toMember();
 		memberRepository.save(member);
@@ -97,6 +98,18 @@ public class MemberService {
 			});
 	}
 
+	@Transactional
+	public void joinSocial(SocialSignupDTO socialSignupDTO, Long memberId) {
+
+		Member member = getMember(memberId);
+		checkDuplicateMember(socialSignupDTO.getUsername(), socialSignupDTO.getNickname());
+		String encodePassword = passwordEncoder.encode(socialSignupDTO.getPassword());
+		member.registerSocialMember(
+			socialSignupDTO.getUsername(),
+			encodePassword,
+			socialSignupDTO.getNickname());
+	}
+
 	public Member findPw(FindInfoDTO findInfoDTO) {
 		Member findEmailMember = memberRepository.findByEmail(findInfoDTO.getEmail()).orElseThrow(() -> {
 			throw new IllegalArgumentException("존재하지 않는 회원입니다.");
@@ -128,9 +141,9 @@ public class MemberService {
 		signupDTO.setPassword(passwordEncoder.encode(signupDTO.getPassword()));
 	}
 
-	private void checkDuplicateMember(MemberSignupDTO signupDTO) {
-		validateUsername(signupDTO.getUsername());
-		validateNickname(signupDTO.getNickname());
+	private void checkDuplicateMember(String username, String nickname) {
+		validateUsername(username);
+		validateNickname(nickname);
 	}
 
 	private void validateUsername(String username) {
