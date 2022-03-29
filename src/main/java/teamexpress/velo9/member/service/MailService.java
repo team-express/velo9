@@ -24,7 +24,6 @@ public class MailService {
 		MailContentDTO mailContent = getFindMailContent(findInfoDTO, findUsername);
 		SimpleMailMessage message = setEmailContent(mailContent);
 		mailSender.send(message);
-
 	}
 
 	private void send(String email, String number) {
@@ -38,6 +37,7 @@ public class MailService {
 		message.setTo(emailContent.getAddress());
 		message.setSubject(emailContent.getTitle());
 		message.setText(emailContent.getMessage());
+
 		return message;
 	}
 

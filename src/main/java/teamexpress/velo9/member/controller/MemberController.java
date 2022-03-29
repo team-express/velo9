@@ -29,10 +29,10 @@ import teamexpress.velo9.member.service.MemberService;
 @RestController
 public class MemberController {
 
+	private static final int BOUND = 10;
+
 	private final MemberService memberService;
 	private final MailService mailService;
-
-	private static final int BOUND = 10;
 
 	@GetMapping("/signup")
 	public void addMember() {
@@ -43,7 +43,7 @@ public class MemberController {
 		memberService.join(memberSignupDTO);
 	}
 
-	@PostMapping("/member/setting")
+	@PostMapping("/setting")
 	public ResponseEntity<MemberDTO> editMember(@RequestBody MemberEditDTO memberEditDTO, HttpSession session) {
 		Long memberId = (Long) session.getAttribute(SessionConst.LOGIN_MEMBER);
 		MemberDTO memberDTO = memberService.editMember(memberId, memberEditDTO);

@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class SearchCondition {
-	boolean tagSelect;
-	String content;
+
+	private boolean tagSelect;
+	private String content;
 }

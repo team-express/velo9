@@ -55,8 +55,7 @@ public class MemberService {
 
 	@Transactional
 	public void uploadThumbnail(MemberThumbnailDTO memberThumbnailDTO, Long memberId) {
-		Member member = memberRepository.findById(memberId)
-			.orElseThrow(() -> new NullPointerException());
+		Member member = getMember(memberId);
 
 		MemberThumbnail memberThumbnail = member.getMemberThumbnail();
 
@@ -71,8 +70,7 @@ public class MemberService {
 
 	@Transactional
 	public void deleteThumbnail(Long memberId) {
-		Member member = memberRepository.findById(memberId)
-			.orElseThrow(() -> new NullPointerException());
+		Member member = getMember(memberId);
 
 		if (member.getMemberThumbnail() == null) {
 			return;
@@ -100,7 +98,6 @@ public class MemberService {
 
 	@Transactional
 	public void joinSocial(SocialSignupDTO socialSignupDTO, Long memberId) {
-
 		Member member = getMember(memberId);
 		checkDuplicateMember(socialSignupDTO.getUsername(), socialSignupDTO.getNickname());
 		String encodePassword = passwordEncoder.encode(socialSignupDTO.getPassword());

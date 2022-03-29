@@ -23,7 +23,7 @@ public class SeriesService {
 
 	public List<SeriesReadDTO> getAll(Long memberId) {
 		return seriesRepository.findAllByMember(memberRepository.findById(memberId).orElseThrow())
-			.stream().map(series -> new SeriesReadDTO(series)).collect(Collectors.toList());
+			.stream().map(SeriesReadDTO::new).collect(Collectors.toList());
 	}
 
 	@Transactional
@@ -42,8 +42,7 @@ public class SeriesService {
 	}
 
 	private void checkName(Long memberId, String name) {
-
-		if (this.getAll(memberId).stream().map(series -> series.getName()).collect(Collectors.toList()).contains(name)) {
+		if (this.getAll(memberId).stream().map(SeriesReadDTO::getName).collect(Collectors.toList()).contains(name)) {
 			throw new DuplicateElementException("이미 있는 이름의 시리즈 입니다.");
 		}
 	}

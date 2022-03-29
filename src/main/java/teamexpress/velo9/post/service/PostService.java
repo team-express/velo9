@@ -3,7 +3,6 @@ package teamexpress.velo9.post.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +24,6 @@ import teamexpress.velo9.post.domain.Series;
 import teamexpress.velo9.post.domain.SeriesRepository;
 import teamexpress.velo9.post.domain.TemporaryPost;
 import teamexpress.velo9.post.domain.TemporaryPostRepository;
-import teamexpress.velo9.post.dto.LookDTO;
 import teamexpress.velo9.post.dto.LookPostDTO;
 import teamexpress.velo9.post.dto.LoveDTO;
 import teamexpress.velo9.post.dto.LovePostDTO;
@@ -77,7 +75,6 @@ public class PostService {
 
 	@Transactional
 	public void writeTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {
-
 		if (temporaryPostWriteDTO.getId() != null) {
 			writeAlternativeTemporary(temporaryPostWriteDTO);
 			return;
@@ -108,7 +105,6 @@ public class PostService {
 
 	@Transactional
 	public void loveOrNot(LoveDTO loveDTO) {
-
 		Member member = memberRepository.findById(loveDTO.getMemberId()).orElseThrow();
 		Post post = postRepository.findById(loveDTO.getPostId()).orElseThrow();
 
@@ -117,10 +113,9 @@ public class PostService {
 	}
 
 	@Transactional
-	public void look(LookDTO lookDTO) {
-
-		Member member = memberRepository.findById(lookDTO.getMemberId()).orElseThrow();
-		Post post = postRepository.findById(lookDTO.getPostId()).orElseThrow();
+	public void look(Long postId, Long memberId) {
+		Member member = memberRepository.findById(memberId).orElseThrow();
+		Post post = postRepository.findById(postId).orElseThrow();
 
 		makeLook(member, post);
 		postRepository.updateViewCount(post, lookRepository.countByPost(post));
@@ -131,7 +126,6 @@ public class PostService {
 	}
 
 	public List<TempSavedPostDTO> getTempSavedPost(Long id) {
-
 		List<Post> findPosts = postRepository.getTempSavedPost(id, PostStatus.TEMPORARY);
 
 		return findPosts.stream()
@@ -159,7 +153,6 @@ public class PostService {
 	}
 
 	private Series getSeries(Long seriesId) {
-
 		if (seriesId == null) {
 			return null;
 		}
@@ -168,7 +161,6 @@ public class PostService {
 	}
 
 	private void writeAlternativeTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {
-
 		Post post = postRepository.findById(temporaryPostWriteDTO.getId()).orElseThrow();
 
 		if (post.getStatus().equals(PostStatus.TEMPORARY)) {
@@ -186,7 +178,6 @@ public class PostService {
 	}
 
 	private void writeNewTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {
-
 		Long memberId = temporaryPostWriteDTO.getMemberId();
 
 		checkCount(memberId);
@@ -211,8 +202,7 @@ public class PostService {
 			lookRepository.save(Look.builder()
 				.post(post)
 				.member(member)
-				.build()
-			);
+				.build());
 		}
 	}
 

@@ -36,11 +36,8 @@ public class MainController {
 	}
 
 	private PageRequest getPageRequest(int page, int size, String sortValue) {
-		Sort sort = Sort.by(Direction.DESC, sortValue);
-
-		if (sortValue.equals("olderDate")) {
-			sort = Sort.by(Direction.ASC, "createdDate");
-		}
+		Sort sort = sortValue.equals(("old")) ?
+			Sort.by(Direction.ASC, "createdDate") : Sort.by(Direction.DESC, sortValue);
 
 		return PageRequest.of(page, size, sort);
 	}
