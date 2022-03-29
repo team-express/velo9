@@ -1,9 +1,9 @@
 package teamexpress.velo9.post.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -61,12 +61,10 @@ public class PostService {
 		Series series = getSeries(postSaveDTO.getSeriesId());
 		Member member = getMember(postSaveDTO.getMemberId());
 
-		if (postThumbnail != null) {
-			postThumbnailRepository.save(postThumbnail);
-		}
+		Optional.ofNullable(postThumbnail).ifPresent(postThumbnailRepository::save);
 
-		Post post = postSaveDTO.toPost(postThumbnail, series, member, postRepository.getCreatedDate(
-			postSaveDTO.getId()));
+		Post post = postSaveDTO
+			.toPost(postThumbnail, series, member, postRepository.getCreatedDate(postSaveDTO.getId()));
 
 		postRepository.save(post);
 		postRepository.updateLoveCount(post, loveRepository.countByPost(post));
@@ -77,13 +75,10 @@ public class PostService {
 
 	@Transactional
 	public void writeTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {
-
-		if (temporaryPostWriteDTO.getId() != null) {
-			writeAlternativeTemporary(temporaryPostWriteDTO);
-			return;
-		}
-
-		writeNewTemporary(temporaryPostWriteDTO);
+		Optional.ofNullable(temporaryPostWriteDTO.getId()).ifPresentOrElse(
+			x->writeAlternativeTemporary(temporaryPostWriteDTO),
+			()->writeNewTemporary(temporaryPostWriteDTO)
+		);
 	}
 
 	@Transactional
@@ -176,9 +171,7 @@ public class PostService {
 			return;
 		}
 
-		if (post.getTemporaryPost() != null) {
-			temporaryPostWriteDTO.setAlternativeId(post.getTemporaryPost().getId());
-		}
+		Optional.ofNullable(post.getTemporaryPost()).ifPresent(tmp -> temporaryPostWriteDTO.setAlternativeId(tmp.getId()));
 
 		TemporaryPost temporaryPost = temporaryPostWriteDTO.toTemporaryPost();
 		temporaryPostRepository.save(temporaryPost);
@@ -207,13 +200,15 @@ public class PostService {
 	}
 
 	private void makeLook(Member member, Post post) {
-		if (lookRepository.findByPostAndMember(post, member).isEmpty()) {
-			lookRepository.save(Look.builder()
+		lookRepository.findByPostAndMember(post, member).ifPresentOrElse(
+			x -> {
+			},
+			() -> lookRepository.save(Look.builder()
 				.post(post)
 				.member(member)
 				.build()
-			);
-		}
+			)
+		);
 	}
 
 	private void checkCount(Long memberId) {
@@ -233,8 +228,7 @@ public class PostService {
 	}
 
 	/**
-	 * post가 series에 속해있으면 그 series에 속한 이전 post, 다음 post를 보내줘야 함.
-	 * post가 series에 속해있지 않다면 단순히 이전 post, 다음 post를 보내주면 된다.
+	 * post가 series에 속해있으면 그 series에 속한 이전 post, 다음 post를 보내줘야 함. post가 series에 속해있지 않다면 단순히 이전 post, 다음 post를 보내주면 된다.
 	 */
 	public Page<ReadDTO> findReadPost(Long postId) {
 		Post findPost = postRepository.findById(postId).orElseThrow();
