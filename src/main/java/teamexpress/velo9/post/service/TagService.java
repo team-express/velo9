@@ -31,10 +31,11 @@ public class TagService {
 
 		postTagRepository.deleteAllByPost(post);
 
-		tagNames.forEach(name -> postTagRepository.save(PostTag.builder()
-			.tag(tagRepository.findByName(name))
-			.post(post)
-			.build()
+		tagNames.forEach(name -> postTagRepository.save(
+			PostTag.builder()
+				.tag(tagRepository.findByName(name))
+				.post(post)
+				.build()
 		));
 	}
 

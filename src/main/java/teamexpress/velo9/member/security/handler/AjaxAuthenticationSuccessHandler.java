@@ -18,14 +18,20 @@ public class AjaxAuthenticationSuccessHandler implements AuthenticationSuccessHa
 	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	@Override
-	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+	public void onAuthenticationSuccess(
+		HttpServletRequest request,
+		HttpServletResponse response,
 		Authentication authentication) throws IOException {
+
 		Member member = (Member) authentication.getPrincipal();
 		MemberSignupDTO memberSignupDTO = new MemberSignupDTO(member);
+
 		HttpSession session = request.getSession();
 		session.setAttribute(SessionConst.LOGIN_MEMBER, member.getId());
+
 		response.setStatus(HttpStatus.OK.value());
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+
 		objectMapper.writeValue(response.getWriter(), memberSignupDTO);
 	}
 }

@@ -24,7 +24,6 @@ public class PostThumbnailDTO {
 	}
 
 	public PostThumbnail toPostThumbnail() {
-
 		return PostThumbnail.builder()
 			.uuid(this.uuid)
 			.path(this.path)

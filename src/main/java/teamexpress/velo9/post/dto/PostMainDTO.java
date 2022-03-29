@@ -17,7 +17,7 @@ public class PostMainDTO {
 		title = post.getTitle();
 		introduce = post.getIntroduce();
 		loveCount = post.getLoveCount();
-//		member = new MemberMainDTO(post.getMember());
+		member = new MemberMainDTO(post.getMember());
 		postThumbnail = new PostThumbnailDTO(post.getPostThumbnail());
 	}
 }

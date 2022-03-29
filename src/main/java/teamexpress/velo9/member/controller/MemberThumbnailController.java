@@ -20,7 +20,6 @@ public class MemberThumbnailController {
 
 	@PostMapping("/uploadMemberThumbnail")
 	public ResponseEntity<MemberThumbnailDTO> upload(MultipartFile uploadFile, Long memberId) {
-
 		MemberThumbnailDTO memberThumbnailDTO = memberThumbnailFileUploader.upload(uploadFile);
 		memberService.uploadThumbnail(memberThumbnailDTO, memberId);
 

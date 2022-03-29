@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import teamexpress.velo9.common.domain.Result;
 import teamexpress.velo9.member.security.oauth.SessionConst;
-import teamexpress.velo9.post.dto.LookDTO;
 import teamexpress.velo9.post.dto.LookPostDTO;
 import teamexpress.velo9.post.dto.LoveDTO;
 import teamexpress.velo9.post.dto.LovePostDTO;
@@ -81,11 +80,12 @@ public class PostController {
 		@RequestParam(defaultValue = "0") int page,
 		@RequestParam(defaultValue = "10") int size,
 		@RequestParam(defaultValue = "descending") String sortCondition,
+		@RequestParam Long memberId,
 		HttpSession session) {
 
 		PageRequest pageRequest = getPageRequest(page, size, sortCondition);
 
-		Slice<SeriesPostSummaryDTO> seriesPost = postService.findSeriesPost(getMemberId(session), seriesName, pageRequest);
+		Slice<SeriesPostSummaryDTO> seriesPost = postService.findSeriesPost(memberId, seriesName, pageRequest);
 		return new ResponseEntity<>(seriesPost, HttpStatus.OK);
 	}
 
@@ -101,8 +101,8 @@ public class PostController {
 	}
 
 	@GetMapping("/temp")
-	public ResponseEntity<Result<List<TempSavedPostDTO>>> tempPostsRead(HttpSession session) {
-		return new ResponseEntity<>(new Result(postService.getTempSavedPost(getMemberId(session))), HttpStatus.OK);
+	public ResponseEntity<Result<List<TempSavedPostDTO>>> tempPostsRead(@RequestParam Long memberId, HttpSession session) {
+		return new ResponseEntity<>(new Result(postService.getTempSavedPost(memberId)), HttpStatus.OK);
 	}
 
 	@PostMapping("/love")
@@ -110,50 +110,41 @@ public class PostController {
 		postService.loveOrNot(loveDTO);
 	}
 
-	@PostMapping("/look")//차후 상세보기가 생기면 녹아들어야 할 로직
-	public void look(@RequestBody LookDTO lookDTO) {
-		postService.look(lookDTO);
-	}
-
 	@GetMapping("/archive/like")
 	public ResponseEntity<Slice<LovePostDTO>> lovePostRead(HttpSession session,
 		@RequestParam(defaultValue = "0") int page,
-		@RequestParam(defaultValue = "20") int size) {
+		@RequestParam(defaultValue = "20") int size,
+		@RequestParam Long memberId) {
 
 		PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Direction.DESC, "createdDate"));
 
-		Slice<LovePostDTO> lovePosts = postService.getLovePosts(getMemberId(session), pageRequest);
+		Slice<LovePostDTO> lovePosts = postService.getLovePosts(memberId, pageRequest);
 		return new ResponseEntity<>(lovePosts, HttpStatus.OK);
 	}
 
 	@GetMapping("/archive/recent")
 	public ResponseEntity<Slice<LookPostDTO>> lookPostRead(HttpSession session,
 		@RequestParam(defaultValue = "0") int page,
-		@RequestParam(defaultValue = "20") int size) {
+		@RequestParam(defaultValue = "20") int size,
+		@RequestParam Long memberId) {
 
 		PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Direction.DESC, "createdDate"));
 
-		Slice<LookPostDTO> lookPosts = postService.getLookPosts(getMemberId(session), pageRequest);
+		Slice<LookPostDTO> lookPosts = postService.getLookPosts(memberId, pageRequest);
 		return new ResponseEntity<>(lookPosts, HttpStatus.OK);
 	}
 
 	@GetMapping("/{nickname}/read/{postId}")
-	public ResponseEntity<Page<ReadDTO>> readPost(@PathVariable Long postId) {
+	public ResponseEntity<Page<ReadDTO>> readPost(@PathVariable Long postId, @RequestParam Long memberId) {
 		Page<ReadDTO> content = postService.findReadPost(postId);
+		postService.look(postId, memberId);
 		return new ResponseEntity<>(content, HttpStatus.OK);
 //		postService.findReadPostTest(postId);
 	}
 
-	private Long getMemberId(HttpSession session) {
-		return (Long) session.getAttribute(SessionConst.LOGIN_MEMBER);
-	}
-
-	private PageRequest getPageRequest(int page, int size, String sortCondition) {
-		Sort sort = Sort.by(Direction.DESC, "createdDate");
-
-		if (sortCondition.equals("ascending")) {
-			sort = Sort.by(Direction.ASC, "createdDate");
-		}
+	private PageRequest getPageRequest(int page, int size, String sortValue) {
+		Sort sort = sortValue.equals(("old")) ?
+			Sort.by(Direction.ASC, "createdDate") : Sort.by(Direction.DESC, sortValue);
 
 		return PageRequest.of(page, size, sort);
 	}

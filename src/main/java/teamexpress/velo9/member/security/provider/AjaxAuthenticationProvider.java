@@ -18,13 +18,12 @@ public class AjaxAuthenticationProvider implements AuthenticationProvider {
 	private PasswordEncoder passwordEncoder;
 
 	@Override
-	public Authentication authenticate(Authentication authentication)
-		throws AuthenticationException {
+	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		String username = authentication.getName();
 		String password = (String) authentication.getCredentials();
 
-		MemberContext memberContext = (MemberContext) userDetailsService.loadUserByUsername(
-			username);
+		MemberContext memberContext =
+			(MemberContext) userDetailsService.loadUserByUsername(username);
 
 		if (!passwordEncoder.matches(password, memberContext.getMember().getPassword())) {
 			throw new BadCredentialsException("Invalid password");

@@ -37,8 +37,8 @@ public class PostThumbnailFileService {
 
 		String uuid = UUID.randomUUID().toString();
 
-		PostThumbnailDTO postThumbnailDTO = new PostThumbnailDTO(uuid, uploadFileName,
-			uploadFolderPath);
+		PostThumbnailDTO postThumbnailDTO =
+			new PostThumbnailDTO(uuid, uploadFileName, uploadFolderPath);
 
 		createFile(uploadFile, uploadPath, uuid + NAME_SEPARATOR + uploadFileName);
 
@@ -63,7 +63,6 @@ public class PostThumbnailFileService {
 	}
 
 	public byte[] getImage(String fileName) {
-
 		byte[] result = null;
 
 		try {
@@ -92,7 +91,6 @@ public class PostThumbnailFileService {
 	}
 
 	private String getFolder() {
-
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 		Date date = new Date();
@@ -102,15 +100,15 @@ public class PostThumbnailFileService {
 		return str.replace("-", File.separator);
 	}
 
-	private void createFile(MultipartFile uploadFile, File uploadPath,
-		String uploadFullFileName) {
+	private void createFile(MultipartFile uploadFile, File uploadPath, String uploadFullFileName) {
 		File saveFile = new File(uploadPath, uploadFullFileName);
 
 		try {
 			uploadFile.transferTo(saveFile);
 
-			FileOutputStream thumbnail = new FileOutputStream(
-				new File(uploadPath, THUMBNAIL_MARK + uploadFullFileName));
+			FileOutputStream thumbnail =
+				new FileOutputStream(new File(uploadPath, THUMBNAIL_MARK + uploadFullFileName));
+
 			Thumbnailator.createThumbnail(uploadFile.getInputStream(), thumbnail, 80, 80);
 			thumbnail.close();
 		} catch (Exception e) {
@@ -135,8 +133,7 @@ public class PostThumbnailFileService {
 	}
 
 	private void checkUploadFile(MultipartFile uploadFile) {
-		if (uploadFile == null || uploadFile.isEmpty() || PostThumbnailType.check(
-			uploadFile.getContentType())) {
+		if (uploadFile == null || uploadFile.isEmpty() || PostThumbnailType.check(uploadFile.getContentType())) {
 			throw new IllegalStateException("지원되지 않는 형식의 파일이거나 빈 파일입니다.");
 		}
 	}
