@@ -3,6 +3,7 @@ package teamexpress.velo9.post.controller;
 import java.util.List;
 import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
@@ -23,6 +24,7 @@ import teamexpress.velo9.post.dto.LoveDTO;
 import teamexpress.velo9.post.dto.LovePostDTO;
 import teamexpress.velo9.post.dto.PostReadDTO;
 import teamexpress.velo9.post.dto.PostSaveDTO;
+import teamexpress.velo9.post.dto.ReadDTO;
 import teamexpress.velo9.post.dto.SeriesDTO;
 import teamexpress.velo9.post.dto.SeriesPostSummaryDTO;
 import teamexpress.velo9.post.dto.TempSavedPostDTO;
@@ -94,7 +96,7 @@ public class PostController {
 
 		PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Direction.DESC, "createdDate"));
 
-		Slice<PostReadDTO> post = postService.findReadPost(nickname, pageRequest);
+		Slice<PostReadDTO> post = postService.findPost(nickname, pageRequest);
 		return new ResponseEntity<>(post, HttpStatus.OK);
 	}
 
@@ -133,6 +135,13 @@ public class PostController {
 
 		Slice<LookPostDTO> lookPosts = postService.getLookPosts(getMemberId(session), pageRequest);
 		return new ResponseEntity<>(lookPosts, HttpStatus.OK);
+	}
+
+	@GetMapping("/{nickname}/read/{postId}")
+	public ResponseEntity<Page<ReadDTO>> readPost(@PathVariable Long postId) {
+		Page<ReadDTO> content = postService.findReadPost(postId);
+		return new ResponseEntity<>(content, HttpStatus.OK);
+//		postService.findReadPostTest(postId);
 	}
 
 	private Long getMemberId(HttpSession session) {

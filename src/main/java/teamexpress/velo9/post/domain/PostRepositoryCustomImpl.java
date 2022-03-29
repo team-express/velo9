@@ -1,5 +1,6 @@
 package teamexpress.velo9.post.domain;
 
+import static com.querydsl.jpa.JPAExpressions.select;
 import static teamexpress.velo9.member.domain.QLook.look;
 import static teamexpress.velo9.member.domain.QLove.love;
 import static teamexpress.velo9.post.domain.QPost.post;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.function.Supplier;
 import javax.persistence.EntityManager;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -30,7 +32,7 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 	}
 
 	@Override
-	public Slice<Post> findReadPost(String nickname, Pageable pageable) {
+	public Slice<Post> findPost(String nickname, Pageable pageable) {
 		List<Post> content = queryFactory.selectFrom(post)
 			.join(post.postThumbnail).fetchJoin()
 			.where(post.member.nickname.eq(nickname))
@@ -101,6 +103,17 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 	}
 
 	@Override
+	public Page<Post> findReadPost(Long postId) {
+
+		List<Post> content = queryFactory
+			.selectFrom(post)
+			.join(post.member).fetchJoin()
+			.where(post.id.eq(postId))
+			.fetch();
+
+		return new PageImpl<>(content);
+	}
+
 	public Slice<Post> findByJoinSeries(Long memberId, String seriesName, Pageable pageable) {
 		JPAQuery<Post> query = queryFactory
 			.selectFrom(post)
@@ -162,5 +175,76 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 		} catch (NullPointerException e) {
 			return new BooleanBuilder();
 		}
+	}
+
+	@Override
+	public Post findPrevPost(Post findPost) {
+		return queryFactory
+			.select(post)
+			.from(post)
+			.where(post.id.in(
+				select(post.id.min())
+					.from(post)
+					.where(post.id.gt(findPost.getId()).and(findSeries(findPost)))))
+			.fetchOne();
+	}
+
+	@Override
+	public Post findNextPost(Post findPost) {
+		return queryFactory
+			.select(post)
+			.from(post)
+			.where(post.id.eq(
+				select(post.id.max())
+					.from(post)
+					.where(post.id.lt(findPost.getId()).and(findSeries(findPost)))))
+			.fetchOne();
+
+	}
+
+	@Override
+	public List<Post> findPrevNextPost(Post findPost) {
+		return queryFactory
+			.select(post)
+			.from(post)
+			.where(post.id.eq(
+				select(post.id.max())
+					.from(post)
+					.where(post.id.lt(findPost.getId()).and(findSeries(findPost))))
+				.or(post.id.eq(
+					select(post.id.min())
+					.from(post)
+					.where(post.id.gt(findPost.getId()).and(findSeries(findPost))))))
+			.fetch();
+
+//		return queryFactory
+//			.select(post)
+//			.from(post)
+//			.where(post.id.goe(JPAExpressions
+//					.select(post.id.max())
+//					.from(post)
+//					.where(post.id.lt(findPost.getId()).and(findSeries(findPost))))
+//				.and(findSeries(findPost)))
+//			.limit(3)
+//			.fetch();
+	}
+
+	private BooleanBuilder findSeries(Post findPost) {
+		if (findPost.getSeries() != null) {
+			return eqTotal(findPost);
+		}
+		return new BooleanBuilder();
+	}
+
+	private BooleanBuilder eqTotal(Post findPost) {
+		return eqSeries(findPost).and(eqMember(findPost));
+	}
+
+	private BooleanBuilder eqSeries(Post findPost) {
+		return nullSafeBuilder(() -> post.series.eq(findPost.getSeries()));
+	}
+
+	private BooleanBuilder eqMember(Post findPost) {
+		return nullSafeBuilder(() -> post.member.eq(findPost.getMember()));
 	}
 }

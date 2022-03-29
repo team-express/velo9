@@ -3,6 +3,7 @@ package teamexpress.velo9.post.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +33,7 @@ import teamexpress.velo9.post.dto.PostMainDTO;
 import teamexpress.velo9.post.dto.PostReadDTO;
 import teamexpress.velo9.post.dto.PostSaveDTO;
 import teamexpress.velo9.post.dto.PostThumbnailDTO;
+import teamexpress.velo9.post.dto.ReadDTO;
 import teamexpress.velo9.post.dto.SearchCondition;
 import teamexpress.velo9.post.dto.SeriesDTO;
 import teamexpress.velo9.post.dto.SeriesPostSummaryDTO;
@@ -99,8 +101,8 @@ public class PostService {
 		return seriesList.map(SeriesDTO::new);
 	}
 
-	public Slice<PostReadDTO> findReadPost(String nickname, Pageable pageable) {
-		Slice<Post> posts = postRepository.findReadPost(nickname, pageable);
+	public Slice<PostReadDTO> findPost(String nickname, Pageable pageable) {
+		Slice<Post> posts = postRepository.findPost(nickname, pageable);
 		return posts.map(PostReadDTO::new);
 	}
 
@@ -228,6 +230,22 @@ public class PostService {
 	public Slice<LookPostDTO> getLookPosts(Long memberId, PageRequest page) {
 		Slice<Post> lookPosts = postRepository.findByJoinLook(memberId, page);
 		return lookPosts.map(LookPostDTO::new);
+	}
+
+	/**
+	 * post가 series에 속해있으면 그 series에 속한 이전 post, 다음 post를 보내줘야 함.
+	 * post가 series에 속해있지 않다면 단순히 이전 post, 다음 post를 보내주면 된다.
+	 */
+	public Page<ReadDTO> findReadPost(Long postId) {
+		Post findPost = postRepository.findById(postId).orElseThrow();
+		Post nextPost = postRepository.findPrevPost(findPost);
+		Post prevPost = postRepository.findNextPost(findPost);
+		return postRepository.findReadPost(postId).map(post -> new ReadDTO(post, prevPost, nextPost));
+	}
+
+	public void findReadPostTest(Long postId) {
+		Post findPost = postRepository.findById(postId).orElseThrow();
+		List<Post> post = postRepository.findPrevNextPost(findPost);
 	}
 
 	public Slice<SeriesPostSummaryDTO> findSeriesPost(Long memberId, String seriesName, PageRequest page) {

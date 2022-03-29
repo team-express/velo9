@@ -26,7 +26,7 @@ class PostRepositoryTest {
 		String nickname = "admin";
 		PageRequest pageRequest = PageRequest.of(0, 10);
 
-		Slice<Post> findPost = postRepository.findReadPost(nickname, pageRequest);
+		Slice<Post> findPost = postRepository.findPost(nickname, pageRequest);
 		System.out.println("findPost = " + findPost);
 
 		//when
