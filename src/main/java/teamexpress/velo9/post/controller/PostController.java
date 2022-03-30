@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import teamexpress.velo9.common.domain.Result;
-import teamexpress.velo9.member.security.oauth.SessionConst;
 import teamexpress.velo9.post.dto.LookPostDTO;
 import teamexpress.velo9.post.dto.LoveDTO;
 import teamexpress.velo9.post.dto.LovePostDTO;
@@ -39,17 +38,16 @@ public class PostController {
 	private final TagService tagService;
 
 	@GetMapping("/write")
-	public ResponseEntity<PostSaveDTO> write(@RequestParam("postId") Long postId) {
-		return new ResponseEntity<>(postService.getPostById(postId), HttpStatus.OK);
+	public PostSaveDTO write(@RequestParam("postId") Long postId) {
+		return postService.getPostById(postId);
 	}
 
 	@PostMapping("/write")
-	public ResponseEntity<Long> write(@RequestBody PostSaveDTO postSaveDTO) {
+	public Result<Long> write(@RequestBody PostSaveDTO postSaveDTO) {
 		Long postId = postService.write(postSaveDTO);
 		tagService.addTags(postId, postSaveDTO.getTagNames());
 		tagService.removeUselessTags();
-
-		return new ResponseEntity<>(postId, HttpStatus.OK);
+		return new Result<>(postId);
 	}
 
 	@PostMapping("/writeTemporary")
