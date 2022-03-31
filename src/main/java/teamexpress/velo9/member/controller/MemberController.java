@@ -41,17 +41,17 @@ public class MemberController {
 	}
 
 	@GetMapping("/setting")
-	public MemberDTO editMember(@RequestParam("memberId") Long memberId) {
+	public MemberDTO editMember(@RequestParam Long memberId) {
 		return memberService.getLoginMember(memberId);
 	}
 
 	@PostMapping("/setting")
-	public MemberDTO editMember(@RequestBody MemberEditDTO memberEditDTO, Long memberId) {
+	public MemberDTO editMember(@RequestBody MemberEditDTO memberEditDTO, @RequestParam Long memberId) {
 		return memberService.editMember(memberId, memberEditDTO);
 	}
 
 	@PostMapping("/changePassword")
-	public void changePassword(@RequestBody PasswordDTO passwordDTO, Long memberId) {
+	public void changePassword(@RequestBody PasswordDTO passwordDTO, @RequestParam Long memberId) {
 		memberService.changePassword(memberId, passwordDTO);
 	}
 
@@ -74,7 +74,7 @@ public class MemberController {
 	}
 
 	@PostMapping("/findId")
-	public void findId(@Validated @RequestBody FindInfoDTO findInfoDTO){
+	public void findId(@Validated @RequestBody FindInfoDTO findInfoDTO) {
 		String findUsername = memberService.findIdByEmail(findInfoDTO);
 		mailService.sendMailFindId(findInfoDTO, findUsername);
 	}
