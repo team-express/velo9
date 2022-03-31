@@ -27,9 +27,10 @@ class MemberControllerTest {
 	@Test
 	void addMember() throws Exception {
 		this.mockMvc.perform(post("/signup")
-				.content("{\"username\": \"username2\", \n\"password\": \"password\","
-					+ "\n\"nickname\": \"nickname2\","
-					+ "\n\"email\": \"email2@test.com\"}")
+				.content("{\"username\": \"username33\","
+					+ " \n\"password\": \"password\","
+					+ "\n\"nickname\": \"nickname33\","
+					+ "\n\"email\": \"email3332@test.com\"}")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andDo(document("addMember",
@@ -43,8 +44,9 @@ class MemberControllerTest {
 	}
 
 	@Test
-	void editMemberGet() throws Exception {
+	void GetEditMember() throws Exception {
 		this.mockMvc.perform(get("/setting")
+				.param("memberId","2")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andDo(document("GetEditMember",
@@ -61,8 +63,9 @@ class MemberControllerTest {
 	}
 
 	@Test
-	void editMemberPost() throws Exception {
+	void PostEditMember() throws Exception {
 		this.mockMvc.perform(post("/setting")
+				.param("memberId","3")
 				.content("{\"username\": \"username\", \"nickname\": \"nickname\","
 					+ "\n\"password\": \"password\", \"email\": \"email@test.com\","
 					+ "\n\"introduce\": \"introduce\", \"blogTitle\": \"blogTitle\","
@@ -110,7 +113,7 @@ class MemberControllerTest {
 	@Test
 	void withdraw() throws Exception {
 		this.mockMvc.perform(post("/withdraw")
-				.param("memberId", "1L")
+				.param("memberId", "1")
 				.content("{\"oldPassword\": \"1234\"}")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
@@ -124,9 +127,9 @@ class MemberControllerTest {
 	@Test
 	void socialSignup() throws Exception {
 		this.mockMvc.perform(post("/socialSignup")
-				.param("memberId", "4L")
-				.content("{\"username\": \"username\", "
-					+ "\n\"password\": \"password\", "
+				.param("memberId", "4")
+				.content("{\"username\": \"username\","
+					+ "\n\"password\": \"password\","
 					+ "\n\"nickname\": \"nickname\"}")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
@@ -198,7 +201,7 @@ class MemberControllerTest {
 	@Test
 	void changePw() throws Exception {
 		this.mockMvc.perform(post("/changePw")
-				.content("{\"id\":\"1L\", \"password\": \"0000\"}")
+				.content("{\"id\":\"2\", \"password\": \"0000\"}")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andDo(document("PostFindPw",
@@ -208,5 +211,4 @@ class MemberControllerTest {
 				)
 			));
 	}
-
 }
