@@ -18,6 +18,7 @@ import teamexpress.velo9.post.service.PostService;
 @RequiredArgsConstructor
 public class MainController {
 
+	private static final int SIZE = 20;
 	private final PostService postService;
 
 	@GetMapping("/")
@@ -25,20 +26,19 @@ public class MainController {
 		@RequestParam(required = false) boolean tagSelect,
 		@RequestParam(required = false) String content,
 		@RequestParam(defaultValue = "0") int page,
-		@RequestParam(defaultValue = "20") int size,
 		@RequestParam(defaultValue = "createdDate") String sortValue) {
 
-		PageRequest pageRequest = getPageRequest(page, size, sortValue);
+		PageRequest pageRequest = getPageRequest(page, sortValue);
 		SearchCondition searchCondition = new SearchCondition(tagSelect, content);
 		Page<PostMainDTO> mainSearchPage = postService.searchMain(searchCondition, pageRequest);
 
 		return new ResponseEntity<>(mainSearchPage, HttpStatus.OK);
 	}
 
-	private PageRequest getPageRequest(int page, int size, String sortValue) {
+	private PageRequest getPageRequest(int page, String sortValue) {
 		Sort sort = sortValue.equals(("old")) ?
 			Sort.by(Direction.ASC, "createdDate") : Sort.by(Direction.DESC, sortValue);
 
-		return PageRequest.of(page, size, sort);
+		return PageRequest.of(page, SIZE, sort);
 	}
 }

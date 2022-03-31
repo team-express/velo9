@@ -54,7 +54,7 @@ public class SeriesControllerTest {
 	void deleteSeries() throws Exception {
 
 		mockMvc.perform(MockMvcRequestBuilders.post("/deleteSeries")
-				.param("seriesId", "12"))
+				.param("seriesId", "10"))
 			.andExpect(status().isOk())
 			.andDo(document("deleteSeries"
 			));

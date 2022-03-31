@@ -153,11 +153,7 @@ public class PostService {
 	}
 
 	private Series getSeries(Long seriesId) {
-		if (seriesId == null) {
-			return null;
-		}
-
-		return seriesRepository.findById(seriesId).orElse(null);
+		return seriesId == null ? null : seriesRepository.findById(seriesId).orElse(null);
 	}
 
 	private void writeAlternativeTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {
@@ -222,20 +218,11 @@ public class PostService {
 		return lookPosts.map(LookPostDTO::new);
 	}
 
-	/**
-	 * post가 series에 속해있으면 그 series에 속한 이전 post, 다음 post를 보내줘야 함.
-	 * post가 series에 속해있지 않다면 단순히 이전 post, 다음 post를 보내주면 된다.
-	 */
-	public Page<ReadDTO> findReadPost(Long postId) {
+	public ReadDTO findReadPost(Long postId, Long memberId) {
 		Post findPost = postRepository.findById(postId).orElseThrow();
-		Post nextPost = postRepository.findPrevPost(findPost);
-		Post prevPost = postRepository.findNextPost(findPost);
-		return postRepository.findReadPost(postId).map(post -> new ReadDTO(post, prevPost, nextPost));
-	}
-
-	public void findReadPostTest(Long postId) {
-		Post findPost = postRepository.findById(postId).orElseThrow();
-		List<Post> post = postRepository.findPrevNextPost(findPost);
+		List<Post> pagePost = postRepository.findPrevNextPost(findPost);
+		Post readPost = postRepository.findReadPost(postId, memberId);
+		return new ReadDTO(readPost, pagePost);
 	}
 
 	public Slice<SeriesPostSummaryDTO> findSeriesPost(Long memberId, String seriesName, PageRequest page) {

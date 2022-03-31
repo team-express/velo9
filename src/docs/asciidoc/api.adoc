@@ -2,22 +2,35 @@ ifndef::snippets[]
 :snippets: ./build/generated-snippets
 endif::[]
 
-== REQUEST
+== 글 작성(수정) [ /write, GET ]
 
-include::{snippets}/writePost/request-body.adoc[]
+=== 1. request
 
-include::{snippets}/writePost/request-fields.adoc[]
+include::{snippets}/writeGet/httpie-request.adoc[]
 
-== RESPONSE
+include::{snippets}/writeGet/request-parameters.adoc[]
 
-include::{snippets}/writePost/response-body.adoc[]
-
-== RESPONSE
+=== 2. response
 
 include::{snippets}/writeGet/response-body.adoc[]
 
-== REQUEST
+include::{snippets}/writeGet/response-fields.adoc[]
 
-include::{snippets}/writeTemporaryPost/request-body.adoc[]
+---
 
-include::{snippets}/delete/request-parameters.adoc[]
+== 시리즈 별 보기 [ /{nickname}/series, GET ]
+
+=== 1. request
+
+include::{snippets}/GetSeries/httpie-request.adoc[]
+
+include::{snippets}/GetSeries/path-parameters.adoc[]
+
+=== 2. response
+
+include::{snippets}/GetSeries/response-body.adoc[]
+
+include::{snippets}/GetSeries/response-fields.adoc[]
+
+---
+

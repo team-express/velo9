@@ -27,7 +27,8 @@ public class MemberThumbnailController {
 
 	@GetMapping("/displayMemberThumbnail")
 	public ResponseEntity<byte[]> display(String fileName) {
-		return new ResponseEntity<>(memberThumbnailFileUploader.getImage(fileName),
+		return new ResponseEntity<>(
+			memberThumbnailFileUploader.getImage(fileName),
 			memberThumbnailFileUploader.getHeader(fileName),
 			HttpStatus.OK);
 	}
