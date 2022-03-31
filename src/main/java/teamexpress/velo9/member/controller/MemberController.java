@@ -56,12 +56,12 @@ public class MemberController {
 	}
 
 	@PostMapping("/withdraw")
-	public void withdrawMember(@RequestBody PasswordDTO passwordDTO, Long memberId) {
+	public void withdrawMember(@RequestBody PasswordDTO passwordDTO, @RequestParam Long memberId) {
 		memberService.withdraw(memberId, passwordDTO);
 	}
 
 	@PostMapping("/socialSignup")
-	public void socialSignup(@Validated @RequestBody SocialSignupDTO socialSignupDTO, Long memberId) {
+	public void socialSignup(@Validated @RequestBody SocialSignupDTO socialSignupDTO, @RequestParam Long memberId) {
 		memberService.joinSocial(socialSignupDTO, memberId);
 	}
 

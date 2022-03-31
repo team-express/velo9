@@ -153,11 +153,7 @@ public class PostService {
 	}
 
 	private Series getSeries(Long seriesId) {
-		if (seriesId == null) {
-			return null;
-		}
-
-		return seriesRepository.findById(seriesId).orElse(null);
+		return seriesId == null ? null : seriesRepository.findById(seriesId).orElse(null);
 	}
 
 	private void writeAlternativeTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {

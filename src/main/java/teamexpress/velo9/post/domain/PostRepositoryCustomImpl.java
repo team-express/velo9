@@ -208,13 +208,13 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 			.select(post)
 			.from(post)
 			.where(post.id.eq(
-				select(post.id.max())
-					.from(post)
-					.where(post.id.lt(findPost.getId()).and(findSeries(findPost))))
+					select(post.id.max())
+						.from(post)
+						.where(post.id.lt(findPost.getId()).and(findSeries(findPost))))
 				.or(post.id.eq(
 					select(post.id.min())
-					.from(post)
-					.where(post.id.gt(findPost.getId()).and(findSeries(findPost))))))
+						.from(post)
+						.where(post.id.gt(findPost.getId()).and(findSeries(findPost))))))
 			.fetch();
 
 //		return queryFactory
@@ -230,10 +230,7 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 	}
 
 	private BooleanBuilder findSeries(Post findPost) {
-		if (findPost.getSeries() != null) {
-			return eqTotal(findPost);
-		}
-		return new BooleanBuilder();
+		return findPost.getSeries() != null ? eqTotal(findPost) : new BooleanBuilder();
 	}
 
 	private BooleanBuilder eqTotal(Post findPost) {
