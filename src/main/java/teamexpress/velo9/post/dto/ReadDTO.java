@@ -18,7 +18,9 @@ public class ReadDTO {
 	private PostMemberDTO memberDTO;
 	private List<TagDTO> postTags;
 	private String prevPost;
+	private Long prevPostId;
 	private String nextPost;
+	private Long nextPostId;
 
 
 	public ReadDTO(Post findPost, List<Post> pagePost) {
@@ -41,12 +43,14 @@ public class ReadDTO {
 	private void getPrevPost(Post findPost, Post post) {
 		if (post.getId() < findPost.getId()) {
 			prevPost = post.getTitle();
+			prevPostId = post.getId();
 		}
 	}
 
 	private void getNextPost(Post findPost, Post post) {
 		if (post.getId() > findPost.getId()) {
 			nextPost = post.getTitle();
+			nextPostId = post.getId();
 		}
 	}
 

@@ -219,21 +219,23 @@ class PostControllerTest {
 			.andExpect(status().isOk())
 			.andDo(document("GetReadPost",
 				responseFields(
-					fieldWithPath("data.title").description("제목").optional(),
-					fieldWithPath("data.seriesName").description("소개글").optional(),
-					fieldWithPath("data.content").description("소개글").optional(),
-					fieldWithPath("data.loveCount").description("소개글").optional(),
-					fieldWithPath("data.createdDate").description("작성날짜").optional(),
-					fieldWithPath("data.memberDTO.memberName").description("작성날짜").optional(),
-					fieldWithPath("data.memberDTO.memberIntroduce").description("작성날짜").optional(),
-					fieldWithPath("data.memberDTO.socialGithub").description("작성날짜").optional(),
-					fieldWithPath("data.memberDTO.socialEmail").description("작성날짜").optional(),
-					fieldWithPath("data.memberDTO.memberThumbnailDTO.uuid").description("작성날짜").optional(),
-					fieldWithPath("data.memberDTO.memberThumbnailDTO.name").description("작성날짜").optional(),
-					fieldWithPath("data.memberDTO.memberThumbnailDTO.path").description("작성날짜").optional(),
-					fieldWithPath("data.postTags").description("작성날짜").optional(),
-					fieldWithPath("data.prevPost").description("작성날짜").optional(),
-					fieldWithPath("data.nextPost").description("작성날짜").optional()
+					fieldWithPath("title").description("제목").optional(),
+					fieldWithPath("seriesName").description("소개글").optional(),
+					fieldWithPath("content").description("소개글").optional(),
+					fieldWithPath("loveCount").description("소개글").optional(),
+					fieldWithPath("createdDate").description("작성날짜").optional(),
+					fieldWithPath("memberDTO.memberName").description("작성날짜").optional(),
+					fieldWithPath("memberDTO.memberIntroduce").description("작성날짜").optional(),
+					fieldWithPath("memberDTO.socialGithub").description("작성날짜").optional(),
+					fieldWithPath("memberDTO.socialEmail").description("작성날짜").optional(),
+					fieldWithPath("memberDTO.memberThumbnailDTO.uuid").description("작성날짜").optional(),
+					fieldWithPath("memberDTO.memberThumbnailDTO.name").description("작성날짜").optional(),
+					fieldWithPath("memberDTO.memberThumbnailDTO.path").description("작성날짜").optional(),
+					fieldWithPath("postTags").description("작성날짜").optional(),
+					fieldWithPath("prevPost").description("작성날짜").optional(),
+					fieldWithPath("prevPostId").description("작성날짜").optional(),
+					fieldWithPath("nextPost").description("작성날짜").optional(),
+					fieldWithPath("nextPostId").description("작성날짜").optional()
 				)
 			));
 	}
