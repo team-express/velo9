@@ -107,25 +107,11 @@ public class MemberService {
 			socialSignupDTO.getNickname());
 	}
 
-	public Member findPw(FindInfoDTO findInfoDTO) {
-		Member findEmailMember =
-			memberRepository.findByEmail(findInfoDTO.getEmail()).orElseThrow(() -> {
-			throw new IllegalArgumentException("존재하지 않는 회원입니다.");
-		});
-
-		Member findUsernameMember =
-			memberRepository.findByUsername(findInfoDTO.getUsername()).orElseThrow(() -> {
-			throw new IllegalArgumentException("존재하지 않는 회원입니다.");
-		});
-
-		checkEmailUsername(findEmailMember, findUsernameMember);
-		return findUsernameMember;
-	}
-
-	private void checkEmailUsername(Member findEmailMember, Member findUsernameMember) {
-		if (findEmailMember != findUsernameMember) {
+	public Long findPw(FindInfoDTO findInfoDTO) {
+		Member findMember = memberRepository.findByUsernameAndEmail(findInfoDTO.getUsername(), findInfoDTO.getEmail()).orElseThrow(() -> {
 			throw new IllegalArgumentException("아이디 또는 이메일이 일치하지 않습니다.");
-		}
+		});
+		return findMember.getId();
 	}
 
 	@Transactional

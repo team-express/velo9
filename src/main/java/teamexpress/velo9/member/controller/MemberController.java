@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import teamexpress.velo9.member.domain.Member;
 import teamexpress.velo9.member.dto.FindInfoDTO;
 import teamexpress.velo9.member.dto.MailDTO;
 import teamexpress.velo9.member.dto.MemberDTO;
@@ -85,8 +84,7 @@ public class MemberController {
 
 	@PostMapping("/findPw")
 	public Long findPw(@Validated @RequestBody FindInfoDTO findInfoDTO) {
-		Member findMember = memberService.findPw(findInfoDTO);
-		return findMember.getId();
+		return memberService.findPw(findInfoDTO);
 	}
 
 	@PostMapping("/sendMailPw")
