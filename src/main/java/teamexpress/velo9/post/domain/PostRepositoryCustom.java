@@ -11,11 +11,7 @@ public interface PostRepositoryCustom {
 	Page<Post> search(SearchCondition condition, Pageable pageable);
 	Slice<Post> findByJoinLove(Long memberId, Pageable pageable);
 	Slice<Post> findByJoinLook(Long memberId, Pageable pageable);
-	Page<Post> findReadPost(Long postId);
+	List<Post> findReadPost(Long postId, Long memberId);
 	Slice<Post> findByJoinSeries(Long memberId, String seriesName, Pageable pageable);
-
-	Post findPrevPost(Post findPost);
-	Post findNextPost(Post findPost);
-
 	List<Post> findPrevNextPost(Post findPost);
 }

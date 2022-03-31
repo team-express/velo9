@@ -161,7 +161,7 @@ class MemberControllerTest {
 	@Test
 	void findId() throws Exception {
 		this.mockMvc.perform(post("/findId")
-				.content("{\"email\": \"test@nate.com\"}")
+				.content("{\"email\": \"test1@nate.com\"}")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andDo(document("PostFindId",
@@ -174,7 +174,7 @@ class MemberControllerTest {
 	@Test
 	void findPw() throws Exception {
 		this.mockMvc.perform(post("/findPw")
-				.content("{\"username\":\"test\",\"email\":\"test2@nate.com\"}")
+				.content("{\"username\":\"test\",\"email\":\"test3@nate.com\"}")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andDo(document("PostFindPw",

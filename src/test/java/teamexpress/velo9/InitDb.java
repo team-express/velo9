@@ -13,8 +13,11 @@ import teamexpress.velo9.member.domain.Love;
 import teamexpress.velo9.member.domain.LoveRepository;
 import teamexpress.velo9.member.domain.Member;
 import teamexpress.velo9.member.domain.MemberRepository;
+import teamexpress.velo9.member.domain.MemberThumbnail;
+import teamexpress.velo9.member.domain.MemberThumbnailRepository;
 import teamexpress.velo9.member.domain.Role;
 import teamexpress.velo9.post.domain.Post;
+import teamexpress.velo9.post.domain.PostAccess;
 import teamexpress.velo9.post.domain.PostRepository;
 import teamexpress.velo9.post.domain.PostStatus;
 import teamexpress.velo9.post.domain.PostThumbnail;
@@ -49,11 +52,21 @@ public class InitDb {
 		private final TagRepository tagRepository;
 		private final LoveRepository loveRepository;
 		private final LookRepository lookRepository;
+		private final MemberThumbnailRepository memberThumbnailRepository;
 
 		public void dbInit1() {
-			memberRepository.save(createMember("jinwook", "jinwook", "1234", "test@nate.com", Role.ROLE_USER));
-			memberRepository.save(createMember("admin", "admin", "1234", "test@nate.com", Role.ROLE_SOCIAL));
-			memberRepository.save(createMember("test", "test", "1234", "test@nate.com", Role.ROLE_SOCIAL));
+
+			MemberThumbnail thumbnail1 = MemberThumbnail.builder().uuid("uuid").name("name").path("path").build();
+			MemberThumbnail thumbnail2 = MemberThumbnail.builder().uuid("uuid").name("name").path("path").build();
+			MemberThumbnail thumbnail3 = MemberThumbnail.builder().uuid("uuid").name("name").path("path").build();
+			memberThumbnailRepository.save(thumbnail1);
+			memberThumbnailRepository.save(thumbnail2);
+			memberThumbnailRepository.save(thumbnail3);
+
+			memberRepository.save(createMember("jinwook", "jinwook", "1234", "test1@nate.com", Role.ROLE_USER, thumbnail1));
+			memberRepository.save(createMember("admin", "admin", "1234", "test2@nate.com", Role.ROLE_SOCIAL, thumbnail2));
+			memberRepository.save(createMember("test", "test", "1234", "test3@nate.com", Role.ROLE_SOCIAL, thumbnail3));
+			memberRepository.save(createSocialMember("test4@nate.com", Role.ROLE_SOCIAL));
 
 			Member member = memberRepository.findByNickname("admin").get();
 
@@ -92,60 +105,25 @@ public class InitDb {
 			PostThumbnail postThumbnail = createThumbnail("path", "uuid", "name");
 			postThumbnailRepository.save(postThumbnail);
 
-			for (int i = 0; i < 10; i++) {
+			for (int i = 1; i < 4; i++) {
 				Post savedPost = postRepository.save(createPost("" + i, "" + i, member, series1, postThumbnail));
 				loveRepository.save(createLove(member, savedPost));
 				lookRepository.save(createLook(member, savedPost));
 			}
-			for (int i = 10; i < 20; i++) {
-				Post savedPost = postRepository.save(createPost("" + i, "" + i, member, series2, postThumbnail));
-				loveRepository.save(createLove(member, savedPost));
-				lookRepository.save(createLook(member, savedPost));
-			}
-			for (int i = 20; i < 30; i++) {
-				Post savedPost = postRepository.save(createPost("" + i, "" + i, member, series3, postThumbnail));
-				loveRepository.save(createLove(member, savedPost));
-				lookRepository.save(createLook(member, savedPost));
-			}
-			for (int i = 30; i < 40; i++) {
-				Post savedPost = postRepository.save(createPost("" + i, "" + i, member, series4, postThumbnail));
-				loveRepository.save(createLove(member, savedPost));
-				lookRepository.save(createLook(member, savedPost));
-			}
-			for (int i = 40; i < 50; i++) {
-				Post savedPost = postRepository.save(createPost("" + i, "" + i, member, series5, postThumbnail));
-				loveRepository.save(createLove(member, savedPost));
-				lookRepository.save(createLook(member, savedPost));
-			}
-			for (int i = 50; i < 60; i++) {
-				Post savedPost = postRepository.save(createPost("" + i, "" + i, member, series6, postThumbnail));
-				loveRepository.save(createLove(member, savedPost));
-				lookRepository.save(createLook(member, savedPost));
-			}
-			for (int i = 60; i < 70; i++) {
-				Post savedPost = postRepository.save(createPost("" + i, "" + i, member, series7, postThumbnail));
-				loveRepository.save(createLove(member, savedPost));
-				lookRepository.save(createLook(member, savedPost));
-			}
-			for (int i = 70; i < 80; i++) {
-				Post savedPost = postRepository.save(createPost("" + i, "" + i, member, series8, postThumbnail));
-				loveRepository.save(createLove(member, savedPost));
-				lookRepository.save(createLook(member, savedPost));
-			}
-			for (int i = 80; i < 90; i++) {
-				Post savedPost = postRepository.save(createPost("" + i, "" + i, member, series9, postThumbnail));
-				loveRepository.save(createLove(member, savedPost));
-				lookRepository.save(createLook(member, savedPost));
-			}
-			for (int i = 90; i < 100; i++) {
-				Post savedPost = postRepository.save(createPost("" + i, "" + i, member, series10, postThumbnail));
+
+			for (int i = 5; i < 7; i++) {
+				Post savedPost = postRepository.save(createTemp("" + i, "" + i, member, series1, postThumbnail));
 				loveRepository.save(createLove(member, savedPost));
 				lookRepository.save(createLook(member, savedPost));
 			}
 		}
 
 		private Post createPost(String title, String introduce, Member member, Series series, PostThumbnail postThumbnail) {
-			return Post.builder().title(title).introduce(introduce).member(member).series(series).postThumbnail(postThumbnail).status(PostStatus.GENERAL).build();
+			return Post.builder().access(PostAccess.PUBLIC).title(title).introduce(introduce).member(member).series(series).postThumbnail(postThumbnail).status(PostStatus.GENERAL).build();
+		}
+
+		private Post createTemp(String title, String introduce, Member member, Series series, PostThumbnail postThumbnail) {
+			return Post.builder().access(PostAccess.PUBLIC).title(title).introduce(introduce).member(member).series(series).postThumbnail(postThumbnail).status(PostStatus.TEMPORARY).build();
 		}
 
 		private PostThumbnail createThumbnail(String path, String uuid, String name) {
@@ -156,8 +134,12 @@ public class InitDb {
 			return Series.builder().name(name).member(member).posts(new ArrayList<>()).build();
 		}
 
-		private Member createMember(String nickname, String username, String password, String email, Role roleUser) {
-			return Member.builder().nickname(nickname).blogTitle(nickname).username(username).password(passwordEncoder.encode(password)).email(email).posts(new ArrayList<>()).role(roleUser).build();
+		private Member createMember(String nickname, String username, String password, String email, Role roleUser, MemberThumbnail memberThumbnail) {
+			return Member.builder().memberThumbnail(memberThumbnail).nickname(nickname).blogTitle(nickname).username(username).password(passwordEncoder.encode(password)).email(email).posts(new ArrayList<>()).role(roleUser).build();
+		}
+
+		private Member createSocialMember(String email, Role roleUser) {
+			return Member.builder().email(email).posts(new ArrayList<>()).role(roleUser).build();
 		}
 
 		private Love createLove(Member member, Post post) {
