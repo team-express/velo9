@@ -1,7 +1,6 @@
 package teamexpress.velo9.post.controller;
 
 import java.util.List;
-import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import teamexpress.velo9.common.domain.Result;
-import teamexpress.velo9.member.security.oauth.SessionConst;
 import teamexpress.velo9.post.dto.LookPostDTO;
 import teamexpress.velo9.post.dto.LoveDTO;
 import teamexpress.velo9.post.dto.LovePostDTO;
@@ -82,8 +80,7 @@ public class PostController {
 		@PathVariable String seriesName,
 		@RequestParam(defaultValue = "0") int page,
 		@RequestParam(defaultValue = "descending") String sortCondition,
-		@RequestParam Long memberId,
-		HttpSession session) {
+		@RequestParam Long memberId) {
 
 		PageRequest pageRequest = getPageRequest(page, sortCondition);
 
@@ -102,7 +99,7 @@ public class PostController {
 	}
 
 	@GetMapping("/temp")
-	public ResponseEntity<Result<List<TempSavedPostDTO>>> tempPostsRead(@RequestParam Long memberId, HttpSession session) {
+	public ResponseEntity<Result<List<TempSavedPostDTO>>> tempPostsRead(@RequestParam Long memberId) {
 		return new ResponseEntity<>(new Result(postService.getTempSavedPost(memberId)), HttpStatus.OK);
 	}
 
