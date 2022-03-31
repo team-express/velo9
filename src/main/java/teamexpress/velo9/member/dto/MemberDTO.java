@@ -1,5 +1,6 @@
 package teamexpress.velo9.member.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import teamexpress.velo9.member.domain.Member;
 
@@ -8,6 +9,7 @@ public class MemberDTO {
 
 	private String username;
 	private String nickname;
+	@JsonIgnore
 	private String password;
 	private String email;
 	private String introduce;
