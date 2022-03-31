@@ -218,11 +218,11 @@ public class PostService {
 		return lookPosts.map(LookPostDTO::new);
 	}
 
-	public List<ReadDTO> findReadPost(Long postId, Long memberId) {
+	public ReadDTO findReadPost(Long postId, Long memberId) {
 		Post findPost = postRepository.findById(postId).orElseThrow();
 		List<Post> pagePost = postRepository.findPrevNextPost(findPost);
-		return postRepository.findReadPost(postId, memberId).stream()
-			.map(post -> new ReadDTO(post, pagePost)).collect(Collectors.toList());
+		Post readPost = postRepository.findReadPost(postId, memberId);
+		return new ReadDTO(readPost, pagePost);
 	}
 
 	public Slice<SeriesPostSummaryDTO> findSeriesPost(Long memberId, String seriesName, PageRequest page) {

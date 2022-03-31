@@ -102,13 +102,13 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 	}
 
 	@Override
-	public List<Post> findReadPost(Long postId, Long memberId) {
+	public Post findReadPost(Long postId, Long memberId) {
 		return queryFactory
 			.selectFrom(post)
 			.join(post.member).fetchJoin()
 			.where(post.id.eq(postId))
 			.where(post.member.id.eq(memberId))
-			.fetch();
+			.fetchOne();
 	}
 
 	public Slice<Post> findByJoinSeries(Long memberId, String seriesName, Pageable pageable) {

@@ -1,6 +1,5 @@
 package teamexpress.velo9.post.controller;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
@@ -123,7 +122,7 @@ public class PostController {
 	@GetMapping("/{nickname}/read/{postId}")
 	public Result readPost(@PathVariable Long postId, @RequestParam Long memberId) {
 		postService.look(postId, memberId);
-		List<ReadDTO> readPost = postService.findReadPost(postId, memberId);
+		ReadDTO readPost = postService.findReadPost(postId, memberId);
 		return new Result(readPost);
 	}
 
