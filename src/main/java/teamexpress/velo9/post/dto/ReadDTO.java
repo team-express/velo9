@@ -18,7 +18,7 @@ public class ReadDTO {
 	private LocalDateTime createdDate;
 	private PostMemberDTO memberDTO;
 	private List<TagDTO> postTags;
-	private TransferPostDTO transferPostDTO;
+	//private TransferPostDTO transferPostDTO;
 
 	public ReadDTO(Post post, Post prevPost, Post nextPost) {
 		title = post.getTitle();
@@ -28,7 +28,7 @@ public class ReadDTO {
 		createdDate = post.getCreatedDate();
 		memberDTO = new PostMemberDTO(post.getMember());
 		postTags = post.getPostTags().stream().map(TagDTO::new).collect(Collectors.toList());
-		transferPostDTO= new TransferPostDTO(prevPost, nextPost);
+		//transferPostDTO= new TransferPostDTO(prevPost, nextPost);
 	}
 
 	private String seriesNullCheck(Post post) {
