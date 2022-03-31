@@ -16,3 +16,8 @@ include::{snippets}/writePost/response-body.adoc[]
 
 include::{snippets}/writeGet/response-body.adoc[]
 
+== REQUEST
+
+include::{snippets}/writeTemporaryPost/request-body.adoc[]
+
+include::{snippets}/delete/request-parameters.adoc[]

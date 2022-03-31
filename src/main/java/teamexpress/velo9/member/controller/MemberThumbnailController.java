@@ -19,11 +19,10 @@ public class MemberThumbnailController {
 	private final MemberService memberService;
 
 	@PostMapping("/uploadMemberThumbnail")
-	public ResponseEntity<MemberThumbnailDTO> upload(MultipartFile uploadFile, Long memberId) {
+	public MemberThumbnailDTO upload(MultipartFile uploadFile, Long memberId) {
 		MemberThumbnailDTO memberThumbnailDTO = memberThumbnailFileUploader.upload(uploadFile);
 		memberService.uploadThumbnail(memberThumbnailDTO, memberId);
-
-		return new ResponseEntity<>(memberThumbnailDTO, HttpStatus.OK);
+		return memberThumbnailDTO;
 	}
 
 	@GetMapping("/displayMemberThumbnail")

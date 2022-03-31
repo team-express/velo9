@@ -137,7 +137,6 @@ public class PostController {
 		Page<ReadDTO> content = postService.findReadPost(postId);
 		postService.look(postId, memberId);
 		return new ResponseEntity<>(content, HttpStatus.OK);
-//		postService.findReadPostTest(postId);
 	}
 
 	private PageRequest getPageRequest(int page, int size, String sortValue) {
