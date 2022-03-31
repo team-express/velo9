@@ -120,10 +120,9 @@ public class PostController {
 	}
 
 	@GetMapping("/{nickname}/read/{postId}")
-	public Result readPost(@PathVariable Long postId, @RequestParam Long memberId) {
+	public ReadDTO readPost(@PathVariable Long postId, @RequestParam Long memberId) {
 		postService.look(postId, memberId);
-		ReadDTO readPost = postService.findReadPost(postId, memberId);
-		return new Result(readPost);
+		return postService.findReadPost(postId, memberId);
 	}
 
 	private PageRequest getPageRequest(int page, String sortValue) {
