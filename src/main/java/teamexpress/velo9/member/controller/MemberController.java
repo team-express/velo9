@@ -4,14 +4,13 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import teamexpress.velo9.common.domain.Result;
 import teamexpress.velo9.member.dto.FindInfoDTO;
 import teamexpress.velo9.member.dto.MailDTO;
 import teamexpress.velo9.member.dto.MemberDTO;
@@ -42,15 +41,13 @@ public class MemberController {
 	}
 
 	@GetMapping("/setting")
-	public ResponseEntity<MemberDTO> editMember(Long memberId) {
-		MemberDTO memberDTO = memberService.getLoginMember(memberId);
-		return new ResponseEntity<>(memberDTO, HttpStatus.OK);
+	public MemberDTO editMember(@RequestParam Long memberId) {
+		return memberService.getLoginMember(memberId);
 	}
 
 	@PostMapping("/setting")
-	public ResponseEntity<MemberDTO> editMember(@RequestBody MemberEditDTO memberEditDTO, @RequestParam Long memberId) {
-		MemberDTO memberDTO = memberService.editMember(memberId, memberEditDTO);
-		return new ResponseEntity<>(memberDTO, HttpStatus.OK);
+	public MemberDTO editMember(@RequestBody MemberEditDTO memberEditDTO, @RequestParam Long memberId) {
+		return memberService.editMember(memberId, memberEditDTO);
 	}
 
 	@PostMapping("/changePassword")
@@ -69,11 +66,11 @@ public class MemberController {
 	}
 
 	@PostMapping("/sendMail")
-	public int sendMail(@Validated @RequestBody MailDTO mailDTO) {
+	public Result sendMail(@Validated @RequestBody MailDTO mailDTO) {
 		String number = getRandomNumber();
 		memberService.findEmail(mailDTO);
 		mailService.sendMail(mailDTO.getEmail(), number);
-		return Integer.parseInt(number);
+		return new Result<>(Integer.valueOf(number));
 	}
 
 	@PostMapping("/findId")
@@ -83,8 +80,9 @@ public class MemberController {
 	}
 
 	@PostMapping("/findPw")
-	public Long findPw(@Validated @RequestBody FindInfoDTO findInfoDTO) {
-		return memberService.findPw(findInfoDTO);
+	public Result findPw(@Validated @RequestBody FindInfoDTO findInfoDTO) {
+		Long memberId = memberService.findPw(findInfoDTO);
+		return new Result(memberId);
 	}
 
 	@PostMapping("/sendMailPw")

@@ -1,10 +1,12 @@
 package teamexpress.velo9.post.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
 import teamexpress.velo9.post.domain.Post;
 
 import java.time.LocalDateTime;
 
+@Data
 public class TempSavedPostDTO {
 
     private String title;

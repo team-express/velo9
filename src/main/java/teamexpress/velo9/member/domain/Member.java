@@ -51,7 +51,7 @@ public class Member extends BaseEntity {
 	@JsonIgnore
 	private List<Post> posts = new ArrayList<>();
 
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "member_thumbnail_id")
 	private MemberThumbnail memberThumbnail;
 

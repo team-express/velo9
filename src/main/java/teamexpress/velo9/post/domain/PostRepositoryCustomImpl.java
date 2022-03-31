@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.function.Supplier;
 import javax.persistence.EntityManager;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -103,15 +102,13 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 	}
 
 	@Override
-	public Page<Post> findReadPost(Long postId) {
-
-		List<Post> content = queryFactory
+	public Post findReadPost(Long postId, Long memberId) {
+		return queryFactory
 			.selectFrom(post)
 			.join(post.member).fetchJoin()
 			.where(post.id.eq(postId))
-			.fetch();
-
-		return new PageImpl<>(content);
+			.where(post.member.id.eq(memberId))
+			.fetchOne();
 	}
 
 	public Slice<Post> findByJoinSeries(Long memberId, String seriesName, Pageable pageable) {
@@ -178,31 +175,6 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 	}
 
 	@Override
-	public Post findPrevPost(Post findPost) {
-		return queryFactory
-			.select(post)
-			.from(post)
-			.where(post.id.in(
-				select(post.id.min())
-					.from(post)
-					.where(post.id.gt(findPost.getId()).and(findSeries(findPost)))))
-			.fetchOne();
-	}
-
-	@Override
-	public Post findNextPost(Post findPost) {
-		return queryFactory
-			.select(post)
-			.from(post)
-			.where(post.id.eq(
-				select(post.id.max())
-					.from(post)
-					.where(post.id.lt(findPost.getId()).and(findSeries(findPost)))))
-			.fetchOne();
-
-	}
-
-	@Override
 	public List<Post> findPrevNextPost(Post findPost) {
 		return queryFactory
 			.select(post)
@@ -216,17 +188,6 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 						.from(post)
 						.where(post.id.gt(findPost.getId()).and(findSeries(findPost))))))
 			.fetch();
-
-//		return queryFactory
-//			.select(post)
-//			.from(post)
-//			.where(post.id.goe(JPAExpressions
-//					.select(post.id.max())
-//					.from(post)
-//					.where(post.id.lt(findPost.getId()).and(findSeries(findPost))))
-//				.and(findSeries(findPost)))
-//			.limit(3)
-//			.fetch();
 	}
 
 	private BooleanBuilder findSeries(Post findPost) {
