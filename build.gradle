@@ -23,13 +23,6 @@ test {
     outputs.dir snippetsDir
 }
 
-bootJar {
-    dependsOn asciidoctor
-    copy {
-        from "${asciidoctor.outputDir}"
-        into '/static/docs'
-    }
-}
 
 configurations {
     compileOnly {
@@ -114,13 +107,6 @@ asciidoctor {
 
 asciidoctor.doFirst {
     delete file('src/main/resources/static/docs')
-}
-
-task copyDocument(type: Copy) {
-    dependsOn asciidoctor
-
-    from file("build/docs/asciidoc")
-    into file("src/main/resources/static/docs")
 }
 
 build {
