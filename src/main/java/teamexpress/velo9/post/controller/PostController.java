@@ -5,8 +5,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -56,8 +54,8 @@ public class PostController {
 	}
 
 	@PostMapping("/delete")
-	public void delete(@RequestParam("postId") Long id) {
-		postService.delete(id);
+	public void delete(@RequestParam Long postId) {
+		postService.delete(postId);
 	}
 
 	@GetMapping("/{nickname}/series")
@@ -70,14 +68,14 @@ public class PostController {
 
 	@GetMapping("/{nickname}/series/{seriesName}")
 	public Slice<SeriesPostSummaryDTO> seriesPost(
+		@PathVariable String nickname,
 		@PathVariable String seriesName,
 		@RequestParam(defaultValue = "0") int page,
-		@RequestParam(defaultValue = "createdDate") String sortCondition,
-		@RequestParam Long memberId) {
+		@RequestParam(defaultValue = "createdDate") String sortCondition) {
 
 		PageRequest pageRequest = getPageRequest(page, sortCondition);
 
-		return postService.findSeriesPost(memberId, seriesName, pageRequest);
+		return postService.findSeriesPost(nickname, seriesName, pageRequest);
 	}
 
 	@GetMapping("/{nickname}/main")
@@ -119,9 +117,9 @@ public class PostController {
 	}
 
 	@GetMapping("/{nickname}/read/{postId}")
-	public ReadDTO readPost(@PathVariable Long postId, @RequestParam Long memberId) {
+	public ReadDTO readPost(@PathVariable String nickname, @PathVariable Long postId, @RequestParam Long memberId) {
 		postService.look(postId, memberId);
-		return postService.findReadPost(postId, memberId);
+		return postService.findReadPost(postId, nickname);
 	}
 
 	private PageRequest getPageRequest(int page, String sortValue) {

@@ -101,19 +101,19 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 	}
 
 	@Override
-	public Post findReadPost(Long postId, Long memberId) {
+	public Post findReadPost(Long postId, String nickname) {
 		return queryFactory
 			.selectFrom(post)
 			.join(post.member).fetchJoin()
 			.where(post.id.eq(postId))
-			.where(post.member.id.eq(memberId))
+			.where(post.member.nickname.eq(nickname))
 			.fetchOne();
 	}
 
-	public Slice<Post> findByJoinSeries(Long memberId, String seriesName, Pageable pageable) {
+	public Slice<Post> findByJoinSeries(String nickname, String seriesName, Pageable pageable) {
 		JPAQuery<Post> query = queryFactory
 			.selectFrom(post)
-			.where(post.member.id.eq(memberId))
+			.where(post.member.nickname.eq(nickname))
 			.where(post.series.name.eq(seriesName))
 			.offset(pageable.getOffset());
 
