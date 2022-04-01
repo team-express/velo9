@@ -22,6 +22,10 @@ public class TagService {
 
 	@Transactional
 	public void addTags(Long postId, List<String> tagNames) {
+		if (tagNames == null) {
+			return;
+		}
+
 		Post post = postRepository.findById(postId).orElse(null);
 
 		List<String> realTagNames = tagRepository.getTagNames();

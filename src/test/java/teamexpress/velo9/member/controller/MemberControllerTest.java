@@ -14,7 +14,9 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
@@ -25,6 +27,8 @@ class MemberControllerTest {
 	private MockMvc mockMvc;
 
 	@Test
+	@Transactional
+	@Rollback
 	void addMember() throws Exception {
 		this.mockMvc.perform(post("/signup")
 				.content("{\"username\": \"username33\","
@@ -63,6 +67,8 @@ class MemberControllerTest {
 	}
 
 	@Test
+	@Transactional
+	@Rollback
 	void PostEditMember() throws Exception {
 		this.mockMvc.perform(post("/setting")
 				.param("memberId","3")
@@ -96,6 +102,8 @@ class MemberControllerTest {
 	}
 
 	@Test
+	@Transactional
+	@Rollback
 	void changePassword() throws Exception {
 		this.mockMvc.perform(post("/changePassword")
 				.param("memberId", "3")
@@ -111,6 +119,8 @@ class MemberControllerTest {
 	}
 
 	@Test
+	@Transactional
+	@Rollback
 	void withdraw() throws Exception {
 		this.mockMvc.perform(post("/withdraw")
 				.param("memberId", "1")
@@ -125,6 +135,8 @@ class MemberControllerTest {
 	}
 
 	@Test
+	@Transactional
+	@Rollback
 	void socialSignup() throws Exception {
 		this.mockMvc.perform(post("/socialSignup")
 				.param("memberId", "4")
@@ -159,6 +171,8 @@ class MemberControllerTest {
 	}
 
 	@Test
+	@Transactional
+	@Rollback
 	void findId() throws Exception {
 		this.mockMvc.perform(post("/findId")
 				.content("{\"email\": \"test1@nate.com\"}")
@@ -172,6 +186,8 @@ class MemberControllerTest {
 	}
 
 	@Test
+	@Transactional
+	@Rollback
 	void findPw() throws Exception {
 		this.mockMvc.perform(post("/findPw")
 				.content("{\"username\":\"test\",\"email\":\"test3@nate.com\"}")
@@ -186,6 +202,8 @@ class MemberControllerTest {
 	}
 
 	@Test
+	@Transactional
+	@Rollback
 	void sendMailPw() throws Exception {
 		this.mockMvc.perform(post("/sendMailPw")
 				.content("{\"email\":\"test2@nate.com\"}")
@@ -199,6 +217,8 @@ class MemberControllerTest {
 	}
 
 	@Test
+	@Transactional
+	@Rollback
 	void changePw() throws Exception {
 		this.mockMvc.perform(post("/changePw")
 				.content("{\"id\":\"2\", \"password\": \"0000\"}")

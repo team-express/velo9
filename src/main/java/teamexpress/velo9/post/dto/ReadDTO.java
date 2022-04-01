@@ -17,24 +17,11 @@ public class ReadDTO {
 	private LocalDateTime createdDate;
 	private PostMemberDTO memberDTO;
 	private List<TagDTO> postTags;
-<<<<<<< HEAD
-	//private TransferPostDTO transferPostDTO;
 
-	public ReadDTO(Post post, Post prevPost, Post nextPost) {
-		title = post.getTitle();
-		seriesName = seriesNullCheck(post);
-		content = post.getContent();
-		loveCount = post.getLoveCount();
-		createdDate = post.getCreatedDate();
-		memberDTO = new PostMemberDTO(post.getMember());
-		postTags = post.getPostTags().stream().map(TagDTO::new).collect(Collectors.toList());
-		//transferPostDTO= new TransferPostDTO(prevPost, nextPost);
-=======
 	private String prevPost;
 	private Long prevPostId;
 	private String nextPost;
 	private Long nextPostId;
-
 
 	public ReadDTO(Post findPost, List<Post> pagePost) {
 		title = findPost.getTitle();
@@ -47,7 +34,6 @@ public class ReadDTO {
 			getPrevPost(findPost, post);
 			getNextPost(findPost, post);
 		});
->>>>>>> dcf2257c85765dae195be9689b7b7de1b9c80b0b
 	}
 
 	private String seriesNullCheck(Post post) {
@@ -67,5 +53,4 @@ public class ReadDTO {
 			nextPostId = post.getId();
 		}
 	}
-
 }
