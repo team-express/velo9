@@ -7,7 +7,7 @@ import org.springframework.data.domain.Slice;
 import teamexpress.velo9.post.dto.SearchCondition;
 
 public interface PostRepositoryCustom {
-	Slice<Post> findPost(String nickname, Pageable pageable);
+	Slice<Post> findPost(String nickname, String tagName, Pageable pageable);
 	Page<Post> search(SearchCondition condition, Pageable pageable);
 	Slice<Post> findByJoinLove(Long memberId, Pageable pageable);
 	Slice<Post> findByJoinLook(Long memberId, Pageable pageable);
