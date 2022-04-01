@@ -69,7 +69,31 @@ include::{snippets}/GetSeries/response-body.adoc[]
 
 include::{snippets}/GetSeries/response-fields.adoc[]
 
----
+== 시리즈에 속한 글들 보기 [ /{nickname}/series/{seriesName}, GET ]
+
+=== 1. request
+
+include::{snippets}/GetSeriesPost/httpie-request.adoc[]
+
+include::{snippets}/GetSeriesPost/path-parameters.adoc[]
+
+include::{snippets}/GetSeriesPost/request-parameters.adoc[]
+
+include::{snippets}/GetSeriesPost/response-body.adoc[]
+
+include::{snippets}/GetSeriesPost/response-fields.adoc[]
+
+== 게시글 상세보기 [ /{nickname}/read/{postId}, GET ]
+
+include::{snippets}/GetReadPost/httpie-request.adoc[]
+
+include::{snippets}/GetReadPost/path-parameters.adoc[]
+
+include::{snippets}/GetReadPost/request-parameters.adoc[]
+
+include::{snippets}/GetReadPost/response-body.adoc[]
+
+include::{snippets}/GetReadPost/response-fields.adoc[]
 
 == 글 삭제하기 [ /delete, POST ]
 

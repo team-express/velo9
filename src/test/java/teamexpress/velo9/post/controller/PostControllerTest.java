@@ -62,7 +62,6 @@ class PostControllerTest {
 			));
 	}
 
-	//id반영
 	@Test
 	void series() throws Exception {
 		this.mockMvc.perform(RestDocumentationRequestBuilders.get("/{nickname}/series", "admin"))
@@ -121,42 +120,29 @@ class PostControllerTest {
 			));
 	}
 
-	//memberId없애고 다시
-	//id?
 	@Test
 	void seriesPost() throws Exception {
-		this.mockMvc.perform(get("/{nickname}/series/{seriesName}", "admin", "series1")
-				.param("memberId", "2")
-				.contentType(MediaType.APPLICATION_JSON))
+		this.mockMvc.perform(RestDocumentationRequestBuilders.get("/{nickname}/series/{seriesName}", "admin", "series1")
+				.param("page", "0")
+				.param("sortCondition", "createdDate"))
 			.andExpect(status().isOk())
 			.andDo(document("GetSeriesPost",
-				responseFields(
-					fieldWithPath("content.[].id").description("포스트의 ID").optional(),
-					fieldWithPath("content.[].title").description("제목").optional(),
-					fieldWithPath("content.[].seriesName").description("시리즈 네임").optional(),
-					fieldWithPath("content.[].introduce").description("소개글").optional(),
-					fieldWithPath("content.[].createdDate").description("작성날짜").optional(),
-					fieldWithPath("content.[].thumbnail.uuid").description("썸네일 uuid").optional(),
-					fieldWithPath("content.[].thumbnail.name").description("썸네일 name").optional(),
-					fieldWithPath("content.[].thumbnail.path").description("썸네일 path").optional(),
-					fieldWithPath("content.[].postTags").description("포스트 태그들").optional(),
-					fieldWithPath("pageable.sort.empty").description("password 내용").optional(),
-					fieldWithPath("pageable.sort.unsorted").description("password 내용").optional(),
-					fieldWithPath("pageable.sort.sorted").description("password 내용").optional(),
-					fieldWithPath("pageable.offset").description("password 내용").optional(),
-					fieldWithPath("pageable.pageNumber").description("password 내용").optional(),
-					fieldWithPath("pageable.pageSize").description("password 내용").optional(),
-					fieldWithPath("pageable.paged").description("password 내용").optional(),
-					fieldWithPath("pageable.unpaged").description("password 내용").optional(),
-					fieldWithPath("size").description("password 내용").optional(),
-					fieldWithPath("sort.empty").description("password 내용").optional(),
-					fieldWithPath("sort.unsorted").description("password 내용").optional(),
-					fieldWithPath("sort.sorted").description("password 내용").optional(),
-					fieldWithPath("number").description("password 내용").optional(),
-					fieldWithPath("first").description("password 내용").optional(),
-					fieldWithPath("last").description("password 내용").optional(),
-					fieldWithPath("numberOfElements").description("password 내용").optional(),
-					fieldWithPath("empty").description("password 내용").optional()
+				requestParameters(
+					parameterWithName("page").description("페이지 번호에서 1뺀 값입니다.").optional(),
+					parameterWithName("sortCondition").description("최신순(createDate), 오래된순(old) 중에 입력하세요. "
+						+ "없으면 최신순으로 동작합니다.").optional()
+				),
+				pathParameters(
+					parameterWithName("nickname").description("유효한 회원 닉네임").optional(),
+					parameterWithName("seriesName").description("유효한 시리즈 이름").optional()
+				),
+				relaxedResponseFields(
+					fieldWithPath("content").description("해당 시리즈에 포함된 게시글들의 정보가 있습니다.").optional(),
+					fieldWithPath("number").description("-").optional(),
+					fieldWithPath("first").description("-").optional(),
+					fieldWithPath("last").description("-").optional(),
+					fieldWithPath("numberOfElements").description("-").optional(),
+					fieldWithPath("empty").description("-").optional()
 				)
 			));
 	}
@@ -188,7 +174,6 @@ class PostControllerTest {
 			));
 	}
 
-	//id반영
 	@Test
 	void postsRead() throws Exception {
 		this.mockMvc.perform(RestDocumentationRequestBuilders.get("/{nickname}/main", "admin")
@@ -230,7 +215,6 @@ class PostControllerTest {
 			));
 	}
 
-	//id 반영
 	@Test
 	void tempPostsRead() throws Exception {
 		this.mockMvc.perform(get("/temp")
@@ -305,34 +289,33 @@ class PostControllerTest {
 			));
 	}
 
-	//memberId없애고 다시
 	@Test
 	void readPost() throws Exception {
-		this.mockMvc.perform(get("/{nickname}/read/{postId}", "admin", "2")
-				.param("memberId", "2")
-				.contentType(MediaType.APPLICATION_JSON))
+
+		this.mockMvc.perform(RestDocumentationRequestBuilders.get("/{nickname}/read/{postId}", "admin", "2")
+				.param("memberId", "3"))
 			.andExpect(status().isOk())
 			.andDo(document("GetReadPost",
-				responseFields(
-					fieldWithPath("title").description("제목").optional(),
+				pathParameters(
+					parameterWithName("nickname").description("유효한 닉네임"),
+					parameterWithName("postId").description("상세보기할 게시글")
+				),
+				requestParameters(
+					parameterWithName("memberId").description("해당 게시글을 보고 있는 회원의 id").optional()
+				),
+				relaxedResponseFields(
+					fieldWithPath("title").description("제목"),
 					fieldWithPath("seriesName").description("소개글").optional(),
-					fieldWithPath("content").description("소개글").optional(),
-					fieldWithPath("loveCount").description("소개글").optional(),
-					fieldWithPath("createdDate").description("작성날짜").optional(),
-					fieldWithPath("memberDTO.memberName").description("작성날짜").optional(),
-					fieldWithPath("memberDTO.memberIntroduce").description("작성날짜").optional(),
-					fieldWithPath("memberDTO.socialGithub").description("작성날짜").optional(),
-					fieldWithPath("memberDTO.socialEmail").description("작성날짜").optional(),
-					fieldWithPath("memberDTO.memberThumbnailDTO.uuid").description("작성날짜").optional(),
-					fieldWithPath("memberDTO.memberThumbnailDTO.name").description("작성날짜").optional(),
-					fieldWithPath("memberDTO.memberThumbnailDTO.path").description("작성날짜").optional(),
-					fieldWithPath("postTags").description("작성날짜").optional(),
-					fieldWithPath("prevPost").description("작성날짜").optional(),
-					fieldWithPath("prevPostId").description("작성날짜").optional(),
-					fieldWithPath("nextPost").description("작성날짜").optional(),
-					fieldWithPath("nextPostId").description("작성날짜").optional()
+					fieldWithPath("content").description("본문"),
+					fieldWithPath("loveCount").description("소개글"),
+					fieldWithPath("createdDate").description("작성날짜"),
+					fieldWithPath("memberDTO").description("게시글 하단 프로필 정보에 들어갈 데이터들 입니다."),
+					fieldWithPath("postTags").description("태그들 입니다."),
+					fieldWithPath("prevPost").description("이전 포스트 제목").optional(),
+					fieldWithPath("prevPostId").description("이전 포스트 id").optional(),
+					fieldWithPath("nextPost").description("다음 포스트 제목").optional(),
+					fieldWithPath("nextPostId").description("다음 포스트 id").optional()
 				)
 			));
 	}
-
 }

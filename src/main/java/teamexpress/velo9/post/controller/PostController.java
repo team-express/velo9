@@ -66,7 +66,7 @@ public class PostController {
 		return postService.findSeries(nickname, PageRequest.of(page, SERIES_SIZE));
 	}
 
-	@GetMapping("/{nickname}/series/{seriesName}")//memberId필요있을까
+	@GetMapping("/{nickname}/series/{seriesName}")
 	public Slice<SeriesPostSummaryDTO> seriesPost(
 		@PathVariable String nickname,
 		@PathVariable String seriesName,
