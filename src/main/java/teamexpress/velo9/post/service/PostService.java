@@ -98,8 +98,8 @@ public class PostService {
 		return seriesList.map(SeriesDTO::new);
 	}
 
-	public Slice<PostReadDTO> findPost(String nickname, Pageable pageable) {
-		Slice<Post> posts = postRepository.findPost(nickname, pageable);
+	public Slice<PostReadDTO> findPost(String nickname, String tagName, Pageable pageable) {
+		Slice<Post> posts = postRepository.findPost(nickname, tagName, pageable);
 		return posts.map(PostReadDTO::new);
 	}
 

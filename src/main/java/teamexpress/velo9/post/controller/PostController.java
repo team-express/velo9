@@ -80,10 +80,11 @@ public class PostController {
 
 	@GetMapping("/{nickname}/main")
 	public Slice<PostReadDTO> postsRead(@PathVariable String nickname,
+		@RequestParam(required = false) String tagName,
 		@RequestParam(defaultValue = "0") int page) {
 
 		PageRequest pageRequest = PageRequest.of(page, SIZE, Sort.by(Direction.DESC, "createdDate"));
-		return postService.findPost(nickname, pageRequest);
+		return postService.findPost(nickname, tagName, pageRequest);
 	}
 
 	@GetMapping("/temp")
