@@ -2,6 +2,20 @@ ifndef::snippets[]
 :snippets: ./build/generated-snippets
 endif::[]
 
+== 메인 [ / , GET]
+
+=== 1. request
+
+include::{snippets}/main/httpie-request.adoc[]
+
+include::{snippets}/main/request-parameters.adoc[]
+
+=== 2. response
+
+include::{snippets}/main/response-body.adoc[]
+
+include::{snippets}/main/response-fields.adoc[]
+
 == 글 작성(수정) [ /write, GET ]
 
 === 1. request

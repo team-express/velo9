@@ -203,8 +203,6 @@ class PostControllerTest {
 	@Rollback
 	void delete() throws Exception {
 
-		//임시로 love랑 look에 참조무결성 걸음
-
 		mockMvc.perform(post("/delete")
 				.param("postId", "1"))
 			.andExpect(status().isOk())

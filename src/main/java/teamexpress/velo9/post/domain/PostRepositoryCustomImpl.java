@@ -52,7 +52,6 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 		JPAQuery<Post> query = queryFactory
 			.selectFrom(post)
 			.join(post.member).fetchJoin()
-			.join(post.postThumbnail).fetchJoin()
 			.leftJoin(postTag)
 			.on(post.id.eq(postTag.post.id))
 			.where(searchMain(condition))
