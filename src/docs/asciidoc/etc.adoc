@@ -4,6 +4,8 @@ endif::[]
 
 include::{snippets}/love/request-body.adoc[]
 
+include::{snippets}/love/request-fields.adoc[]
+
 include::{snippets}/seriesList/http-request.adoc[]
 include::{snippets}/seriesList/response-body.adoc[]
 include::{snippets}/addSeries/http-request.adoc[]

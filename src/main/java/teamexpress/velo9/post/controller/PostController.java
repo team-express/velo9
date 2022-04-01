@@ -5,8 +5,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -68,7 +66,7 @@ public class PostController {
 		return postService.findSeries(nickname, PageRequest.of(page, SERIES_SIZE));
 	}
 
-	@GetMapping("/{nickname}/series/{seriesName}")
+	@GetMapping("/{nickname}/series/{seriesName}")//memberId필요있을까
 	public Slice<SeriesPostSummaryDTO> seriesPost(
 		@PathVariable String seriesName,
 		@RequestParam(defaultValue = "0") int page,
