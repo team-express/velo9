@@ -43,7 +43,7 @@ public class PostController {
 	}
 
 	@PostMapping("/write")
-	public Result<Long> write(@RequestBody PostSaveDTO postSaveDTO) {
+	public Result write(@RequestBody PostSaveDTO postSaveDTO) {
 		Long postId = postService.write(postSaveDTO);
 		tagService.addTags(postId, postSaveDTO.getTagNames());
 		tagService.removeUselessTags();
