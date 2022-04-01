@@ -36,12 +36,12 @@ public class PostController {
 	private final TagService tagService;
 
 	@GetMapping("/write")
-	public PostSaveDTO write(@RequestParam("postId") Long postId) {
+	public PostSaveDTO write(@RequestParam Long postId) {
 		return postService.getPostById(postId);
 	}
 
 	@PostMapping("/write")
-	public Result<Long> write(@RequestBody PostSaveDTO postSaveDTO) {
+	public Result write(@RequestBody PostSaveDTO postSaveDTO) {
 		Long postId = postService.write(postSaveDTO);
 		tagService.addTags(postId, postSaveDTO.getTagNames());
 		tagService.removeUselessTags();
@@ -54,8 +54,8 @@ public class PostController {
 	}
 
 	@PostMapping("/delete")
-	public void delete(@RequestParam("postId") Long id) {
-		postService.delete(id);
+	public void delete(@RequestParam Long postId) {
+		postService.delete(postId);
 	}
 
 	@GetMapping("/{nickname}/series")
@@ -68,22 +68,23 @@ public class PostController {
 
 	@GetMapping("/{nickname}/series/{seriesName}")//memberId필요있을까
 	public Slice<SeriesPostSummaryDTO> seriesPost(
+		@PathVariable String nickname,
 		@PathVariable String seriesName,
 		@RequestParam(defaultValue = "0") int page,
-		@RequestParam(defaultValue = "createdDate") String sortCondition,
-		@RequestParam Long memberId) {
+		@RequestParam(defaultValue = "createdDate") String sortCondition) {
 
 		PageRequest pageRequest = getPageRequest(page, sortCondition);
 
-		return postService.findSeriesPost(memberId, seriesName, pageRequest);
+		return postService.findSeriesPost(nickname, seriesName, pageRequest);
 	}
 
 	@GetMapping("/{nickname}/main")
 	public Slice<PostReadDTO> postsRead(@PathVariable String nickname,
+		@RequestParam(required = false) String tagName,
 		@RequestParam(defaultValue = "0") int page) {
 
 		PageRequest pageRequest = PageRequest.of(page, SIZE, Sort.by(Direction.DESC, "createdDate"));
-		return postService.findPost(nickname, pageRequest);
+		return postService.findPost(nickname, tagName, pageRequest);
 	}
 
 	@GetMapping("/temp")
@@ -117,9 +118,9 @@ public class PostController {
 	}
 
 	@GetMapping("/{nickname}/read/{postId}")
-	public ReadDTO readPost(@PathVariable Long postId, @RequestParam Long memberId) {
+	public ReadDTO readPost(@PathVariable String nickname, @PathVariable Long postId, @RequestParam Long memberId) {
 		postService.look(postId, memberId);
-		return postService.findReadPost(postId, memberId);
+		return postService.findReadPost(postId, nickname);
 	}
 
 	private PageRequest getPageRequest(int page, String sortValue) {

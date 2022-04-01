@@ -31,9 +31,12 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 	}
 
 	@Override
-	public Slice<Post> findPost(String nickname, Pageable pageable) {
+	public Slice<Post> findPost(String nickname, String tagName, Pageable pageable) {
 		List<Post> content = queryFactory.selectFrom(post)
+			.leftJoin(postTag)
+			.on(post.id.eq(postTag.post.id))
 			.where(post.member.nickname.eq(nickname))
+			.where(searchTag(tagName))
 			.where(openPost())
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize() + 1)
@@ -101,19 +104,19 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 	}
 
 	@Override
-	public Post findReadPost(Long postId, Long memberId) {
+	public Post findReadPost(Long postId, String nickname) {
 		return queryFactory
 			.selectFrom(post)
 			.join(post.member).fetchJoin()
 			.where(post.id.eq(postId))
-			.where(post.member.id.eq(memberId))
+			.where(post.member.nickname.eq(nickname))
 			.fetchOne();
 	}
 
-	public Slice<Post> findByJoinSeries(Long memberId, String seriesName, Pageable pageable) {
+	public Slice<Post> findByJoinSeries(String nickname, String seriesName, Pageable pageable) {
 		JPAQuery<Post> query = queryFactory
 			.selectFrom(post)
-			.where(post.member.id.eq(memberId))
+			.where(post.member.nickname.eq(nickname))
 			.where(post.series.name.eq(seriesName))
 			.offset(pageable.getOffset());
 
@@ -204,4 +207,9 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 	private BooleanBuilder eqMember(Post findPost) {
 		return nullSafeBuilder(() -> post.member.eq(findPost.getMember()));
 	}
+
+	private BooleanBuilder searchTag(String tagName) {
+		return tagName != null ? nullSafeBuilder(() -> postTag.tag.name.eq(tagName)) : new BooleanBuilder();
+	}
+
 }

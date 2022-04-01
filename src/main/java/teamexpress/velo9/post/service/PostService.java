@@ -98,8 +98,8 @@ public class PostService {
 		return seriesList.map(SeriesDTO::new);
 	}
 
-	public Slice<PostReadDTO> findPost(String nickname, Pageable pageable) {
-		Slice<Post> posts = postRepository.findPost(nickname, pageable);
+	public Slice<PostReadDTO> findPost(String nickname, String tagName, Pageable pageable) {
+		Slice<Post> posts = postRepository.findPost(nickname, tagName, pageable);
 		return posts.map(PostReadDTO::new);
 	}
 
@@ -218,15 +218,15 @@ public class PostService {
 		return lookPosts.map(LookPostDTO::new);
 	}
 
-	public ReadDTO findReadPost(Long postId, Long memberId) {
+	public ReadDTO findReadPost(Long postId, String nickname) {
 		Post findPost = postRepository.findById(postId).orElseThrow();
 		List<Post> pagePost = postRepository.findPrevNextPost(findPost);
-		Post readPost = postRepository.findReadPost(postId, memberId);
+		Post readPost = postRepository.findReadPost(postId, nickname);
 		return new ReadDTO(readPost, pagePost);
 	}
 
-	public Slice<SeriesPostSummaryDTO> findSeriesPost(Long memberId, String seriesName, PageRequest page) {
-		Slice<Post> seriesPosts = postRepository.findByJoinSeries(memberId, seriesName, page);
+	public Slice<SeriesPostSummaryDTO> findSeriesPost(String nickname, String seriesName, PageRequest page) {
+		Slice<Post> seriesPosts = postRepository.findByJoinSeries(nickname, seriesName, page);
 		return seriesPosts.map(SeriesPostSummaryDTO::new);
 	}
 }
