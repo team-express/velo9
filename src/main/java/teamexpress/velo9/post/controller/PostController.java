@@ -38,7 +38,7 @@ public class PostController {
 	private final TagService tagService;
 
 	@GetMapping("/write")
-	public PostSaveDTO write(@RequestParam("postId") Long postId) {
+	public PostSaveDTO write(@RequestParam Long postId) {
 		return postService.getPostById(postId);
 	}
 
