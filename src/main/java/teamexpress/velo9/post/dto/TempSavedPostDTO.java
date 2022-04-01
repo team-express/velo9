@@ -9,14 +9,16 @@ import java.time.LocalDateTime;
 @Data
 public class TempSavedPostDTO {
 
-    private String title;
-    private String content;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd-HH-mm-ss", timezone = "Asia/Seoul")
-    private LocalDateTime createdDate;
+	private Long id;
+	private String title;
+	private String content;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd-HH-mm-ss", timezone = "Asia/Seoul")
+	private LocalDateTime createdDate;
 
-    public TempSavedPostDTO(Post post) {
-        title = post.getTitle();
-        content = post.getContent();
-        createdDate = post.getCreatedDate();
-    }
+	public TempSavedPostDTO(Post post) {
+		id = post.getId();
+		title = post.getTitle();
+		content = post.getContent();
+		createdDate = post.getCreatedDate();
+	}
 }
