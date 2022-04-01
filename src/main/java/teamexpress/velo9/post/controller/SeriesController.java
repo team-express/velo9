@@ -2,8 +2,6 @@ package teamexpress.velo9.post.controller;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,8 +19,8 @@ public class SeriesController {
 	private final SeriesService seriesService;
 
 	@GetMapping("/getSeriesList")
-	public ResponseEntity<Result<List<SeriesReadDTO>>> getSeriesList(@RequestParam("memberId") Long memberId) {
-		return new ResponseEntity<>(new Result(seriesService.getAll(memberId)), HttpStatus.OK);
+	public Result<List<SeriesReadDTO>> getSeriesList(@RequestParam("memberId") Long memberId) {
+		return new Result(seriesService.getAll(memberId));
 	}
 
 	@PostMapping("/addSeries")

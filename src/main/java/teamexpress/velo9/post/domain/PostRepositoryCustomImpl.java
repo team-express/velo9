@@ -33,7 +33,6 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 	@Override
 	public Slice<Post> findPost(String nickname, Pageable pageable) {
 		List<Post> content = queryFactory.selectFrom(post)
-			.join(post.postThumbnail).fetchJoin()
 			.where(post.member.nickname.eq(nickname))
 			.where(openPost())
 			.offset(pageable.getOffset())

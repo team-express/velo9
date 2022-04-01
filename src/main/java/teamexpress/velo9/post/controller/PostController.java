@@ -38,17 +38,16 @@ public class PostController {
 	private final TagService tagService;
 
 	@GetMapping("/write")
-	public ResponseEntity<PostSaveDTO> write(@RequestParam("postId") Long postId) {
-		return new ResponseEntity<>(postService.getPostById(postId), HttpStatus.OK);
+	public PostSaveDTO write(@RequestParam Long postId) {
+		return postService.getPostById(postId);
 	}
 
 	@PostMapping("/write")
-	public ResponseEntity<Long> write(@RequestBody PostSaveDTO postSaveDTO) {
+	public Result write(@RequestBody PostSaveDTO postSaveDTO) {
 		Long postId = postService.write(postSaveDTO);
 		tagService.addTags(postId, postSaveDTO.getTagNames());
 		tagService.removeUselessTags();
-
-		return new ResponseEntity<>(postId, HttpStatus.OK);
+		return new Result<>(postId);
 	}
 
 	@PostMapping("/writeTemporary")

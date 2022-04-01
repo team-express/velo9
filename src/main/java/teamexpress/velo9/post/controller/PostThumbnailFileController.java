@@ -25,16 +25,12 @@ public class PostThumbnailFileController {
 	}
 
 	@PostMapping("/uploadPostThumbnail")
-	public ResponseEntity<PostThumbnailDTO> upload(MultipartFile uploadFile) {
-		PostThumbnailDTO postThumbnailDTO = postThumbnailFileService.upload(uploadFile);
-
-		return new ResponseEntity<>(postThumbnailDTO, HttpStatus.OK);
+	public PostThumbnailDTO upload(MultipartFile uploadFile) {
+		return postThumbnailFileService.upload(uploadFile);
 	}
 
 	@PostMapping("/deletePostThumbnail")
-	public ResponseEntity<String> delete(String fileName) {
+	public void delete(String fileName) {
 		postThumbnailFileService.deleteFile(fileName);
-
-		return new ResponseEntity<>("deleted", HttpStatus.OK);
 	}
 }

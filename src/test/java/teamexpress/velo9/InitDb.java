@@ -26,6 +26,8 @@ import teamexpress.velo9.post.domain.Series;
 import teamexpress.velo9.post.domain.SeriesRepository;
 import teamexpress.velo9.post.domain.Tag;
 import teamexpress.velo9.post.domain.TagRepository;
+import teamexpress.velo9.post.domain.TemporaryPost;
+import teamexpress.velo9.post.domain.TemporaryPostRepository;
 
 @Profile("test")
 @Component
@@ -49,6 +51,7 @@ public class InitDb {
 		private final PasswordEncoder passwordEncoder;
 		private final SeriesRepository seriesRepository;
 		private final PostThumbnailRepository postThumbnailRepository;
+		private final TemporaryPostRepository temporaryPostRepository;
 		private final TagRepository tagRepository;
 		private final LoveRepository loveRepository;
 		private final LookRepository lookRepository;
@@ -56,16 +59,18 @@ public class InitDb {
 
 		public void dbInit1() {
 
-			MemberThumbnail thumbnail1 = MemberThumbnail.builder().uuid("uuid").name("name").path("path").build();
-			MemberThumbnail thumbnail2 = MemberThumbnail.builder().uuid("uuid").name("name").path("path").build();
-			MemberThumbnail thumbnail3 = MemberThumbnail.builder().uuid("uuid").name("name").path("path").build();
-			memberThumbnailRepository.save(thumbnail1);
-			memberThumbnailRepository.save(thumbnail2);
-			memberThumbnailRepository.save(thumbnail3);
+			memberRepository.save(createMember("jinwook", "jinwook", "1234", "test1@nate.com", Role.ROLE_USER));
 
-			memberRepository.save(createMember("jinwook", "jinwook", "1234", "test1@nate.com", Role.ROLE_USER, thumbnail1));
-			memberRepository.save(createMember("admin", "admin", "1234", "test2@nate.com", Role.ROLE_SOCIAL, thumbnail2));
-			memberRepository.save(createMember("test", "test", "1234", "test3@nate.com", Role.ROLE_SOCIAL, thumbnail3));
+			memberRepository.save(Member.builder()
+				.nickname("admin")
+				.password("1234")
+				.email("test2@nate.com")
+				.role(Role.ROLE_SOCIAL)
+				.memberThumbnail(memberThumbnailRepository.save(new MemberThumbnail()))
+				.build()
+			);
+
+			memberRepository.save(createMember("test", "test", "1234", "test3@nate.com", Role.ROLE_SOCIAL));
 			memberRepository.save(createSocialMember("test4@nate.com", Role.ROLE_SOCIAL));
 
 			Member member = memberRepository.findByNickname("admin").get();
@@ -102,40 +107,46 @@ public class InitDb {
 			tagRepository.save(tag4);
 			tagRepository.save(tag5);
 
-			PostThumbnail postThumbnail = createThumbnail("path", "uuid", "name");
-			postThumbnailRepository.save(postThumbnail);
+			postRepository.save(Post.builder()
+				.member(member)
+				.title("title")
+				.introduce("introduce")
+				.content("content")
+				.access(PostAccess.PUBLIC)
+				.series(series1)
+				.status(PostStatus.GENERAL)
+				.postThumbnail(postThumbnailRepository.save(new PostThumbnail()))
+				.temporaryPost(temporaryPostRepository.save(new TemporaryPost()))
+				.build()
+			);
 
 			for (int i = 1; i < 4; i++) {
-				Post savedPost = postRepository.save(createPost("" + i, "" + i, member, series1, postThumbnail));
+				Post savedPost = postRepository.save(createPost("" + i, "" + i, member, series1));
 				loveRepository.save(createLove(member, savedPost));
 				lookRepository.save(createLook(member, savedPost));
 			}
 
 			for (int i = 5; i < 7; i++) {
-				Post savedPost = postRepository.save(createTemp("" + i, "" + i, member, series1, postThumbnail));
+				Post savedPost = postRepository.save(createTemp("" + i, "" + i, member, series1));
 				loveRepository.save(createLove(member, savedPost));
 				lookRepository.save(createLook(member, savedPost));
 			}
 		}
 
-		private Post createPost(String title, String introduce, Member member, Series series, PostThumbnail postThumbnail) {
-			return Post.builder().access(PostAccess.PUBLIC).title(title).introduce(introduce).member(member).series(series).postThumbnail(postThumbnail).status(PostStatus.GENERAL).build();
+		private Post createPost(String title, String introduce, Member member, Series series) {
+			return Post.builder().access(PostAccess.PUBLIC).title(title).introduce(introduce).member(member).series(series).status(PostStatus.GENERAL).build();
 		}
 
-		private Post createTemp(String title, String introduce, Member member, Series series, PostThumbnail postThumbnail) {
-			return Post.builder().access(PostAccess.PUBLIC).title(title).introduce(introduce).member(member).series(series).postThumbnail(postThumbnail).status(PostStatus.TEMPORARY).build();
-		}
-
-		private PostThumbnail createThumbnail(String path, String uuid, String name) {
-			return PostThumbnail.builder().path(path).uuid(uuid).name(name).build();
+		private Post createTemp(String title, String introduce, Member member, Series series) {
+			return Post.builder().access(PostAccess.PUBLIC).title(title).introduce(introduce).member(member).series(series).status(PostStatus.TEMPORARY).build();
 		}
 
 		private Series createSeries(String name, Member member) {
 			return Series.builder().name(name).member(member).posts(new ArrayList<>()).build();
 		}
 
-		private Member createMember(String nickname, String username, String password, String email, Role roleUser, MemberThumbnail memberThumbnail) {
-			return Member.builder().memberThumbnail(memberThumbnail).nickname(nickname).blogTitle(nickname).username(username).password(passwordEncoder.encode(password)).email(email).posts(new ArrayList<>()).role(roleUser).build();
+		private Member createMember(String nickname, String username, String password, String email, Role roleUser) {
+			return Member.builder().nickname(nickname).blogTitle(nickname).username(username).password(passwordEncoder.encode(password)).email(email).posts(new ArrayList<>()).role(roleUser).build();
 		}
 
 		private Member createSocialMember(String email, Role roleUser) {
