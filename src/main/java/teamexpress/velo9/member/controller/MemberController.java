@@ -43,10 +43,10 @@ public class MemberController {
 	@PostMapping("/sendMail")
 	public void sendMail(@Validated @RequestBody MailDTO mailDTO, HttpSession session) {
 		String randomNumber = getNumber();
-		session.setMaxInactiveInterval(INTERVAL);
 		memberService.findEmail(mailDTO);
 		mailService.sendMail(mailDTO.getEmail(), randomNumber);
 		session.setAttribute(SessionConst.RANDOM_NUMBER, randomNumber);
+		session.setMaxInactiveInterval(INTERVAL);
 	}
 
 	@PostMapping("/checkNumber")
@@ -91,6 +91,7 @@ public class MemberController {
 		Long memberId = memberService.findPw(findInfoDTO);
 		mailService.sendMail(findInfoDTO.getEmail(), randomNumber);
 		session.setAttribute(SessionConst.RANDOM_NUMBER, randomNumber);
+		session.setMaxInactiveInterval(INTERVAL);
 		return new Result(memberId);
 	}
 
