@@ -21,6 +21,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import teamexpress.velo9.config.RestDocsConfig;
+import teamexpress.velo9.member.security.oauth.SessionConst;
 
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
@@ -183,10 +184,7 @@ class MemberControllerTest {
 			.andExpect(status().isOk())
 			.andDo(document("PostSendMail",
 				requestFields(
-					fieldWithPath("email").description("회원가입시 입력하는 이메일")
-				),
-				responseFields(
-					fieldWithPath("data").description("인증번호")
+					fieldWithPath("email").description("회원가입시 입력했던 이메일로 인증번호가 전송됩니다.")
 				)
 			));
 	}
@@ -216,23 +214,11 @@ class MemberControllerTest {
 			.andExpect(status().isOk())
 			.andDo(document("PostFindPw",
 				requestFields(
-					fieldWithPath("username").description("회원가입시 입력했던 아이디").optional(),
-					fieldWithPath("email").description("회원가입시 입력했던 이메일").optional()
-				)
-			));
-	}
-
-	@Test
-	@Transactional
-	@Rollback
-	void sendMailPw() throws Exception {
-		this.mockMvc.perform(post("/sendMailPw")
-				.content("{\"email\":\"test2@nate.com\"}")
-				.contentType(MediaType.APPLICATION_JSON))
-			.andExpect(status().isOk())
-			.andDo(document("PostFindPw",
-				requestFields(
-					fieldWithPath("email").description("회원가입시 입력했던 이메일").optional()
+					fieldWithPath("username").description("회원가입시 입력했던 아이디"),
+					fieldWithPath("email").description("회원가입시 입력했던 이메일")
+				),
+				responseFields(
+					fieldWithPath("data").description("방금 찾은 회원의 id값입니다.")
 				)
 			));
 	}
@@ -245,10 +231,25 @@ class MemberControllerTest {
 				.content("{\"id\":\"2\", \"password\": \"0000\"}")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
-			.andDo(document("PostFindPw",
+			.andDo(document("PostChangePw2",
 				requestFields(
-					fieldWithPath("id").description("DB상의 회원 ID").optional(),
-					fieldWithPath("password").description("새로운 비밀번호").optional()
+					fieldWithPath("id").description("아까 /findPw로 찾아온 회원 id"),
+					fieldWithPath("password").description("새로운 비밀번호")
+				)
+			));
+	}
+
+	@Test
+	void checkNumber() throws Exception {
+
+		this.mockMvc.perform(post("/checkNumber")
+				.sessionAttr(SessionConst.RANDOM_NUMBER, "000000")
+				.content("{\"inputNumber\": \"000000\"}")
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andDo(document("PostCheckNumber",
+				requestFields(
+					fieldWithPath("inputNumber").description("이 인증번호가 알맞아 비동기 호출이 성공해야만 changePw를 진행하면 됩니다.")
 				)
 			));
 	}

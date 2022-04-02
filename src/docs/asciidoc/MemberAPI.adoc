@@ -71,7 +71,7 @@ include::{snippets}/PostWithdraw/request-parameters.adoc[]
 include::{snippets}/PostWithdraw/request-fields.adoc[]
 
 
-== 가입 인증 메일 보내기 [ /sendMail, POST]
+== 인증 메일 보내기 [ /sendMail, POST]
 
 === request
 
@@ -79,16 +79,40 @@ include::{snippets}/PostSendMail/request-body.adoc[]
 
 include::{snippets}/PostSendMail/request-fields.adoc[]
 
-=== response
-
-include::{snippets}/PostSendMail/response-body.adoc[]
-
-include::{snippets}/PostSendMail/response-fields.adoc[]
-
 == ID찾기 [ /findId, POST]
 
-=== response
+=== request
 
 include::{snippets}/PostFindId/request-body.adoc[]
 
 include::{snippets}/PostFindId/request-fields.adoc[]
+
+== PW찾기 [ /findPW, POST ]
+
+=== request
+
+include::{snippets}/PostFindPW/request-body.adoc[]
+
+include::{snippets}/PostFindPw/request-fields.adoc[]
+
+=== response
+
+include::{snippets}/PostFindPw/request-body.adoc[]
+
+include::{snippets}/PostFindPw/request-fields.adoc[]
+
+== pw 찾기하고 나서 비밀번호 변경하기 [ /changePw, POST ]
+
+=== request
+
+include::{snippets}/PostChangePw2/request-body.adoc[]
+
+include::{snippets}/PostChangePw2/request-fields.adoc[]
+
+== 인증번호 검증하기 [ /checkNumber, POST]
+
+=== request
+
+include::{snippets}/PostCheckNumber/request-body.adoc[]
+
+include::{snippets}/PostCheckNumber/request-fields.adoc[]

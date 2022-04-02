@@ -50,7 +50,7 @@ public class MemberController {
 	}
 
 	@PostMapping("/checkNumber")
-	public void checkNumber(NumberDTO numberDTO, HttpSession session) {
+	public void checkNumber(@RequestBody NumberDTO numberDTO, HttpSession session) {
 		checkInputNumber(numberDTO, session);
 	}
 
@@ -111,9 +111,7 @@ public class MemberController {
 		if (!isEquals(certificationNumber, numberDTO)) {
 			throw new IllegalArgumentException("인증번호가 일치하지 않습니다.");
 		}
-		if (isEquals(certificationNumber, numberDTO)) {
-			session.removeAttribute(SessionConst.RANDOM_NUMBER);
-		}
+		session.removeAttribute(SessionConst.RANDOM_NUMBER);
 	}
 
 	private boolean isEquals(String certificationNumber, NumberDTO numberDTO) {
