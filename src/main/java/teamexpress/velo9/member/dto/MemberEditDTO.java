@@ -13,6 +13,7 @@ public class MemberEditDTO {
 	private String socialEmail;
 	private String socialGithub;
 
+	//검은줄인데 삭제하여도 될까요
 	public MemberEditDTO(String nickname, String introduce, String blogTitle, String socialEmail, String socialGithub) {
 		this.nickname = nickname;
 		this.introduce = introduce;

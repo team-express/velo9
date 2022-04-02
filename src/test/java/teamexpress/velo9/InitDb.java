@@ -66,6 +66,11 @@ public class InitDb {
 
 			memberRepository.save(Member.builder()
 				.nickname("admin")
+				.blogTitle("blogTitle")
+				.introduce("introduce")
+				.socialEmail("1@naver.com")
+				.socialGithub("2@nate.com")
+				.username("id")
 				.password("1234")
 				.email("test2@nate.com")
 				.role(Role.ROLE_SOCIAL)
@@ -126,7 +131,7 @@ public class InitDb {
 			postTagRepository.save(PostTag.builder().post(savedPost).tag(tag1).build());
 
 			for (int i = 1; i < 4; i++) {
-				savedPost = postRepository.save(createPost("" + i, "" + i, ""+i, member, series1));
+				savedPost = postRepository.save(createPost("" + i, "" + i, "" + i, member, series1));
 				loveRepository.save(createLove(member, savedPost));
 				lookRepository.save(createLook(member, savedPost));
 
@@ -135,7 +140,7 @@ public class InitDb {
 			}
 
 			for (int i = 5; i < 7; i++) {
-				savedPost = postRepository.save(createTemp("" + i, "" + i,""+i, member, series1));
+				savedPost = postRepository.save(createTemp("" + i, "" + i, "" + i, member, series1));
 				loveRepository.save(createLove(member, savedPost));
 				lookRepository.save(createLook(member, savedPost));
 			}

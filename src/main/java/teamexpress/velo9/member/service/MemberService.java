@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import teamexpress.velo9.member.domain.Member;
 import teamexpress.velo9.member.domain.MemberRepository;
 import teamexpress.velo9.member.domain.MemberThumbnail;
+import teamexpress.velo9.member.domain.MemberThumbnailRepository;
 import teamexpress.velo9.member.dto.FindInfoDTO;
 import teamexpress.velo9.member.dto.MailDTO;
 import teamexpress.velo9.member.dto.MemberDTO;
@@ -23,6 +24,7 @@ import teamexpress.velo9.member.dto.SocialSignupDTO;
 public class MemberService {
 
 	private final MemberRepository memberRepository;
+	private final MemberThumbnailRepository memberThumbnailRepository;
 	private final PasswordEncoder passwordEncoder;
 
 	@Transactional
@@ -63,7 +65,7 @@ public class MemberService {
 			memberThumbnailDTO.setId(memberThumbnail.getId());
 		}
 
-		member.uploadThumbnail(memberThumbnailDTO.toMemberThumbnail());
+		member.uploadThumbnail(memberThumbnailRepository.save(memberThumbnailDTO.toMemberThumbnail()));
 
 		memberRepository.save(member);
 	}
