@@ -40,7 +40,6 @@ class MemberControllerTest {
 				.content("{\"username\": \"username33\","
 					+ " \n\"password\": \"password\","
 					+ "\n\"nickname\": \"nickname33\","
-					+ "\n\"blogTitle\": \"nickname33\","
 					+ "\n\"email\": \"email3332@test.com\"}")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
@@ -49,7 +48,6 @@ class MemberControllerTest {
 					fieldWithPath("username").description("username"),
 					fieldWithPath("password").description("password"),
 					fieldWithPath("nickname").description("nickname"),
-					fieldWithPath("blogTitle").description("입력이 없으면 nickname이 들어갑니다.").optional(),
 					fieldWithPath("email").description("email")
 				)
 			));
