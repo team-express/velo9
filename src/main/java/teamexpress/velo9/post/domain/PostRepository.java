@@ -28,4 +28,8 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
 	@Query("update Post p set p.viewCount = :viewCount where p = :post")
 	@Modifying
 	void updateViewCount(@Param("post") Post post, @Param("viewCount") int viewCount);
+
+	@Query("update Post p set p.series = null where p.series.id = :id")
+	@Modifying
+	void updateSeries(@Param("id") Long id);
 }
