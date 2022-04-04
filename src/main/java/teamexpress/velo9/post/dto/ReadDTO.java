@@ -3,12 +3,14 @@ package teamexpress.velo9.post.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.Data;
 import teamexpress.velo9.post.domain.Post;
 
 @Data
 public class ReadDTO {
 
+	private Long id;
 	private String title;
 	private String seriesName;
 	private String content;
@@ -24,12 +26,16 @@ public class ReadDTO {
 	private Long nextPostId;
 
 	public ReadDTO(Post findPost, List<Post> pagePost) {
+		id = findPost.getId();
 		title = findPost.getTitle();
 		seriesName = seriesNullCheck(findPost);
 		content = findPost.getContent();
 		loveCount = findPost.getLoveCount();
 		createdDate = findPost.getCreatedDate();
 		memberDTO = new PostMemberDTO(findPost.getMember());
+		postTags = findPost.getPostTags().stream()
+			.map(TagDTO::new)
+			.collect(Collectors.toList());
 		pagePost.forEach(post -> {
 			getPrevPost(findPost, post);
 			getNextPost(findPost, post);

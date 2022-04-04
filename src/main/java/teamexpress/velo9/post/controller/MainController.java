@@ -5,16 +5,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import teamexpress.velo9.post.dto.PostMainDTO;
 import teamexpress.velo9.post.dto.SearchCondition;
 import teamexpress.velo9.post.service.PostService;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class MainController {
 
@@ -22,7 +20,7 @@ public class MainController {
 	private final PostService postService;
 
 	@GetMapping("/")
-	public ResponseEntity<Page<PostMainDTO>> mainPage(
+	public Page<PostMainDTO> mainPage(
 		@RequestParam(required = false) boolean tagSelect,
 		@RequestParam(required = false) String content,
 		@RequestParam(defaultValue = "0") int page,
@@ -32,7 +30,7 @@ public class MainController {
 		SearchCondition searchCondition = new SearchCondition(tagSelect, content);
 		Page<PostMainDTO> mainSearchPage = postService.searchMain(searchCondition, pageRequest);
 
-		return new ResponseEntity<>(mainSearchPage, HttpStatus.OK);
+		return mainSearchPage;
 	}
 
 	private PageRequest getPageRequest(int page, String sortValue) {

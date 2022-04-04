@@ -1,8 +1,6 @@
 package teamexpress.velo9.member.controller;
 
-import java.util.Random;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,8 +15,11 @@ import teamexpress.velo9.member.dto.MemberDTO;
 import teamexpress.velo9.member.dto.MemberEditDTO;
 import teamexpress.velo9.member.dto.MemberNewPwDTO;
 import teamexpress.velo9.member.dto.MemberSignupDTO;
+import teamexpress.velo9.member.dto.NumberDTO;
 import teamexpress.velo9.member.dto.PasswordDTO;
+import teamexpress.velo9.member.dto.RandomNumber;
 import teamexpress.velo9.member.dto.SocialSignupDTO;
+import teamexpress.velo9.member.security.oauth.SessionConst;
 import teamexpress.velo9.member.service.MailService;
 import teamexpress.velo9.member.service.MemberService;
 
@@ -26,8 +27,7 @@ import teamexpress.velo9.member.service.MemberService;
 @RestController
 public class MemberController {
 
-	private static final int BOUND = 10;
-
+	public static final int INTERVAL = 180;
 	private final MemberService memberService;
 	private final MailService mailService;
 
@@ -38,6 +38,20 @@ public class MemberController {
 	@PostMapping("/signup")
 	public void addMember(@Validated @RequestBody MemberSignupDTO memberSignupDTO) {
 		memberService.join(memberSignupDTO);
+	}
+
+	@PostMapping("/sendMail")
+	public void sendMail(@Validated @RequestBody MailDTO mailDTO, HttpSession session) {
+		String randomNumber = getNumber();
+		memberService.findEmail(mailDTO);
+		mailService.sendMail(mailDTO.getEmail(), randomNumber);
+		session.setAttribute(SessionConst.RANDOM_NUMBER, randomNumber);
+		session.setMaxInactiveInterval(INTERVAL);
+	}
+
+	@PostMapping("/checkNumber")
+	public void checkNumber(@RequestBody NumberDTO numberDTO, HttpSession session) {
+		checkInputNumber(numberDTO, session);
 	}
 
 	@GetMapping("/setting")
@@ -65,14 +79,6 @@ public class MemberController {
 		memberService.joinSocial(socialSignupDTO, memberId);
 	}
 
-	@PostMapping("/sendMail")
-	public Result sendMail(@Validated @RequestBody MailDTO mailDTO) {
-		String number = getRandomNumber();
-		memberService.findEmail(mailDTO);
-		mailService.sendMail(mailDTO.getEmail(), number);
-		return new Result<>(Integer.valueOf(number));
-	}
-
 	@PostMapping("/findId")
 	public void findId(@Validated @RequestBody FindInfoDTO findInfoDTO) {
 		String findUsername = memberService.findIdByEmail(findInfoDTO);
@@ -80,16 +86,13 @@ public class MemberController {
 	}
 
 	@PostMapping("/findPw")
-	public Result findPw(@Validated @RequestBody FindInfoDTO findInfoDTO) {
+	public Result findPw(@Validated @RequestBody FindInfoDTO findInfoDTO, HttpSession session) {
+		String randomNumber = getNumber();
 		Long memberId = memberService.findPw(findInfoDTO);
+		mailService.sendMail(findInfoDTO.getEmail(), randomNumber);
+		session.setAttribute(SessionConst.RANDOM_NUMBER, randomNumber);
+		session.setMaxInactiveInterval(INTERVAL);
 		return new Result(memberId);
-	}
-
-	@PostMapping("/sendMailPw")
-	public int sendMailPw(@Validated @RequestBody MailDTO mailDTO) {
-		String number = getRandomNumber();
-		mailService.sendMail(mailDTO.getEmail(), number);
-		return Integer.parseInt(number);
 	}
 
 	@PostMapping("/changePw")
@@ -97,11 +100,21 @@ public class MemberController {
 		memberService.changeNewPw(memberNewPwDTO);
 	}
 
-	private String getRandomNumber() {
-		Random random = new Random();
-		return IntStream.range(0, 6)
-			.map(i -> random.nextInt(BOUND))
-			.mapToObj(String::valueOf)
-			.collect(Collectors.joining());
+	private String getNumber() {
+		RandomNumber randomNumber = RandomNumber.get();
+		return randomNumber.getNumber();
+	}
+
+	private void checkInputNumber(NumberDTO numberDTO, HttpSession session) {
+		String certificationNumber = (String) session.getAttribute(SessionConst.RANDOM_NUMBER);
+
+		if (!isEquals(certificationNumber, numberDTO)) {
+			throw new IllegalArgumentException("인증번호가 일치하지 않습니다.");
+		}
+		session.removeAttribute(SessionConst.RANDOM_NUMBER);
+	}
+
+	private boolean isEquals(String certificationNumber, NumberDTO numberDTO) {
+		return certificationNumber.equals(numberDTO.getInputNumber());
 	}
 }

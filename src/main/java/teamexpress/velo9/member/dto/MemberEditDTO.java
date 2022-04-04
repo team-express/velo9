@@ -12,12 +12,4 @@ public class MemberEditDTO {
 	private String blogTitle;
 	private String socialEmail;
 	private String socialGithub;
-
-	public MemberEditDTO(String nickname, String introduce, String blogTitle, String socialEmail, String socialGithub) {
-		this.nickname = nickname;
-		this.introduce = introduce;
-		this.blogTitle = blogTitle;
-		this.socialEmail = socialEmail;
-		this.socialGithub = socialGithub;
-	}
 }

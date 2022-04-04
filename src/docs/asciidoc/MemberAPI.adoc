@@ -1,0 +1,118 @@
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+== 일반회원가입 [ /signup, POST ]
+
+=== request
+
+include::{snippets}/addMember/request-body.adoc[]
+
+include::{snippets}/addMember/request-fields.adoc[]
+
+== 소셜회원가입후 id,pw,nickname 등록 [ /socialSignup, POST ]
+
+=== request
+
+include::{snippets}/PostSocialSignup/http-request.adoc[]
+
+include::{snippets}/PostSocialSignup/request-parameters.adoc[]
+
+include::{snippets}/PostSocialSignup/request-fields.adoc[]
+
+== 개인 설정 [ /setting, GET ]
+
+=== request
+
+include::{snippets}/GetEditMember/httpie-request.adoc[]
+
+include::{snippets}/GetEditMember/request-parameters.adoc[]
+
+=== response
+
+include::{snippets}/GetEditMember/response-body.adoc[]
+
+include::{snippets}/GetEditMember/response-fields.adoc[]
+
+== 개인 설정 [ /setting, POST ]
+
+=== request
+
+include::{snippets}/PostEditMember/http-request.adoc[]
+
+include::{snippets}/PostEditMember/request-parameters.adoc[]
+
+include::{snippets}/PostEditMember/request-fields.adoc[]
+
+=== response
+
+include::{snippets}/PostEditMember/response-body.adoc[]
+
+include::{snippets}/PostEditMember/response-fields.adoc[]
+
+== 비밀번호 변경(설정화면에서) [ /changePassword, POST]
+
+=== request
+
+include::{snippets}/PostChangePw/http-request.adoc[]
+
+include::{snippets}/PostChangePw/request-parameters.adoc[]
+
+include::{snippets}/PostChangePw/request-fields.adoc[]
+
+== 회원 탈퇴 [ /withdraw, POST]
+
+=== request
+
+include::{snippets}/PostWithdraw/http-request.adoc[]
+
+include::{snippets}/PostWithdraw/request-parameters.adoc[]
+
+include::{snippets}/PostWithdraw/request-fields.adoc[]
+
+
+== 인증 메일 보내기 [ /sendMail, POST]
+
+=== request
+
+include::{snippets}/PostSendMail/request-body.adoc[]
+
+include::{snippets}/PostSendMail/request-fields.adoc[]
+
+== ID찾기 [ /findId, POST]
+
+=== request
+
+include::{snippets}/PostFindId/request-body.adoc[]
+
+include::{snippets}/PostFindId/request-fields.adoc[]
+
+== PW찾기 [ /findPW, POST ]
+
+=== request
+
+include::{snippets}/PostFindPW/request-body.adoc[]
+
+include::{snippets}/PostFindPw/request-fields.adoc[]
+
+=== response
+
+include::{snippets}/PostFindPw/request-body.adoc[]
+
+include::{snippets}/PostFindPw/request-fields.adoc[]
+
+== pw 찾기하고 나서 비밀번호 변경하기 [ /changePw, POST ]
+
+=== request
+
+include::{snippets}/PostChangePw2/request-body.adoc[]
+
+include::{snippets}/PostChangePw2/request-fields.adoc[]
+
+== 인증번호 검증하기 [ /checkNumber, POST]
+
+=== request
+
+include::{snippets}/PostCheckNumber/request-body.adoc[]
+
+include::{snippets}/PostCheckNumber/request-fields.adoc[]
