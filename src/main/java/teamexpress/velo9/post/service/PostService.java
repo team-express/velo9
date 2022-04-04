@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import teamexpress.velo9.member.domain.Look;
 import teamexpress.velo9.member.domain.LookRepository;
 import teamexpress.velo9.member.domain.Love;
 import teamexpress.velo9.member.domain.LoveRepository;
@@ -67,8 +66,8 @@ public class PostService {
 			postSaveDTO.getId()));
 
 		postRepository.save(post);
-		postRepository.updateLoveCount(post, loveRepository.countByPost(post));
-		postRepository.updateViewCount(post, lookRepository.countByPost(post));
+//		postRepository.updateLoveCount(post, loveRepository.countByPost(post));
+//		postRepository.updateViewCount(post, lookRepository.countByPost(post));
 
 		return post.getId();
 	}
@@ -114,11 +113,8 @@ public class PostService {
 
 	@Transactional
 	public void look(Long postId, Long memberId) {
-		Member member = memberRepository.findById(memberId).orElseThrow();
-		Post post = postRepository.findById(postId).orElseThrow();
-
-		makeLook(member, post);
-		postRepository.updateViewCount(post, lookRepository.countByPost(post));
+		makeLook(memberId, postId);
+		postRepository.updateViewCount(postId);
 	}
 
 	public Page<PostMainDTO> searchMain(SearchCondition searchCondition, Pageable pageable) {
@@ -193,12 +189,9 @@ public class PostService {
 		);
 	}
 
-	private void makeLook(Member member, Post post) {
-		if (lookRepository.findByPostAndMember(post, member).isEmpty()) {
-			lookRepository.save(Look.builder()
-				.post(post)
-				.member(member)
-				.build());
+	private void makeLook(Long memberId, Long postId) {
+		if (lookRepository.findByPostAndMember(postId, memberId).isEmpty()) {
+			lookRepository.saveLook(memberId, postId);
 		}
 	}
 

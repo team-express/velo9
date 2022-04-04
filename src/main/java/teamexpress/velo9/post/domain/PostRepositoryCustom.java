@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.repository.query.Param;
 import teamexpress.velo9.post.dto.SearchCondition;
 
 public interface PostRepositoryCustom {
@@ -14,4 +15,5 @@ public interface PostRepositoryCustom {
 	Post findReadPost(Long postId, String nickname);
 	Slice<Post> findByJoinSeries(String nickname, String seriesName, Pageable pageable);
 	List<Post> findPrevNextPost(Post findPost);
+	void updateViewCount(@Param("post") Long post);
 }

@@ -126,6 +126,31 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 		return new SliceImpl<>(content, pageable, hasNext);
 	}
 
+	@Override
+	public List<Post> findPrevNextPost(Post findPost) {
+		return queryFactory
+			.select(post)
+			.from(post)
+			.where(post.id.eq(
+					select(post.id.max())
+						.from(post)
+						.where(post.id.lt(findPost.getId()).and(findSeries(findPost))))
+				.or(post.id.eq(
+					select(post.id.min())
+						.from(post)
+						.where(post.id.gt(findPost.getId()).and(findSeries(findPost))))))
+			.fetch();
+	}
+
+	@Override
+	public void updateViewCount(Long postId) {
+		queryFactory
+			.update(post)
+			.set(post.viewCount, post.viewCount.add(1))
+			.where(checkPostId(postId))
+			.execute();
+	}
+
 	private boolean isHasNext(List<Post> result, Pageable pageable) {
 		boolean hasNext = false;
 		if (result.size() > pageable.getPageSize()) {
@@ -175,22 +200,6 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 		}
 	}
 
-	@Override
-	public List<Post> findPrevNextPost(Post findPost) {
-		return queryFactory
-			.select(post)
-			.from(post)
-			.where(post.id.eq(
-					select(post.id.max())
-						.from(post)
-						.where(post.id.lt(findPost.getId()).and(findSeries(findPost))))
-				.or(post.id.eq(
-					select(post.id.min())
-						.from(post)
-						.where(post.id.gt(findPost.getId()).and(findSeries(findPost))))))
-			.fetch();
-	}
-
 	private BooleanBuilder findSeries(Post findPost) {
 		return findPost.getSeries() != null ? eqTotal(findPost) : new BooleanBuilder();
 	}
@@ -211,4 +220,7 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 		return tagName != null ? nullSafeBuilder(() -> postTag.tag.name.eq(tagName)) : new BooleanBuilder();
 	}
 
+	private BooleanBuilder checkPostId(Long postId) {
+		return postId != null ? nullSafeBuilder(() -> post.id.eq(postId)) : new BooleanBuilder();
+	}
 }
