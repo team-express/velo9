@@ -85,6 +85,8 @@ public class PostService {
 
 	@Transactional
 	public void delete(Long id) {
+		lookRepository.deleteByPostId(id);
+		loveRepository.deleteByPostId(id);
 		postRepository.deleteById(id);
 	}
 
