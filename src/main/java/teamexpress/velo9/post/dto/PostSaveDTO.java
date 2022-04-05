@@ -20,7 +20,7 @@ public class PostSaveDTO {
 	private static final int MAX = 150;
 	private static final int FIRST_INDEX = 0;
 
-	private Long id;
+	private Long postId;
 	private String title;
 	private String introduce;
 	private String content;
@@ -30,11 +30,11 @@ public class PostSaveDTO {
 	private Long seriesId;
 	private List<String> tagNames;
 
-	private PostThumbnailDTO postThumbnailDTO;
-	private TemporaryPostReadDTO temporaryPostReadDTO;
+	private PostThumbnailDTO thumbnail;
+	private TemporaryPostReadDTO temporary;
 
 	public PostSaveDTO(Post post, List<PostTag> postTags) {
-		this.id = post.getId();
+		this.postId = post.getId();
 		this.title = post.getTitle();
 		this.introduce = post.getIntroduce();
 		this.content = post.getContent();
@@ -53,10 +53,10 @@ public class PostSaveDTO {
 			.map(postTag -> postTag.getTag().getName())
 			.collect(Collectors.toList());
 
-		this.postThumbnailDTO = new PostThumbnailDTO(post.getPostThumbnail());
+		this.thumbnail = new PostThumbnailDTO(post.getPostThumbnail());
 
 		if (post.getTemporaryPost() != null) {
-			this.temporaryPostReadDTO = new TemporaryPostReadDTO(post.getTemporaryPost());
+			this.temporary = new TemporaryPostReadDTO(post.getTemporaryPost());
 		}
 
 	}
@@ -66,7 +66,7 @@ public class PostSaveDTO {
 		setAccess();
 
 		return Post.builder()
-			.id(this.id)
+			.id(this.postId)
 			.title(this.title)
 			.introduce(this.introduce)
 			.content(this.content)

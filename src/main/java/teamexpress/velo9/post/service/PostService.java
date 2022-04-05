@@ -56,7 +56,7 @@ public class PostService {
 
 	@Transactional
 	public Long write(PostSaveDTO postSaveDTO) {
-		Post findPost = postRepository.findById(postSaveDTO.getId()).orElse(new Post());
+		Post findPost = postRepository.findById(postSaveDTO.getPostId()).orElse(new Post());
 		Member findMember = getMember(postSaveDTO.getMemberId());
 
 		if (findMember == null) {
@@ -79,7 +79,7 @@ public class PostService {
 
 	@Transactional
 	public void writeTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {
-		if (temporaryPostWriteDTO.getId() != null) {
+		if (temporaryPostWriteDTO.getPostId() != null) {
 			writeAlternativeTemporary(temporaryPostWriteDTO);
 			return;
 		}
@@ -147,7 +147,7 @@ public class PostService {
 	}
 
 	private void writeAlternativeTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {
-		Post post = postRepository.findById(temporaryPostWriteDTO.getId()).orElseThrow();
+		Post post = postRepository.findById(temporaryPostWriteDTO.getPostId()).orElseThrow();
 
 		if (post.getStatus().equals(PostStatus.TEMPORARY)) {
 			writeNewTemporary(temporaryPostWriteDTO);
@@ -168,7 +168,7 @@ public class PostService {
 
 		checkCount(memberId);
 		Member member = getMember(memberId);
-		postRepository.save(temporaryPostWriteDTO.toPost(member, postRepository.getCreatedDate(temporaryPostWriteDTO.getId())));
+		postRepository.save(temporaryPostWriteDTO.toPost(member, postRepository.getCreatedDate(temporaryPostWriteDTO.getPostId())));
 	}
 
 	private void toggleLove(Member member, Post post) {
@@ -184,7 +184,8 @@ public class PostService {
 	}
 
 	private void makeLook(Long memberId, Long postId) {
-		if (lookRepository.findByPostAndMember(postId, memberId).isEmpty()) {
+		if (memberId != null && lookRepository.findByPostAndMember(postId, memberId).isEmpty()) {
+			//세션문제가 해결되면 이 주석과 함께 수정할것
 			lookRepository.saveLook(memberId, postId);
 		}
 	}

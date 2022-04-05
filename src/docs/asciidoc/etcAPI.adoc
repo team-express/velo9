@@ -32,7 +32,7 @@ include::{snippets}/addSeries/request-body.adoc[]
 
 include::{snippets}/addSeries/request-fields.adoc[]
 
-== 시리즈 삭제하기 [  ]
+== 시리즈 삭제하기 [ /deleteSeries, POST ]
 
 === request
 

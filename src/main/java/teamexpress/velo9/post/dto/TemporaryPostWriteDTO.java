@@ -10,7 +10,7 @@ import teamexpress.velo9.post.domain.TemporaryPost;
 @Data
 public class TemporaryPostWriteDTO {
 
-	private Long id;
+	private Long postId;
 	private String title;
 	private String content;
 	private Long memberId;
@@ -19,7 +19,7 @@ public class TemporaryPostWriteDTO {
 
 	public Post toPost(Member member, LocalDateTime createdDate) {
 		return Post.builder()
-			.id(this.id)
+			.id(this.postId)
 			.title(this.title)
 			.content(this.content)
 			.status(PostStatus.TEMPORARY)
