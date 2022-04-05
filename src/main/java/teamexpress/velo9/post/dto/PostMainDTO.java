@@ -7,6 +7,7 @@ import teamexpress.velo9.post.domain.Post;
 @Data
 public class PostMainDTO {
 
+	private Long id;
 	private String title;
 	private String introduce;
 	private int loveCount;
@@ -14,6 +15,7 @@ public class PostMainDTO {
 	private PostThumbnailDTO postThumbnail;
 
 	public PostMainDTO(Post post) {
+		id = post.getId();
 		title = post.getTitle();
 		introduce = post.getIntroduce();
 		loveCount = post.getLoveCount();
