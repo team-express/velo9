@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Data;
 import teamexpress.velo9.post.domain.Post;
+import teamexpress.velo9.post.domain.PostTag;
 
 @Data
 public class ReadDTO {
@@ -18,14 +19,11 @@ public class ReadDTO {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd-HH-mm-ss", timezone = "Asia/Seoul")
 	private LocalDateTime createdDate;
 	private PostMemberDTO memberDTO;
-	private List<TagDTO> postTags;
+	private List<String> tagNames;
+	private TransferDTO prevPost;
+	private TransferDTO nextPost;
 
-	private String prevPost;
-	private Long prevPostId;
-	private String nextPost;
-	private Long nextPostId;
-
-	public ReadDTO(Post findPost, List<Post> pagePost) {
+	public ReadDTO(Post findPost, List<Post> pagePost, List<PostTag> postTags) {
 		id = findPost.getId();
 		title = findPost.getTitle();
 		seriesName = seriesNullCheck(findPost);
@@ -33,8 +31,8 @@ public class ReadDTO {
 		loveCount = findPost.getLoveCount();
 		createdDate = findPost.getCreatedDate();
 		memberDTO = new PostMemberDTO(findPost.getMember());
-		postTags = findPost.getPostTags().stream()
-			.map(TagDTO::new)
+		tagNames = postTags.stream()
+			.map(postTag -> postTag.getTag().getName())
 			.collect(Collectors.toList());
 		pagePost.forEach(post -> {
 			getPrevPost(findPost, post);
@@ -48,15 +46,13 @@ public class ReadDTO {
 
 	private void getPrevPost(Post findPost, Post post) {
 		if (post.getId() < findPost.getId()) {
-			prevPost = post.getTitle();
-			prevPostId = post.getId();
+			prevPost = new TransferDTO(post);
 		}
 	}
 
 	private void getNextPost(Post findPost, Post post) {
 		if (post.getId() > findPost.getId()) {
-			nextPost = post.getTitle();
-			nextPostId = post.getId();
+			nextPost = new TransferDTO(post);
 		}
 	}
 }
