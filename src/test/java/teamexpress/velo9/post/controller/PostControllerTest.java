@@ -7,13 +7,10 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.relaxedR
 import static org.springframework.restdocs.payload.PayloadDocumentation.relaxedResponseFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-<<<<<<< HEAD
 
-=======
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
->>>>>>> 78dd60d98b9384f0defa1ffefc1611aa5415c3c3
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -23,10 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-<<<<<<< HEAD
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.http.MediaType;
-=======
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
@@ -35,11 +28,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import teamexpress.velo9.config.RestDocsConfig;
->>>>>>> 78dd60d98b9384f0defa1ffefc1611aa5415c3c3
 
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
-
 @SpringBootTest
 @Import(RestDocsConfig.class)
 class PostControllerTest {
@@ -48,19 +39,6 @@ class PostControllerTest {
 	private MockMvc mockMvc;
 
 	@Test
-<<<<<<< HEAD
-	void getlikeArchive() throws Exception {
-
-		mockMvc.perform(get("/archive/like")
-				.param("memberId", "2"))
-			.andExpect(status().isOk())
-			.andDo(document("likeArchive",
-				responseFields(
-					fieldWithPath("content[].id").description("memberId를 가져온다"),
-					fieldWithPath("content[].title").description("title을 가져온다"),
-					fieldWithPath("content[].introduce").description("introduce를 가져온다"),
-					fieldWithPath("content[].createDate").description("createDate를 가져온다")
-=======
 	void writeGet() throws Exception {
 
 		mockMvc.perform(MockMvcRequestBuilders.get("/write")
@@ -82,7 +60,6 @@ class PostControllerTest {
 					fieldWithPath("tagNames").description("달려있는 태그의 이름들 입니다.").optional(),
 					fieldWithPath("postThumbnailDTO").description("썸네일 파일 이름 관련 정보가 들어 있을 수도 있습니다.").optional(),
 					fieldWithPath("temporaryPostReadDTO").description("임시저장된 제목과 내용이 들어 있을 수도 있습니다.").optional()
->>>>>>> 78dd60d98b9384f0defa1ffefc1611aa5415c3c3
 				)
 			));
 	}
@@ -339,3 +316,4 @@ class PostControllerTest {
 			));
 	}
 }
+
