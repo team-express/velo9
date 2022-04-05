@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Data;
 import teamexpress.velo9.post.domain.Post;
-import teamexpress.velo9.post.domain.Series;
 
 @Data
 public class SeriesPostSummaryDTO {
@@ -18,7 +17,7 @@ public class SeriesPostSummaryDTO {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd-HH-mm-ss", timezone = "Asia/Seoul")
 	private LocalDateTime createdDate;
 	private PostThumbnailDTO thumbnail;
-	private List<TagDTO> postTags;
+	private List<String> postTags;
 
 	public SeriesPostSummaryDTO(Post post) {
 		id = post.getId();
@@ -28,7 +27,7 @@ public class SeriesPostSummaryDTO {
 		createdDate = post.getCreatedDate();
 		thumbnail = new PostThumbnailDTO(post.getPostThumbnail());
 		postTags = post.getPostTags().stream()
-			.map(TagDTO::new)
+			.map(postTag -> postTag.getTag().getName())
 			.collect(Collectors.toList());
 	}
 }

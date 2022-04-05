@@ -85,7 +85,6 @@ class PostControllerTest {
 	@Transactional
 	@Rollback
 	void writePost() throws Exception {
-
 		mockMvc.perform(post("/write")
 				.content("{"
 					+ "\n\"id\":1,"
@@ -93,7 +92,7 @@ class PostControllerTest {
 					+ "\n\"introduce\":\"1\","
 					+ "\n\"content\":\"333333\","
 					+ "\n\"access\":\"PRIVATE\","
-					+ "\n\"memberId\":1,"
+					+ "\n\"memberId\":2,"
 					+ "\n\"seriesId\":1,"
 					+ "\n\"tagNames\":[\"A\",\"B\"],"
 					+ "\n\"postThumbnailDTO\":{\"uuid\":\"1\", \"path\":\"bird\", \"name\":\"girl.avi\"}"
@@ -308,11 +307,9 @@ class PostControllerTest {
 					fieldWithPath("loveCount").description("소개글"),
 					fieldWithPath("createdDate").description("작성날짜"),
 					fieldWithPath("memberDTO").description("게시글 하단 프로필 정보에 들어갈 데이터들 입니다."),
-					fieldWithPath("postTags").description("태그들 입니다."),
-					fieldWithPath("prevPost").description("이전 포스트 제목").optional(),
-					fieldWithPath("prevPostId").description("이전 포스트 id").optional(),
-					fieldWithPath("nextPost").description("다음 포스트 제목").optional(),
-					fieldWithPath("nextPostId").description("다음 포스트 id").optional()
+					fieldWithPath("tagNames").description("달려있는 태그의 이름들 입니다.").optional(),
+					fieldWithPath("prevPost").description("이전 게시글 정보입니다.").optional(),
+					fieldWithPath("nextPost").description("다음 게시글 정보입니다.").optional()
 				)
 			));
 	}
