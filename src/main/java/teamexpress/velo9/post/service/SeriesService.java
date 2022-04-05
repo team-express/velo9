@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import teamexpress.velo9.member.domain.Member;
 import teamexpress.velo9.member.domain.MemberRepository;
+import teamexpress.velo9.post.domain.PostRepository;
 import teamexpress.velo9.post.domain.Series;
 import teamexpress.velo9.post.domain.SeriesRepository;
 import teamexpress.velo9.post.dto.SeriesAddDTO;
@@ -20,6 +21,7 @@ public class SeriesService {
 
 	private final SeriesRepository seriesRepository;
 	private final MemberRepository memberRepository;
+	private final PostRepository postRepository;
 
 	public List<SeriesReadDTO> getAll(Long memberId) {
 		return seriesRepository.findByMember(memberId)
@@ -38,6 +40,7 @@ public class SeriesService {
 
 	@Transactional
 	public void delete(Long id) {
+		postRepository.updateSeries(id);
 		seriesRepository.deleteById(id);
 	}
 

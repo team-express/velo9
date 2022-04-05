@@ -70,7 +70,7 @@ class PostControllerTest {
 					parameterWithName("nickname").description("유효한 회원의 닉네임을 입력해주세요")
 				),
 				relaxedResponseFields(
-					fieldWithPath("content").description("시리즈네임과 최대 3개의 게시글들로 이루어져 있습니다.").optional(),
+					fieldWithPath("content").description("시리즈네임, id와 최대 3개의 게시글들로 이루어져 있습니다.").optional(),
 					fieldWithPath("size").description("한 페이지당 시리즈 개수입니다.").optional(),
 					fieldWithPath("number").description("현재 페이지입니다.").optional(),
 					fieldWithPath("first").description("첫 페이지인지 여부입니다.").optional(),

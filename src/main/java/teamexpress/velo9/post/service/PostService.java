@@ -21,8 +21,6 @@ import teamexpress.velo9.post.domain.PostRepository;
 import teamexpress.velo9.post.domain.PostStatus;
 import teamexpress.velo9.post.domain.PostTag;
 import teamexpress.velo9.post.domain.PostTagQueryRepository;
-import teamexpress.velo9.post.domain.PostThumbnail;
-import teamexpress.velo9.post.domain.PostThumbnailRepository;
 import teamexpress.velo9.post.domain.Series;
 import teamexpress.velo9.post.domain.SeriesRepository;
 import teamexpress.velo9.post.domain.TemporaryPost;
@@ -33,7 +31,6 @@ import teamexpress.velo9.post.dto.LovePostDTO;
 import teamexpress.velo9.post.dto.PostMainDTO;
 import teamexpress.velo9.post.dto.PostReadDTO;
 import teamexpress.velo9.post.dto.PostSaveDTO;
-import teamexpress.velo9.post.dto.PostThumbnailDTO;
 import teamexpress.velo9.post.dto.ReadDTO;
 import teamexpress.velo9.post.dto.SearchCondition;
 import teamexpress.velo9.post.dto.SeriesDTO;
@@ -50,7 +47,6 @@ public class PostService {
 	private static final int MAX_TEMPORARY_COUNT = 20;
 
 	private final PostRepository postRepository;
-	private final PostThumbnailRepository postThumbnailRepository;
 	private final SeriesRepository seriesRepository;
 	private final MemberRepository memberRepository;
 	private final LoveRepository loveRepository;
@@ -93,6 +89,8 @@ public class PostService {
 
 	@Transactional
 	public void delete(Long id) {
+		lookRepository.deleteByPostId(id);
+		loveRepository.deleteByPostId(id);
 		postRepository.deleteById(id);
 	}
 
@@ -139,16 +137,6 @@ public class PostService {
 			.collect(Collectors.toList());
 	}
 
-	private PostThumbnail getPostThumbnail(PostThumbnailDTO postThumbnailDTO) {
-		PostThumbnail postThumbnail = null;
-
-		if (postThumbnailDTO != null) {
-			postThumbnail = postThumbnailDTO.toPostThumbnail();
-		}
-
-		return postThumbnail;
-	}
-
 	private Member getMember(Long memberId) {
 		if (memberId == null) {
 			throw new NullPointerException("no member is NOT NULL!!!");
@@ -156,10 +144,6 @@ public class PostService {
 
 		return memberRepository.findById(memberId)
 			.orElseThrow(() -> new NullPointerException("no member"));
-	}
-
-	private Series getSeries(Long seriesId) {
-		return seriesId == null ? null : seriesRepository.findById(seriesId).orElse(null);
 	}
 
 	private void writeAlternativeTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {

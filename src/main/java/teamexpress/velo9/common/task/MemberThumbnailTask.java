@@ -1,4 +1,4 @@
-package teamexpress.velo9.post.task;
+package teamexpress.velo9.common.task;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -11,19 +11,19 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import teamexpress.velo9.post.domain.PostThumbnail;
-import teamexpress.velo9.post.domain.PostThumbnailRepository;
+import teamexpress.velo9.member.domain.MemberThumbnail;
+import teamexpress.velo9.member.domain.MemberThumbnailRepository;
 
 @Component
 @RequiredArgsConstructor
-public class PostThumbnailTask {
+public class MemberThumbnailTask {
 
-	private static final String ROOT_PATH = "c:\\resources";
+	private static final String ROOT_PATH = "c:\\member";
 	private static final String NAME_SEPARATOR = "_";
 	private static final String THUMBNAIL_MARK = "s_";
 	private static final int ONE_DAY_AGO = -1;
 
-	private final PostThumbnailRepository postThumbnailRepository;
+	private final MemberThumbnailRepository memberThumbnailRepository;
 
 	private String getFolderYesterday() {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -37,9 +37,9 @@ public class PostThumbnailTask {
 		return str.replace("-", File.separator);
 	}
 
-	@Scheduled(cron = "0 47 13 * * *")
+	@Scheduled(cron = "0 19 10 * * *")
 	public void deleteUnusedFiles() {
-		List<PostThumbnail> fileList = postThumbnailRepository.getOldFiles();
+		List<MemberThumbnail> fileList = memberThumbnailRepository.getOldFiles();
 
 		List<Path> fileListPaths = fileList.stream().map(
 				vo -> Paths.get(ROOT_PATH, vo.getPath(), vo.getUuid() + NAME_SEPARATOR + vo.getName()))
