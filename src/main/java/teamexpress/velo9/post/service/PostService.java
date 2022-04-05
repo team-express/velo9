@@ -222,7 +222,7 @@ public class PostService {
 	}
 
 	public ReadDTO findReadPost(Long postId, String nickname) {
-		Post findPost = postRepository.findByPostIdAndNickname(postId, nickname).orElseThrow();
+		Post findPost = postRepository.findById(postId).orElseThrow();
 		List<Post> pagePost = postRepository.findPrevNextPost(findPost);
 		Post readPost = postRepository.findReadPost(postId, nickname);
 		List<PostTag> postTags = postTagQueryRepository.findByPost(findPost);

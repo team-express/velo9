@@ -16,7 +16,6 @@ public class PostTagQueryRepository {
 		this.jpaQueryFactory = new JPAQueryFactory(em);
 	}
 
-
 	public List<PostTag> findByPost(Post findPost) {
 		return jpaQueryFactory
 			.selectFrom(postTag)
