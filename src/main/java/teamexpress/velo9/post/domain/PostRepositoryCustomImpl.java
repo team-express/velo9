@@ -3,7 +3,6 @@ package teamexpress.velo9.post.domain;
 import static com.querydsl.jpa.JPAExpressions.select;
 import static teamexpress.velo9.member.domain.QLook.look;
 import static teamexpress.velo9.member.domain.QLove.love;
-import static teamexpress.velo9.member.domain.QMember.member;
 import static teamexpress.velo9.post.domain.QPost.post;
 import static teamexpress.velo9.post.domain.QPostTag.postTag;
 
@@ -12,7 +11,6 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Supplier;
 import javax.persistence.EntityManager;
 import org.springframework.data.domain.Page;
@@ -35,7 +33,6 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 	@Override
 	public Slice<Post> findPost(String nickname, String tagName, Pageable pageable) {
 		List<Post> content = queryFactory.selectFrom(post)
-			.join(post.postThumbnail).fetchJoin()
 			.leftJoin(postTag)
 			.on(post.id.eq(postTag.post.id))
 			.where(post.member.nickname.eq(nickname))
@@ -54,9 +51,7 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 	public Page<Post> search(SearchCondition condition, Pageable pageable) {
 		JPAQuery<Post> query = queryFactory
 			.selectFrom(post)
-			.join(post.postThumbnail).fetchJoin()
-			.join(post.member, member).fetchJoin()
-			.join(member.memberThumbnail).fetchJoin()
+			.join(post.member).fetchJoin()
 			.leftJoin(postTag)
 			.on(post.id.eq(postTag.post.id))
 			.where(searchMain(condition))
@@ -154,16 +149,6 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 			.set(post.viewCount, post.viewCount.add(1))
 			.where(checkPostId(postId))
 			.execute();
-	}
-
-	@Override
-	public Optional<Post> findWritePost(Long id) {
-		return Optional.ofNullable(queryFactory
-			.selectFrom(post)
-			.join(post.postThumbnail).fetchJoin()
-			.join(post.temporaryPost).fetchJoin()
-			.where(checkPostId(id))
-			.fetchOne());
 	}
 
 	private boolean isHasNext(List<Post> result, Pageable pageable) {
