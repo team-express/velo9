@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import teamexpress.velo9.common.dto.ThumbnailResponseDTO;
 import teamexpress.velo9.member.api.MemberThumbnailFileUploader;
 import teamexpress.velo9.member.dto.MemberThumbnailDTO;
 import teamexpress.velo9.member.service.MemberService;
@@ -19,10 +20,10 @@ public class MemberThumbnailController {
 	private final MemberService memberService;
 
 	@PostMapping("/uploadMemberThumbnail")
-	public MemberThumbnailDTO upload(MultipartFile uploadFile, Long memberId) {
+	public ThumbnailResponseDTO upload(MultipartFile uploadFile, Long memberId) {
 		MemberThumbnailDTO memberThumbnailDTO = memberThumbnailFileUploader.upload(uploadFile);
 		memberService.uploadThumbnail(memberThumbnailDTO, memberId);
-		return memberThumbnailDTO;
+		return new ThumbnailResponseDTO(memberThumbnailDTO.getSFileNameWithPath());
 	}
 
 	@GetMapping("/displayMemberThumbnail")

@@ -23,7 +23,7 @@ import teamexpress.velo9.post.domain.PostThumbnailType;
 @Component
 public class MemberThumbnailFileUploader {
 
-	private static final String ROOT_PATH = "C:\\member";
+	private static final String ROOT_PATH = "C:\\memberThumbnail";
 	private static final String BACKSLASH = "\\";
 	private static final String uploadFileName = "default.png";
 

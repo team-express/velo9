@@ -93,6 +93,8 @@ include::{snippets}/GetSeriesPost/path-parameters.adoc[]
 
 include::{snippets}/GetSeriesPost/request-parameters.adoc[]
 
+=== 2. response
+
 include::{snippets}/GetSeriesPost/response-body.adoc[]
 
 include::{snippets}/GetSeriesPost/response-fields.adoc[]

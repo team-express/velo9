@@ -225,13 +225,13 @@ class MemberControllerTest {
 	@Transactional
 	@Rollback
 	void changePw() throws Exception {
-		this.mockMvc.perform(post("/changePw")
-				.content("{\"id\":\"2\", \"password\": \"0000\"}")
+		this.mockMvc.perform(post("/changePasswordAfterFindPW")
+				.content("{\"memberId\":\"2\", \"password\": \"0000\"}")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andDo(document("PostChangePw2",
 				requestFields(
-					fieldWithPath("id").description("아까 /findPw로 찾아온 회원 id"),
+					fieldWithPath("memberId").description("아까 /findPw로 찾아온 회원 id"),
 					fieldWithPath("password").description("새로운 비밀번호")
 				)
 			));
@@ -240,14 +240,15 @@ class MemberControllerTest {
 	@Test
 	void checkNumber() throws Exception {
 
-		this.mockMvc.perform(post("/checkNumber")
+		this.mockMvc.perform(post("/certifyNumber")
 				.sessionAttr(SessionConst.RANDOM_NUMBER, "000000")
 				.content("{\"inputNumber\": \"000000\"}")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andDo(document("PostCheckNumber",
 				requestFields(
-					fieldWithPath("inputNumber").description("이 인증번호가 알맞아 비동기 호출이 성공해야만 changePw를 진행하면 됩니다.")
+					fieldWithPath("inputNumber").description("이 인증번호가 알맞아 비동기 호출이 성공해야만 "
+						+ "changePasswordAfterFindPW를 진행하면 됩니다.")
 				)
 			));
 	}

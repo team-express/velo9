@@ -49,7 +49,7 @@ public class MemberController {
 		session.setMaxInactiveInterval(INTERVAL);
 	}
 
-	@PostMapping("/checkNumber")
+	@PostMapping("/certifyNumber")
 	public void checkNumber(@RequestBody NumberDTO numberDTO, HttpSession session) {
 		checkInputNumber(numberDTO, session);
 	}
@@ -95,7 +95,7 @@ public class MemberController {
 		return new Result(memberId);
 	}
 
-	@PostMapping("/changePw")
+	@PostMapping("/changePasswordAfterFindPW")
 	public void changePw(@RequestBody MemberNewPwDTO memberNewPwDTO) {
 		memberService.changeNewPw(memberNewPwDTO);
 	}

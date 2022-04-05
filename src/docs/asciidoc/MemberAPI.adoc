@@ -2,6 +2,10 @@ ifndef::snippets[]
 :snippets: ./build/generated-snippets
 endif::[]
 
+* postAPI에서도 언급했던 바입니다. memberId는 세션 관련 문제로 인해서
+아직은 컨벤션을 맞추지 않겠습니다. 그래서 이 api가 아닌 etc, post API 먼저 구현해주시면
+좋을 것 같습니다.
+
 == 일반회원가입 [ /signup, POST ]
 
 === request
@@ -101,7 +105,7 @@ include::{snippets}/PostFindPw/response-body.adoc[]
 
 include::{snippets}/PostFindPw/response-fields.adoc[]
 
-== pw 찾기하고 나서 비밀번호 변경하기 [ /changePw, POST ]
+== pw 찾기하고 나서 비밀번호 변경하기 [ /changePasswordAfterFindPW, POST ]
 
 === request
 
@@ -109,7 +113,7 @@ include::{snippets}/PostChangePw2/request-body.adoc[]
 
 include::{snippets}/PostChangePw2/request-fields.adoc[]
 
-== 인증번호 검증하기 [ /checkNumber, POST]
+== 인증번호 검증하기 [ /certifyNumber, POST]
 
 === request
 
