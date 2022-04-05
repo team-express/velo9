@@ -1,8 +1,10 @@
 package teamexpress.velo9.post.service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +19,8 @@ import teamexpress.velo9.member.domain.MemberRepository;
 import teamexpress.velo9.post.domain.Post;
 import teamexpress.velo9.post.domain.PostRepository;
 import teamexpress.velo9.post.domain.PostStatus;
+import teamexpress.velo9.post.domain.PostTag;
+import teamexpress.velo9.post.domain.PostTagQueryRepository;
 import teamexpress.velo9.post.domain.PostThumbnail;
 import teamexpress.velo9.post.domain.PostThumbnailRepository;
 import teamexpress.velo9.post.domain.Series;
@@ -38,6 +42,7 @@ import teamexpress.velo9.post.dto.TempSavedPostDTO;
 import teamexpress.velo9.post.dto.TemporaryPostWriteDTO;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class PostService {
@@ -51,25 +56,29 @@ public class PostService {
 	private final LoveRepository loveRepository;
 	private final LookRepository lookRepository;
 	private final TemporaryPostRepository temporaryPostRepository;
+	private final PostTagQueryRepository postTagQueryRepository;
 
 	@Transactional
 	public Long write(PostSaveDTO postSaveDTO) {
-		PostThumbnail postThumbnail = getPostThumbnail(postSaveDTO.getPostThumbnailDTO());
-		Series series = getSeries(postSaveDTO.getSeriesId());
-		Member member = getMember(postSaveDTO.getMemberId());
+		Post findPost = postRepository.findById(postSaveDTO.getId()).orElse(new Post());
+		Member findMember = getMember(postSaveDTO.getMemberId());
 
-		if (postThumbnail != null) {
-			postThumbnailRepository.save(postThumbnail);
+		if (findMember == null) {
+			throw new IllegalStateException("잘못된 요청입니다.");
 		}
 
-		Post post = postSaveDTO.toPost(postThumbnail, series, member, postRepository.getCreatedDate(
-			postSaveDTO.getId()));
+		if (!Objects.equals(findPost.getMember().getId(), findMember.getId())) {
+			throw new IllegalStateException("잘못된 요청입니다.");
+		}
 
-		postRepository.save(post);
-//		postRepository.updateLoveCount(post, loveRepository.countByPost(post));
-//		postRepository.updateViewCount(post, lookRepository.countByPost(post));
+		findPost.newOrEdit(
+			postSaveDTO.getTitle(),
+			postSaveDTO.getIntroduce(),
+			postSaveDTO.getContent(),
+			postSaveDTO.getAccess(),
+			findMember);
 
-		return post.getId();
+		return findPost.getId();
 	}
 
 	@Transactional
@@ -88,8 +97,9 @@ public class PostService {
 	}
 
 	public PostSaveDTO getPostById(Long id) {
-		Post post = postRepository.findById(id).orElse(new Post());
-		return new PostSaveDTO(post);
+		Post post = postRepository.findWritePost(id).orElse(new Post());
+		List<PostTag> postTags = postTagQueryRepository.findByPost(post);
+		return new PostSaveDTO(post, postTags);
 	}
 
 	public Slice<SeriesDTO> findSeries(String nickname, Pageable pageable) {
@@ -212,10 +222,11 @@ public class PostService {
 	}
 
 	public ReadDTO findReadPost(Long postId, String nickname) {
-		Post findPost = postRepository.findById(postId).orElseThrow();
+		Post findPost = postRepository.findByPostIdAndNickname(postId, nickname).orElseThrow();
 		List<Post> pagePost = postRepository.findPrevNextPost(findPost);
 		Post readPost = postRepository.findReadPost(postId, nickname);
-		return new ReadDTO(readPost, pagePost);
+		List<PostTag> postTags = postTagQueryRepository.findByPost(findPost);
+		return new ReadDTO(readPost, pagePost, postTags);
 	}
 
 	public Slice<SeriesPostSummaryDTO> findSeriesPost(String nickname, String seriesName, PageRequest page) {

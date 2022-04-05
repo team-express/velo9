@@ -2,8 +2,10 @@ package teamexpress.velo9.post.domain;
 
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
-import teamexpress.velo9.member.domain.Member;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface SeriesRepository extends JpaRepository<Series, Long>, SeriesRepositoryCustom {
-	List<Series> findAllByMember(Member member);
+	@Query("select s from Series s where s.member.id = :memberId")
+	List<Series> findByMember(@Param("memberId") Long memberId);
 }

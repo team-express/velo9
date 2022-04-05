@@ -2,6 +2,7 @@ package teamexpress.velo9.post.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -9,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import teamexpress.velo9.member.domain.Member;
 
 public interface PostRepository extends JpaRepository<Post, Long>, PostRepositoryCustom {
+
 	@Query("select p.createdDate from Post p where p.id = :id")
 	LocalDateTime getCreatedDate(@Param("id") Long id);
 
@@ -24,4 +26,8 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
 	@Query("update Post p set p.loveCount = :loveCount where p = :post")
 	@Modifying
 	void updateLoveCount(@Param("post") Post post, @Param("loveCount") int loveCount);
+
+	@Query("select p from Post p where p.id = :postId and p.member.nickname = :nickname")
+	Optional<Post> findByPostIdAndNickname(@Param("postId") Long postId, @Param("nickname") String nickname);
+
 }
