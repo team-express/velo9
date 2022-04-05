@@ -9,6 +9,7 @@ import teamexpress.velo9.member.domain.Member;
 import teamexpress.velo9.post.domain.Post;
 import teamexpress.velo9.post.domain.PostAccess;
 import teamexpress.velo9.post.domain.PostStatus;
+import teamexpress.velo9.post.domain.PostTag;
 import teamexpress.velo9.post.domain.PostThumbnail;
 import teamexpress.velo9.post.domain.Series;
 
@@ -32,7 +33,7 @@ public class PostSaveDTO {
 	private PostThumbnailDTO postThumbnailDTO;
 	private TemporaryPostReadDTO temporaryPostReadDTO;
 
-	public PostSaveDTO(Post post) {
+	public PostSaveDTO(Post post, List<PostTag> postTags) {
 		this.id = post.getId();
 		this.title = post.getTitle();
 		this.introduce = post.getIntroduce();
@@ -48,7 +49,7 @@ public class PostSaveDTO {
 			this.seriesId = post.getSeries().getId();
 		}
 
-		this.tagNames = post.getPostTags().stream()
+		this.tagNames = postTags.stream()
 			.map(postTag -> postTag.getTag().getName())
 			.collect(Collectors.toList());
 
@@ -61,8 +62,8 @@ public class PostSaveDTO {
 	}
 
 	public Post toPost(PostThumbnail postThumbnail, Series series, Member member, LocalDateTime createdDate) {
-		this.setIntroduce();
-		this.setAccess();
+		setIntroduce();
+		setAccess();
 
 		return Post.builder()
 			.id(this.id)

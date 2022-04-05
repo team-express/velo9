@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import teamexpress.velo9.member.domain.Member;
 
 public interface PostRepository extends JpaRepository<Post, Long>, PostRepositoryCustom {
+
 	@Query("select p.createdDate from Post p where p.id = :id")
 	LocalDateTime getCreatedDate(@Param("id") Long id);
 
@@ -24,10 +25,6 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
 	@Query("update Post p set p.loveCount = :loveCount where p = :post")
 	@Modifying
 	void updateLoveCount(@Param("post") Post post, @Param("loveCount") int loveCount);
-
-	@Query("update Post p set p.viewCount = :viewCount where p = :post")
-	@Modifying
-	void updateViewCount(@Param("post") Post post, @Param("viewCount") int viewCount);
 
 	@Query("update Post p set p.series = null where p.series.id = :id")
 	@Modifying

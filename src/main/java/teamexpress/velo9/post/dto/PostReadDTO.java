@@ -17,7 +17,7 @@ public class PostReadDTO {
 	private LocalDateTime createdDate;
 	private int replyCount;
 	private PostThumbnailDTO thumbnail;
-	private List<TagDTO> postTags;
+	private List<String> postTags;
 
 	public PostReadDTO(Post post) {
 		id = post.getId();
@@ -27,7 +27,7 @@ public class PostReadDTO {
 		replyCount = post.getReplyCount();
 		thumbnail = new PostThumbnailDTO(post.getPostThumbnail());
 		postTags = post.getPostTags().stream()
-			.map(TagDTO::new)
+			.map(postTag -> postTag.getTag().getName())
 			.collect(Collectors.toList());
 	}
 }

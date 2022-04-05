@@ -24,7 +24,7 @@ public class SeriesService {
 	private final PostRepository postRepository;
 
 	public List<SeriesReadDTO> getAll(Long memberId) {
-		return seriesRepository.findAllByMember(memberRepository.findById(memberId).orElseThrow())
+		return seriesRepository.findByMember(memberId)
 			.stream().map(SeriesReadDTO::new).collect(Collectors.toList());
 	}
 
