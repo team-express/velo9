@@ -49,8 +49,8 @@ public class PostController {
 	}
 
 	@PostMapping("/writeTemporary")
-	public void writeTemporary(@RequestBody TemporaryPostWriteDTO temporaryPostWriteDTO) {
-		postService.writeTemporary(temporaryPostWriteDTO);
+	public Result writeTemporary(@RequestBody TemporaryPostWriteDTO temporaryPostWriteDTO) {
+		return new Result<>(postService.writeTemporary(temporaryPostWriteDTO));
 	}
 
 	@PostMapping("/delete")

@@ -52,6 +52,12 @@ include::{snippets}/writeTemporaryPost/request-body.adoc[]
 
 include::{snippets}/writeTemporaryPost/request-fields.adoc[]
 
+=== response
+
+include::{snippets}/writeTemporaryPost/response-body.adoc[]
+
+include::{snippets}/writeTemporaryPost/response-fields.adoc[]
+
 == 개인 페이지 메인 보기 [ /{nickname}/main, GET ]
 
 === 1. request

@@ -163,12 +163,18 @@ class PostControllerTest {
 			.andDo(document("writeTemporaryPost",
 				requestFields(
 					fieldWithPath("postId").description("id가 없으면 새 글을 임시저장하는 경우(임시글목록에 보임)이며,"
-						+ " id가 없으면 기존 임시글의 덮어쓰기(임시글목록에 보임) 또는"
+						+ " id가 있으면 기존 임시글의 덮어쓰기(임시글목록에 보임) 또는"
 						+ "기존 게시글의 대안 임시글을 생성(임시글목록에는 안보이고 수정화면에서 임시데이터가 있으면 불러오는 창나옴)"
 						+ "하는 경우입니다.").optional(),
 					fieldWithPath("title").description("title"),
 					fieldWithPath("content").description("content"),
 					fieldWithPath("memberId").description("/write와 마찬가지로 작성중인 회원의 id를 의미합니다.")
+				),
+				responseFields(
+					fieldWithPath("data").description("임시저장이 되었을 때 해당 글의 id를 반환합니다."
+						+ "\n최초에 타이머에 의해 임시저장을 하고나면 그 다음 타이머에의한 임시저장은 \n"
+						+ "id가 없는 새 글이 아니라 id가 있는 기존 글의 수정이어야 하기 때문에\n"
+						+ "두 번째 타이머 이벤트 부터는 이 id 값을 가지고 url호출을 하면 좋을 것 같습니다.")
 				)
 			));
 	}

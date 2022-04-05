@@ -78,13 +78,12 @@ public class PostService {
 	}
 
 	@Transactional
-	public void writeTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {
+	public Long writeTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {
 		if (temporaryPostWriteDTO.getPostId() != null) {
-			writeAlternativeTemporary(temporaryPostWriteDTO);
-			return;
+			return writeAlternativeTemporary(temporaryPostWriteDTO);
 		}
 
-		writeNewTemporary(temporaryPostWriteDTO);
+		return writeNewTemporary(temporaryPostWriteDTO);
 	}
 
 	@Transactional
@@ -146,12 +145,11 @@ public class PostService {
 			.orElseThrow(() -> new NullPointerException("no member"));
 	}
 
-	private void writeAlternativeTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {
+	private Long writeAlternativeTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {
 		Post post = postRepository.findById(temporaryPostWriteDTO.getPostId()).orElseThrow();
 
 		if (post.getStatus().equals(PostStatus.TEMPORARY)) {
-			writeNewTemporary(temporaryPostWriteDTO);
-			return;
+			return writeNewTemporary(temporaryPostWriteDTO);
 		}
 
 		if (post.getTemporaryPost() != null) {
@@ -161,14 +159,19 @@ public class PostService {
 		TemporaryPost temporaryPost = temporaryPostWriteDTO.toTemporaryPost();
 		temporaryPostRepository.save(temporaryPost);
 		postRepository.updateTempPost(post.getId(), temporaryPost);
+
+		return post.getId();
 	}
 
-	private void writeNewTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {
+	private Long writeNewTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {
 		Long memberId = temporaryPostWriteDTO.getMemberId();
 
 		checkCount(memberId);
 		Member member = getMember(memberId);
-		postRepository.save(temporaryPostWriteDTO.toPost(member, postRepository.getCreatedDate(temporaryPostWriteDTO.getPostId())));
+		return postRepository.save(
+				temporaryPostWriteDTO.toPost(
+					member, postRepository.getCreatedDate(temporaryPostWriteDTO.getPostId())))
+			.getId();
 	}
 
 	private void toggleLove(Member member, Post post) {
