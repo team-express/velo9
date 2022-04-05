@@ -36,8 +36,8 @@ public class PostController {
 	private final TagService tagService;
 
 	@GetMapping("/write")
-	public PostSaveDTO write(@RequestParam Long postId) {
-		return postService.getPostById(postId);
+	public PostSaveDTO write(@RequestParam Long id) {
+		return postService.getPostById(id);
 	}
 
 	@PostMapping("/write")
@@ -54,8 +54,8 @@ public class PostController {
 	}
 
 	@PostMapping("/delete")
-	public void delete(@RequestParam Long postId) {
-		postService.delete(postId);
+	public void delete(@RequestParam Long id) {
+		postService.delete(id);
 		tagService.removeUselessTags();
 	}
 
@@ -89,8 +89,8 @@ public class PostController {
 	}
 
 	@GetMapping("/temp")
-	public Result tempPostsRead(@RequestParam Long memberId) {
-		return new Result(postService.getTempSavedPost(memberId));
+	public Result tempPostsRead(@RequestParam Long id) {
+		return new Result(postService.getTempSavedPost(id));
 	}
 
 	@PostMapping("/love")

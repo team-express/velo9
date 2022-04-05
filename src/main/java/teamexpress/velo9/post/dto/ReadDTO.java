@@ -18,8 +18,8 @@ public class ReadDTO {
 	private int loveCount;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd-HH-mm-ss", timezone = "Asia/Seoul")
 	private LocalDateTime createdDate;
-	private PostMemberDTO memberDTO;
-	private List<String> tagNames;
+	private PostMemberDTO memberInfo;
+	private List<String> tags;
 	private TransferDTO prevPost;
 	private TransferDTO nextPost;
 
@@ -30,8 +30,8 @@ public class ReadDTO {
 		content = findPost.getContent();
 		loveCount = findPost.getLoveCount();
 		createdDate = findPost.getCreatedDate();
-		memberDTO = new PostMemberDTO(findPost.getMember());
-		tagNames = postTags.stream()
+		memberInfo = new PostMemberDTO(findPost.getMember());
+		tags = postTags.stream()
 			.map(postTag -> postTag.getTag().getName())
 			.collect(Collectors.toList());
 		pagePost.forEach(post -> {

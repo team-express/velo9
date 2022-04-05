@@ -17,7 +17,7 @@ public class SeriesPostSummaryDTO {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd-HH-mm-ss", timezone = "Asia/Seoul")
 	private LocalDateTime createdDate;
 	private PostThumbnailDTO thumbnail;
-	private List<String> postTags;
+	private List<String> tags;
 
 	public SeriesPostSummaryDTO(Post post) {
 		id = post.getId();
@@ -26,7 +26,7 @@ public class SeriesPostSummaryDTO {
 		introduce = post.getIntroduce();
 		createdDate = post.getCreatedDate();
 		thumbnail = new PostThumbnailDTO(post.getPostThumbnail());
-		postTags = post.getPostTags().stream()
+		tags = post.getPostTags().stream()
 			.map(postTag -> postTag.getTag().getName())
 			.collect(Collectors.toList());
 	}

@@ -34,7 +34,7 @@ include::{snippets}/writeGet/response-fields.adoc[]
 
 === 1. request
 
-include::{snippets}/writePost/http-request.adoc[]
+include::{snippets}/writePost/request-body.adoc[]
 
 include::{snippets}/writePost/request-fields.adoc[]
 
