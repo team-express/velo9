@@ -73,11 +73,11 @@ public class SeriesControllerTest {
 	void deleteSeries() throws Exception {
 
 		mockMvc.perform(MockMvcRequestBuilders.post("/deleteSeries")
-				.param("seriesId", "10"))
+				.param("id", "10"))
 			.andExpect(status().isOk())
 			.andDo(document("deleteSeries",
 				requestParameters(
-					parameterWithName("seriesId").description("삭제할 시리즈의 id")
+					parameterWithName("id").description("삭제할 시리즈의 id")
 				)
 			));
 	}

@@ -11,12 +11,12 @@ public class SeriesDTO {
 
 	public static final int SIZE = 3;
 
-	private Long id;
+	private Long seriesId;
 	private String seriesName;
 	private List<PostSummaryDTO> posts;
 
 	public SeriesDTO(Series series) {
-		id = series.getId();
+		seriesId = series.getId();
 		seriesName = series.getName();
 		posts = series.getPosts().stream()
 			.filter(p -> p.getStatus().equals(PostStatus.GENERAL))

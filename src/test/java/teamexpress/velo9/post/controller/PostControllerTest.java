@@ -42,15 +42,15 @@ class PostControllerTest {
 	void writeGet() throws Exception {
 
 		mockMvc.perform(MockMvcRequestBuilders.get("/write")
-				.param("postId", "1"))
+				.param("id", "1"))
 			.andExpect(status().isOk())
 			.andDo(document("writeGet",
 				requestParameters(
-					parameterWithName("postId").description("새 글 작성 시 id 값 없이 url을 호출하면 됩니다."
+					parameterWithName("id").description("새 글 작성 시 id 값 없이 url을 호출하면 됩니다."
 						+ "글 수정 시 존재하는 postId를 담아 호출하시길 바랍니다.").optional()
 				),
 				relaxedResponseFields(
-					fieldWithPath("id").description("작성중인 게시글의 id 입니다. post 방식으로 넘어갈 때 활용할 수 있습니다.").optional(),
+					fieldWithPath("postId").description("작성중인 게시글의 id 입니다. post 방식으로 넘어갈 때 활용할 수 있습니다.").optional(),
 					fieldWithPath("title").description("제목"),
 					fieldWithPath("introduce").description("소개글"),
 					fieldWithPath("content").description("본문"),
@@ -58,8 +58,8 @@ class PostControllerTest {
 					fieldWithPath("memberId").description("작성글 주인의 식별 값입니다. post 방식으로 넘어갈 때 사용하면 좋을 것 같습니다."),
 					fieldWithPath("seriesId").description("속해있는 시리즈의 id 입니다.").optional(),
 					fieldWithPath("tagNames").description("달려있는 태그의 이름들 입니다.").optional(),
-					fieldWithPath("postThumbnailDTO").description("썸네일 파일 이름 관련 정보가 들어 있을 수도 있습니다.").optional(),
-					fieldWithPath("temporaryPostReadDTO").description("임시저장된 제목과 내용이 들어 있을 수도 있습니다.").optional()
+					fieldWithPath("thumbnail").description("썸네일 파일 이름 관련 정보가 들어 있을 수도 있습니다.").optional(),
+					fieldWithPath("temporary").description("임시저장된 제목과 내용이 들어 있을 수도 있습니다.").optional()
 				)
 			));
 	}
@@ -89,7 +89,7 @@ class PostControllerTest {
 	void writePost() throws Exception {
 		mockMvc.perform(post("/write")
 				.content("{"
-					+ "\n\"id\":1,"
+					+ "\n\"postId\":1,"
 					+ "\n\"title\":\"testtest\","
 					+ "\n\"introduce\":\"1\","
 					+ "\n\"content\":\"333333\","
@@ -97,13 +97,13 @@ class PostControllerTest {
 					+ "\n\"memberId\":2,"
 					+ "\n\"seriesId\":1,"
 					+ "\n\"tagNames\":[\"A\",\"B\"],"
-					+ "\n\"postThumbnailDTO\":{\"uuid\":\"1\", \"path\":\"bird\", \"name\":\"girl.avi\"}"
+					+ "\n\"thumbnail\":{\"uuid\":\"1\", \"path\":\"bird\", \"name\":\"girl.avi\"}"
 					+ "\n}")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andDo(document("writePost",
 				relaxedRequestFields(
-					fieldWithPath("id").description("해당 필드가 없으면(null) 새 글(또는 임시글)이 작성됩니다.\n"
+					fieldWithPath("postId").description("해당 필드가 없으면(null) 새 글(또는 임시글)이 작성됩니다.\n"
 						+ "해당 필드가 있으면 기존에 존재하는 글(또는 임시글)의 수정(덮어쓰기)가 됩니다.").optional(),
 					fieldWithPath("title").description(""),
 					fieldWithPath("introduce").description("없으면 백엔드에서 알아서 content 일부 떼와서 넣어줍니다.").optional(),
@@ -112,7 +112,7 @@ class PostControllerTest {
 					fieldWithPath("memberId").description("적절한 회원의 id를 주시길 바랍니다(세션 or get 방식의 memberId).\n"),
 					fieldWithPath("seriesId").description("상세조건에서 시리즈를 선택하면 선택된 시리즈Object내부의 id값을 의미합니다.").optional(),
 					fieldWithPath("tagNames").description("태그를 입력했다면, array로([]) 주십시오").optional(),
-					fieldWithPath("postThumbnailDTO").description("필드 3개(uuid, path, name)를 가지고 있는 어떤 객체가 있을 수 있습니다.\n"
+					fieldWithPath("thumbnail").description("필드 3개(uuid, path, name)를 가지고 있는 어떤 객체가 있을 수 있습니다.\n"
 						+ "해당 객체를 변수로 지니고 있다가 주세요").optional()
 				),
 				responseFields(
@@ -155,7 +155,7 @@ class PostControllerTest {
 
 		mockMvc.perform(post("/writeTemporary")
 				.content("{"
-					+ "\n\"id\":2,"
+					+ "\n\"postId\":2,"
 					+ "\n\"title\":\"testTMP\","
 					+ "\n\"content\":\"TMPTMP\","
 					+ "\n\"memberId\":2"
@@ -164,7 +164,7 @@ class PostControllerTest {
 			.andExpect(status().isOk())
 			.andDo(document("writeTemporaryPost",
 				requestFields(
-					fieldWithPath("id").description("id가 없으면 새 글을 임시저장하는 경우(임시글목록에 보임)이며,"
+					fieldWithPath("postId").description("id가 없으면 새 글을 임시저장하는 경우(임시글목록에 보임)이며,"
 						+ " id가 없으면 기존 임시글의 덮어쓰기(임시글목록에 보임) 또는"
 						+ "기존 게시글의 대안 임시글을 생성(임시글목록에는 안보이고 수정화면에서 임시데이터가 있으면 불러오는 창나옴)"
 						+ "하는 경우입니다.").optional(),
@@ -205,11 +205,11 @@ class PostControllerTest {
 	void delete() throws Exception {
 
 		mockMvc.perform(post("/delete")
-				.param("postId", "1"))
+				.param("id", "1"))
 			.andExpect(status().isOk())
 			.andDo(document("delete",
 				requestParameters(
-					parameterWithName("postId").description("삭제할 게시글의 id 입니다.")
+					parameterWithName("id").description("삭제할 게시글의 id 입니다.")
 				)
 			));
 	}
@@ -217,11 +217,11 @@ class PostControllerTest {
 	@Test
 	void tempPostsRead() throws Exception {
 		this.mockMvc.perform(get("/temp")
-				.param("memberId", "2"))
+				.param("id", "2"))
 			.andExpect(status().isOk())
 			.andDo(document("GetTemp",
 				requestParameters(
-					parameterWithName("memberId").description("로그인된 사용자의 id 값입니다.")
+					parameterWithName("id").description("로그인된 사용자의 id 값입니다./마찬가지로 memberId이므로 일단 보류입니다.(물론 구현은 하셔도 됩니다.)")
 				),
 				relaxedResponseFields(
 					fieldWithPath("data").description("임시글 목록에 나올 게시글들의 요약정보들이 들어있습니다.").optional()
@@ -236,7 +236,8 @@ class PostControllerTest {
 			.andExpect(status().isOk())
 			.andDo(document("GetLovePostRead",
 				requestParameters(
-					parameterWithName("memberId").description("로그인된 사용자의 id 값입니다.")
+					parameterWithName("memberId").description("로그인된 사용자의 id 값입니다.\nlike, temp, read모두 memberId"
+						+ "보류 이슈에 관하여 공통이라 일단 수정하지 않고 놔두겠습니다.")
 				),
 				relaxedResponseFields(
 					fieldWithPath("content").description("좋아요를 누른 게시글의 요약 정보들이 들어있습니다.").optional(),
@@ -300,7 +301,8 @@ class PostControllerTest {
 					parameterWithName("postId").description("상세보기할 게시글")
 				),
 				requestParameters(
-					parameterWithName("memberId").description("해당 게시글을 보고 있는 회원의 id").optional()
+					parameterWithName("memberId").description("해당 게시글을 보고 있는 회원의 id / 이를 포함한 모든"
+						+ "memberId를 주는 요청은 상이한 포트문제를 해결한 후 다시 수정할 예정입니다.").optional()
 				),
 				relaxedResponseFields(
 					fieldWithPath("title").description("제목"),
@@ -308,8 +310,8 @@ class PostControllerTest {
 					fieldWithPath("content").description("본문"),
 					fieldWithPath("loveCount").description("소개글"),
 					fieldWithPath("createdDate").description("작성날짜"),
-					fieldWithPath("memberDTO").description("게시글 하단 프로필 정보에 들어갈 데이터들 입니다."),
-					fieldWithPath("tagNames").description("달려있는 태그의 이름들 입니다.").optional(),
+					fieldWithPath("memberInfo").description("게시글 하단 프로필 정보에 들어갈 데이터들 입니다."),
+					fieldWithPath("tags").description("달려있는 태그의 이름들 입니다.").optional(),
 					fieldWithPath("prevPost").description("이전 게시글 정보입니다.").optional(),
 					fieldWithPath("nextPost").description("다음 게시글 정보입니다.").optional()
 				)

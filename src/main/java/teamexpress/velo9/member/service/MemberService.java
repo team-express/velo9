@@ -60,7 +60,7 @@ public class MemberService {
 		MemberThumbnail memberThumbnail = member.getMemberThumbnail();
 
 		if (memberThumbnail != null) {
-			memberThumbnailDTO.setId(memberThumbnail.getId());
+			memberThumbnailDTO.setThumbnailId(memberThumbnail.getId());
 		}
 
 		member.uploadThumbnail(memberThumbnailDTO.toMemberThumbnail());
