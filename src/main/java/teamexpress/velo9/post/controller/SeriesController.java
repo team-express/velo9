@@ -27,7 +27,7 @@ public class SeriesController {
 	}
 
 	@PostMapping("/deleteSeries")
-	public void deleteSeries(@RequestParam Long seriesId) {
-		seriesService.delete(seriesId);
+	public void deleteSeries(@RequestParam Long id) {
+		seriesService.delete(id);
 	}
 }
