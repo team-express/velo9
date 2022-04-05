@@ -71,7 +71,7 @@ public class InitDb {
 				.socialEmail("1@naver.com")
 				.socialGithub("2@nate.com")
 				.username("id")
-				.password("1234")
+				.password(passwordEncoder.encode("1234"))
 				.email("test2@nate.com")
 				.role(Role.ROLE_SOCIAL)
 				.memberThumbnail(memberThumbnailRepository.save(new MemberThumbnail()))

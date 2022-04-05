@@ -56,6 +56,7 @@ public class PostController {
 	@PostMapping("/delete")
 	public void delete(@RequestParam Long postId) {
 		postService.delete(postId);
+		tagService.removeUselessTags();
 	}
 
 	@GetMapping("/{nickname}/series")

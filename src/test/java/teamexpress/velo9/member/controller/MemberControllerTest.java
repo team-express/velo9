@@ -137,7 +137,7 @@ class MemberControllerTest {
 	@Rollback
 	void withdraw() throws Exception {
 		this.mockMvc.perform(post("/withdraw")
-				.param("memberId", "1")
+				.param("memberId", "2")
 				.content("{\"oldPassword\": \"1234\"}")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
