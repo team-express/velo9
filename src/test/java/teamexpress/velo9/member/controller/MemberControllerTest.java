@@ -251,4 +251,29 @@ class MemberControllerTest {
 				)
 			));
 	}
+
+
+	@Test
+	void checkUsername() throws Exception {
+		this.mockMvc.perform(get("/validateUsername")
+				.param("username", "testUser"))
+			.andExpect(status().isOk())
+			.andDo(document("UsernameCheck",
+				requestParameters(
+					parameterWithName("username").description("중복 확인이 필요한 username을 입력하세요")
+				)
+			));
+	}
+
+	@Test
+	void checkNickname() throws Exception {
+		this.mockMvc.perform(get("/validateNickname")
+				.param("nickname", "testNickname"))
+			.andExpect(status().isOk())
+			.andDo(document("NicknameCheck",
+				requestParameters(
+					parameterWithName("nickname").description("중복 확인이 필요한 nickname을 입력하세요")
+				)
+			));
+	}
 }
