@@ -150,7 +150,6 @@ public class PostService {
 		if (fileName != null) {
 			postThumbnail = PostThumbnailFileUploader.divideFileName(fileName).toPostThumbnail();
 		}
-
 		return postThumbnail;
 	}
 
