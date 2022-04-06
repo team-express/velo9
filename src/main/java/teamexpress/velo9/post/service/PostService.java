@@ -19,7 +19,7 @@ import teamexpress.velo9.post.domain.Post;
 import teamexpress.velo9.post.domain.PostRepository;
 import teamexpress.velo9.post.domain.PostStatus;
 import teamexpress.velo9.post.domain.PostTag;
-import teamexpress.velo9.post.domain.PostTagQueryRepository;
+import teamexpress.velo9.post.domain.PostTagRepository;
 import teamexpress.velo9.post.domain.PostThumbnail;
 import teamexpress.velo9.post.domain.PostThumbnailRepository;
 import teamexpress.velo9.post.domain.Series;
@@ -55,7 +55,7 @@ public class PostService {
 	private final LookRepository lookRepository;
 	private final TemporaryPostRepository temporaryPostRepository;
 	private final PostThumbnailRepository postThumbnailRepository;
-	private final PostTagQueryRepository postTagQueryRepository;
+	private final PostTagRepository postTagRepository;
 
 	@Transactional
 	public Post write(PostSaveDTO postSaveDTO) {
@@ -104,7 +104,7 @@ public class PostService {
 
 	public PostWriteDTO getPostById(Long id) {
 		Post post = postRepository.findById(id).orElse(new Post());
-		List<PostTag> postTags = postTagQueryRepository.findByPost(post);
+		List<PostTag> postTags = postTagRepository.findByPost(post);
 		return new PostWriteDTO(post, postTags);
 	}
 
@@ -233,10 +233,10 @@ public class PostService {
 
 	public ReadDTO findReadPost(Long postId, String nickname) {
 		Post findPost = postRepository.findById(postId).orElseThrow();
+		checkOwner(findPost, nickname);
 		List<Post> pagePost = postRepository.findPrevNextPost(findPost);
-		Post readPost = postRepository.findReadPost(postId, nickname);
-		List<PostTag> postTags = postTagQueryRepository.findByPost(findPost);
-		return new ReadDTO(readPost, pagePost, postTags);
+		List<PostTag> postTags = postTagRepository.findByPost(findPost);
+		return new ReadDTO(findPost, pagePost, postTags);
 	}
 
 	public Slice<SeriesPostSummaryDTO> findSeriesPost(String nickname, String seriesName, PageRequest page) {
@@ -247,5 +247,11 @@ public class PostService {
 	public List<SeriesReadDTO> getUsedSeries(String nickname) {
 		return seriesRepository.findUsedSeries(nickname)
 			.stream().map(SeriesReadDTO::new).collect(Collectors.toList());
+	}
+
+	private void checkOwner(Post findPost, String nickname) {
+		if (!findPost.getMember().getNickname().equals(nickname)) {
+			throw new IllegalStateException("비정상적인 접근입니다.");
+		}
 	}
 }
