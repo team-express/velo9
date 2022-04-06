@@ -8,11 +8,11 @@ import teamexpress.velo9.post.domain.Series;
 @NoArgsConstructor
 public class SeriesReadDTO {
 
-	private Long id;
-	private String name;
+	private Long seriesId;
+	private String seriesName;
 
 	public SeriesReadDTO(Series series) {
-		this.id = series.getId();
-		this.name = series.getName();
+		this.seriesId = series.getId();
+		this.seriesName = series.getName();
 	}
 }

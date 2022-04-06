@@ -23,6 +23,17 @@ public class PostThumbnailFileUploader {
 	private static final String ROOT_PATH = "c:\\postThumbnail";
 	private static final String BACKSLASH = "\\";
 
+	public static PostThumbnailDTO divideFileName(String fileName) {
+		String[] strings = fileName.split("_");
+
+		PostThumbnailDTO postThumbnailDTO = new PostThumbnailDTO();
+		postThumbnailDTO.setPath(strings[0].substring(0,strings[0].length()-2));
+		postThumbnailDTO.setUuid(strings[1]);
+		postThumbnailDTO.setName(strings[2]);
+
+		return postThumbnailDTO;
+	}
+
 	public PostThumbnailDTO upload(MultipartFile uploadFile) {
 		checkUploadFile(uploadFile);
 

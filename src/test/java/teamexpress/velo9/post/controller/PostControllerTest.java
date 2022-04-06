@@ -70,13 +70,14 @@ class PostControllerTest {
 					parameterWithName("nickname").description("유효한 회원의 닉네임을 입력해주세요")
 				),
 				relaxedResponseFields(
-					fieldWithPath("content").description("시리즈네임, id와 최대 3개의 게시글들로 이루어져 있습니다.").optional(),
-					fieldWithPath("size").description("한 페이지당 시리즈 개수입니다.").optional(),
-					fieldWithPath("number").description("현재 페이지입니다.").optional(),
-					fieldWithPath("first").description("첫 페이지인지 여부입니다.").optional(),
-					fieldWithPath("last").description("끝 페이지인지 여부입니다.").optional(),
-					fieldWithPath("numberOfElements").description("총 시리즈 개수입니다.").optional(),
-					fieldWithPath("empty").description("내용이 없는지 여부입니다.").optional()
+					fieldWithPath("data.content").description("시리즈네임, id와 최대 3개의 게시글들로 이루어져 있습니다.").optional(),
+					fieldWithPath("data.size").description("한 페이지당 시리즈 개수입니다.").optional(),
+					fieldWithPath("data.number").description("현재 페이지입니다.").optional(),
+					fieldWithPath("data.first").description("첫 페이지인지 여부입니다.").optional(),
+					fieldWithPath("data.last").description("끝 페이지인지 여부입니다.").optional(),
+					fieldWithPath("data.numberOfElements").description("총 시리즈 개수입니다.").optional(),
+					fieldWithPath("data.empty").description("내용이 없는지 여부입니다.").optional(),
+					fieldWithPath("subData").description("시리즈 네임 리스트가 들어가있습니다.").optional()
 				)
 			));
 	}
@@ -85,6 +86,7 @@ class PostControllerTest {
 	@Transactional
 	@Rollback
 	void writePost() throws Exception {
+
 		mockMvc.perform(post("/write")
 				.content("{"
 					+ "\n\"postId\":1,"
@@ -94,8 +96,8 @@ class PostControllerTest {
 					+ "\n\"access\":\"PRIVATE\","
 					+ "\n\"memberId\":2,"
 					+ "\n\"seriesId\":1,"
-					+ "\n\"tagNames\":[\"A\",\"B\"],"
-					+ "\n\"thumbnail\":{\"uuid\":\"1\", \"path\":\"bird\", \"name\":\"girl.avi\"}"
+					+ "\n\"tags\":[\"A\",\"B\"],"
+					+ "\n\"thumbnailFileName\":\"2020/03/01/s_uuid_name.png\""
 					+ "\n}")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
@@ -106,12 +108,12 @@ class PostControllerTest {
 					fieldWithPath("title").description(""),
 					fieldWithPath("introduce").description("없으면 백엔드에서 알아서 content 일부 떼와서 넣어줍니다.").optional(),
 					fieldWithPath("content").description(""),
-					fieldWithPath("access").description("PUBLIC(전체공개), PRIVATE(비공개) 중에서 적습니다(물론, 없으면 PUBLIC입니다).").optional(),
+					fieldWithPath("access").description("PUBLIC(전체공개), PRIVATE(비공개) 중에서 적습니다(화면에서는 기본적으로 public에 파랗게 색칠되어 있습니다.)"),
 					fieldWithPath("memberId").description("적절한 회원의 id를 주시길 바랍니다(세션 or get 방식의 memberId).\n"),
 					fieldWithPath("seriesId").description("상세조건에서 시리즈를 선택하면 선택된 시리즈Object내부의 id값을 의미합니다.").optional(),
-					fieldWithPath("tagNames").description("태그를 입력했다면, array로([]) 주십시오").optional(),
-					fieldWithPath("thumbnail").description("필드 3개(uuid, path, name)를 가지고 있는 어떤 객체가 있을 수 있습니다.\n"
-						+ "해당 객체를 변수로 지니고 있다가 주세요").optional()
+					fieldWithPath("tags").description("태그를 입력했다면, array로([]) 주십시오").optional(),
+					fieldWithPath("thumbnailFileName").description("업로드나, 게시글 볼 때 반환되는 썸네일 오브젝트를 변수로 가지고 있다가\n"
+						+ "글이 작성될 때 Object.fileName을 주세요").optional()
 				),
 				responseFields(
 					fieldWithPath("data").description("방금 작성(수정)된 글의 id 입니다. 작성(수정)후에는 작성된 게시글 상세보기로 가야합니다.")
@@ -192,13 +194,14 @@ class PostControllerTest {
 					parameterWithName("page").description("원하는 페이지 보다 1작은 값, 없으면 첫페이지").optional()
 				),
 				relaxedResponseFields(
-					fieldWithPath("content").description("게시글 관련 정보들이 여러 개 있습니다.(제목, 댓글수, 썸네일, 태그 등)").optional(),
-					fieldWithPath("size").description("-").optional(),
-					fieldWithPath("number").description("-").optional(),
-					fieldWithPath("first").description("-").optional(),
-					fieldWithPath("last").description("-").optional(),
-					fieldWithPath("numberOfElements").description("-").optional(),
-					fieldWithPath("empty").description("-").optional()
+					fieldWithPath("data.content").description("게시글 관련 정보들이 여러 개 있습니다.(제목, 댓글수, 썸네일, 태그 등)").optional(),
+					fieldWithPath("data.size").description("-").optional(),
+					fieldWithPath("data.number").description("-").optional(),
+					fieldWithPath("data.first").description("-").optional(),
+					fieldWithPath("data.last").description("-").optional(),
+					fieldWithPath("data.numberOfElements").description("-").optional(),
+					fieldWithPath("data.empty").description("-").optional(),
+					fieldWithPath("subData").description("시리즈 네임 리스트가 들어가있습니다.").optional()
 				)
 			));
 	}

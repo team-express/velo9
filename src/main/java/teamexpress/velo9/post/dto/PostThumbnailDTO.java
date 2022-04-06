@@ -18,7 +18,6 @@ public class PostThumbnailDTO {
 	private String name;
 	private String path;
 
-
 	public PostThumbnailDTO(PostThumbnail postThumbnail) {
 		if (postThumbnail != null) {
 			this.uuid = postThumbnail.getUuid();
