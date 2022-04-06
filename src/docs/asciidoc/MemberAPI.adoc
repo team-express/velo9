@@ -116,3 +116,20 @@ include::{snippets}/PostChangePw2/request-fields.adoc[]
 include::{snippets}/PostCheckNumber/request-body.adoc[]
 
 include::{snippets}/PostCheckNumber/request-fields.adoc[]
+
+== Username 중복 검증하기 [ /validateUsername, GET]
+
+=== request
+
+include::{snippets}/UsernameCheck/http-request.adoc[]
+
+include::{snippets}/UsernameCheck/request-parameters.adoc[]
+
+== Nickname 중복 검증하기 [ /validateNickname, GET]
+
+=== request
+
+include::{snippets}/NicknameCheck/http-request.adoc[]
+
+include::{snippets}/NicknameCheck/request-parameters.adoc[]
+

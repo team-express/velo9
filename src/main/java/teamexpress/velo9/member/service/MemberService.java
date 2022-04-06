@@ -136,14 +136,14 @@ public class MemberService {
 		validateNickname(nickname);
 	}
 
-	private void validateUsername(String username) {
+	public void validateUsername(String username) {
 		memberRepository.findByUsername(username)
 			.ifPresent(m -> {
 				throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
 			});
 	}
 
-	private void validateNickname(String nickname) {
+	public void validateNickname(String nickname) {
 		memberRepository.findByNickname(nickname)
 			.ifPresent(m -> {
 				throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");

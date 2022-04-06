@@ -100,6 +100,16 @@ public class MemberController {
 		memberService.changeNewPw(memberNewPwDTO);
 	}
 
+	@GetMapping("/validateUsername")
+	public void checkUsername(@RequestParam String username){
+		memberService.validateUsername(username);
+	}
+
+	@GetMapping("/validateNickname")
+	public void checkNickname(@RequestParam String nickname){
+		memberService.validateNickname(nickname);
+	}
+
 	private String getNumber() {
 		RandomNumber randomNumber = RandomNumber.get();
 		return randomNumber.getNumber();
