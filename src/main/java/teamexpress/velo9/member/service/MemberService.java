@@ -1,7 +1,10 @@
 package teamexpress.velo9.member.service;
 
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import teamexpress.velo9.member.domain.Member;
@@ -172,5 +175,13 @@ public class MemberService {
 	public MemberDTO getLoginMember(Long memberId) {
 		Member member = getMember(memberId);
 		return new MemberDTO(member);
+	}
+
+	public boolean getMemberByEmail(Authentication authentication) {
+		OAuth2User principal = (OAuth2User) authentication.getPrincipal();
+		Map<String, Object> attributes = principal.getAttributes();
+		String email = (String) attributes.get("email");
+		Member member = memberRepository.findByEmail(email).orElse(null);
+		return member != null;
 	}
 }
