@@ -117,7 +117,7 @@ public class MemberService {
 	@Transactional
 	public void changeNewPw(MemberNewPwDTO memberNewPwDTO) {
 		Member member = getMember(memberNewPwDTO.getId());
-		String encodedPassword = passwordEncoder.encode(member.getPassword());
+		String encodedPassword = passwordEncoder.encode(memberNewPwDTO.getPassword());
 		member.changePassword(encodedPassword);
 	}
 
