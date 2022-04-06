@@ -23,7 +23,6 @@ test {
     outputs.dir snippetsDir
 }
 
-
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
@@ -38,7 +37,7 @@ bootJar {
     dependsOn asciidoctor
     copy {
         from "${asciidoctor.outputDir}"
-        into 'BOOT-INF/classes/static/docs'
+        into '/static/docs'
     }
 }
 
@@ -79,11 +78,6 @@ dependencies {
 test {
     useJUnitPlatform()
     outputs.dir snippetsDir
-}
-
-asciidoctor {
-    inputs.dir snippetsDir
-    dependsOn test
 }
 
 asciidoctor {
