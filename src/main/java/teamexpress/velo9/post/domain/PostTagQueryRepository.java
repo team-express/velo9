@@ -23,5 +23,4 @@ public class PostTagQueryRepository {
 			.where(postTag.post.eq(findPost))
 			.fetch();
 	}
-
 }

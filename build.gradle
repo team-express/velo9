@@ -23,17 +23,22 @@ test {
     outputs.dir snippetsDir
 }
 
-bootJar {
-    dependsOn asciidoctor
-    copy {
-        from "${asciidoctor.outputDir}"
-        into '/static/docs'
-    }
-}
 
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
+    }
+}
+
+ext {
+    snippetsDir = file('build/generated-snippets')
+}
+
+bootJar {
+    dependsOn asciidoctor
+    copy {
+        from "${asciidoctor.outputDir}"
+        into 'BOOT-INF/classes/static/docs'
     }
 }
 
@@ -49,7 +54,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.6'
+    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.0'
 
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
     annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
@@ -67,6 +72,13 @@ dependencies {
     testImplementation'org.springframework.restdocs:spring-restdocs-mockmvc'
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+}
+
+test {
+    useJUnitPlatform()
+    outputs.dir snippetsDir
 }
 
 asciidoctor {
@@ -80,9 +92,21 @@ asciidoctor.doFirst {
 
 task copyDocument(type: Copy) {
     dependsOn asciidoctor
-
     from file("build/docs/asciidoc")
     into file("src/main/resources/static/docs")
+}
+
+build {
+    dependsOn copyDocument
+}
+
+asciidoctor {
+    inputs.dir snippetsDir
+    dependsOn test
+}
+
+asciidoctor.doFirst {
+    delete file('src/main/resources/static/docs')
 }
 
 build {
