@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import teamexpress.velo9.member.domain.Member;
 import teamexpress.velo9.member.domain.MemberRepository;
-import teamexpress.velo9.member.domain.MemberThumbnail;
 import teamexpress.velo9.member.dto.FindInfoDTO;
 import teamexpress.velo9.member.dto.MailDTO;
 import teamexpress.velo9.member.dto.MemberDTO;
@@ -34,10 +33,9 @@ public class MemberService {
 	}
 
 	@Transactional
-	public MemberDTO editMember(Long memberId, MemberEditDTO memberEditDTO) {
+	public void editMember(Long memberId, MemberEditDTO memberEditDTO) {
 		Member findMember = getMember(memberId);
-		Member editMember = changeMemberInfo(memberEditDTO, findMember);
-		return new MemberDTO(editMember);
+		changeMemberInfo(memberEditDTO, findMember);
 	}
 
 	@Transactional
@@ -56,16 +54,7 @@ public class MemberService {
 	@Transactional
 	public void uploadThumbnail(MemberThumbnailDTO memberThumbnailDTO, Long memberId) {
 		Member member = getMember(memberId);
-
-		MemberThumbnail memberThumbnail = member.getMemberThumbnail();
-
-		if (memberThumbnail != null) {
-			memberThumbnailDTO.setThumbnailId(memberThumbnail.getId());
-		}
-
 		member.uploadThumbnail(memberThumbnailDTO.toMemberThumbnail());
-
-		memberRepository.save(member);
 	}
 
 	@Transactional

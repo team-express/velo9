@@ -2,6 +2,7 @@ package teamexpress.velo9.member.controller;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.relaxedResponseFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
@@ -62,14 +63,15 @@ class MemberControllerTest {
 				requestParameters(
 					parameterWithName("memberId").description("로그인된 회원의 id 입니다.")
 				),
-				responseFields(
+				relaxedResponseFields(
 					fieldWithPath("username").description("username"),
 					fieldWithPath("nickname").description("nickname"),
 					fieldWithPath("email").description("email 내용"),
 					fieldWithPath("introduce").description("introduce 내용").optional(),
 					fieldWithPath("blogTitle").description("blogTitle 내용"),
 					fieldWithPath("socialEmail").description("socialEmail 내용").optional(),
-					fieldWithPath("socialGithub").description("socialGithub 내용").optional()
+					fieldWithPath("socialGithub").description("socialGithub 내용").optional(),
+					fieldWithPath("thumbnail").description("섬네일 파일 이름").optional()
 				)
 			));
 	}
@@ -94,20 +96,11 @@ class MemberControllerTest {
 					parameterWithName("memberId").description("로그인된 회원 id")
 				),
 				requestFields(
-					fieldWithPath("nickname").description("바꿀 nickname(이하 모두 바꾸지 않더라도 기존 내용을 주긴 해야합니다.)"),
-					fieldWithPath("introduce").description("바꿀 introduce"),
+					fieldWithPath("nickname").description("바꿀 nickname(바꾸지 않더라도 기존 내용을 주긴 해야합니다.)"),
+					fieldWithPath("introduce").description("바꿀 introduce(위 사항은 아래 모두 마찬가지입니다.)"),
 					fieldWithPath("blogTitle").description("바꿀 blogTitle"),
 					fieldWithPath("socialEmail").description("바꿀 socialEmail"),
 					fieldWithPath("socialGithub").description("socialGithub 내용")
-				),
-				responseFields(
-					fieldWithPath("username").description("username"),
-					fieldWithPath("nickname").description("바뀐 nickname"),
-					fieldWithPath("email").description("email"),
-					fieldWithPath("introduce").description("바뀐 introduce"),
-					fieldWithPath("blogTitle").description("바뀐 blogTitle"),
-					fieldWithPath("socialEmail").description("바뀐 socialEmail"),
-					fieldWithPath("socialGithub").description("바뀐 socialGithub")
 				)
 			));
 	}

@@ -55,7 +55,7 @@ class PostControllerTest {
 					fieldWithPath("access").description("공개설정"),
 					fieldWithPath("memberId").description("작성글 주인의 식별 값입니다. post 방식으로 넘어갈 때 사용하면 좋을 것 같습니다."),
 					fieldWithPath("seriesId").description("속해있는 시리즈의 id 입니다.").optional(),
-					fieldWithPath("tagNames").description("달려있는 태그의 이름들 입니다.").optional(),
+					fieldWithPath("tags").description("달려있는 태그의 이름들 입니다.").optional(),
 					fieldWithPath("thumbnail").description("썸네일 파일 이름 관련 정보가 들어 있을 수도 있습니다.").optional(),
 					fieldWithPath("temporary").description("임시저장된 제목과 내용이 들어 있을 수도 있습니다.").optional()
 				)

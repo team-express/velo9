@@ -48,12 +48,6 @@ include::{snippets}/PostEditMember/request-parameters.adoc[]
 
 include::{snippets}/PostEditMember/request-fields.adoc[]
 
-=== response
-
-include::{snippets}/PostEditMember/response-body.adoc[]
-
-include::{snippets}/PostEditMember/response-fields.adoc[]
-
 == 비밀번호 변경(설정화면에서) [ /changePassword, POST]
 
 === request

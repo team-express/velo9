@@ -31,6 +31,7 @@ import teamexpress.velo9.post.dto.LovePostDTO;
 import teamexpress.velo9.post.dto.PostMainDTO;
 import teamexpress.velo9.post.dto.PostReadDTO;
 import teamexpress.velo9.post.dto.PostSaveDTO;
+import teamexpress.velo9.post.dto.PostWriteDTO;
 import teamexpress.velo9.post.dto.ReadDTO;
 import teamexpress.velo9.post.dto.SearchCondition;
 import teamexpress.velo9.post.dto.SeriesDTO;
@@ -93,10 +94,10 @@ public class PostService {
 		postRepository.deleteById(id);
 	}
 
-	public PostSaveDTO getPostById(Long id) {
-		Post post = postRepository.findWritePost(id).orElse(new Post());
+	public PostWriteDTO getPostById(Long id) {
+		Post post = postRepository.findById(id).orElse(new Post());
 		List<PostTag> postTags = postTagQueryRepository.findByPost(post);
-		return new PostSaveDTO(post, postTags);
+		return new PostWriteDTO(post, postTags);
 	}
 
 	public Slice<SeriesDTO> findSeries(String nickname, Pageable pageable) {

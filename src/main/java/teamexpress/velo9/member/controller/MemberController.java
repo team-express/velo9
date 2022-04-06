@@ -60,8 +60,8 @@ public class MemberController {
 	}
 
 	@PostMapping("/setting")
-	public MemberDTO editMember(@RequestBody MemberEditDTO memberEditDTO, @RequestParam Long memberId) {
-		return memberService.editMember(memberId, memberEditDTO);
+	public void editMember(@RequestBody MemberEditDTO memberEditDTO, @RequestParam Long memberId) {
+		memberService.editMember(memberId, memberEditDTO);
 	}
 
 	@PostMapping("/changePassword")

@@ -20,7 +20,7 @@ public class PostTagQueryRepository {
 		return jpaQueryFactory
 			.selectFrom(postTag)
 			.join(postTag.tag).fetchJoin()
-			.where(postTag.post.eq(findPost))
+			.where(postTag.post.id.eq(findPost.getId()))
 			.fetch();
 	}
 

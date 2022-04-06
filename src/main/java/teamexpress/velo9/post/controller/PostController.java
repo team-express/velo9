@@ -17,6 +17,7 @@ import teamexpress.velo9.post.dto.LoveDTO;
 import teamexpress.velo9.post.dto.LovePostDTO;
 import teamexpress.velo9.post.dto.PostReadDTO;
 import teamexpress.velo9.post.dto.PostSaveDTO;
+import teamexpress.velo9.post.dto.PostWriteDTO;
 import teamexpress.velo9.post.dto.ReadDTO;
 import teamexpress.velo9.post.dto.SeriesDTO;
 import teamexpress.velo9.post.dto.SeriesPostSummaryDTO;
@@ -36,7 +37,7 @@ public class PostController {
 	private final TagService tagService;
 
 	@GetMapping("/write")
-	public PostSaveDTO write(@RequestParam Long id) {
+	public PostWriteDTO write(@RequestParam Long id) {
 		return postService.getPostById(id);
 	}
 
