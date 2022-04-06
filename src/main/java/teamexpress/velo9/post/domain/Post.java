@@ -80,12 +80,15 @@ public class Post {
 	@Column(name = "updated_date")
 	private LocalDateTime updatedDate;
 
-	public void newOrEdit(String title, String introduce, String content, String access, Member member) {
+	public void edit(String title, String introduce, String content, String access, Member member, Series series, PostThumbnail postThumbnail) {
 		this.title = title;
 		this.introduce = introduce;
 		this.content = content;
 		this.access = PostAccess.valueOf(access);
 		this.status = PostStatus.GENERAL;
 		this.member = member;
+		this.series = series;
+		this.postThumbnail = postThumbnail;
+		this.temporaryPost = null;
 	}
 }
