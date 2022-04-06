@@ -1,5 +1,6 @@
 package teamexpress.velo9.post.controller;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
@@ -11,7 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import teamexpress.velo9.common.domain.PostResult;
 import teamexpress.velo9.common.domain.Result;
+import teamexpress.velo9.post.domain.Post;
 import teamexpress.velo9.post.dto.LookPostDTO;
 import teamexpress.velo9.post.dto.LoveDTO;
 import teamexpress.velo9.post.dto.LovePostDTO;
@@ -20,6 +23,8 @@ import teamexpress.velo9.post.dto.PostSaveDTO;
 import teamexpress.velo9.post.dto.ReadDTO;
 import teamexpress.velo9.post.dto.SeriesDTO;
 import teamexpress.velo9.post.dto.SeriesPostSummaryDTO;
+import teamexpress.velo9.post.dto.SeriesReadDTO;
+import teamexpress.velo9.post.dto.TagDTO;
 import teamexpress.velo9.post.dto.TemporaryPostWriteDTO;
 import teamexpress.velo9.post.service.PostService;
 import teamexpress.velo9.post.service.TagService;
@@ -42,10 +47,10 @@ public class PostController {
 
 	@PostMapping("/write")
 	public Result write(@RequestBody PostSaveDTO postSaveDTO) {
-		Long postId = postService.write(postSaveDTO);
-		tagService.addTags(postId, postSaveDTO.getTagNames());
+		Post post = postService.write(postSaveDTO);
+		tagService.addTags(post, postSaveDTO.getTagNames());
 		tagService.removeUselessTags();
-		return new Result<>(postId);
+		return new Result<>(post.getId());
 	}
 
 	@PostMapping("/writeTemporary")
@@ -60,11 +65,13 @@ public class PostController {
 	}
 
 	@GetMapping("/{nickname}/series")
-	public Slice<SeriesDTO> series(
+	public PostResult series(
 		@PathVariable String nickname,
 		@RequestParam(defaultValue = "0") int page) {
 
-		return postService.findSeries(nickname, PageRequest.of(page, SERIES_SIZE));
+		Slice<SeriesDTO> series = postService.findSeries(nickname, PageRequest.of(page, SERIES_SIZE));
+		List<SeriesReadDTO> seriesDTOList = postService.getUsedSeries(nickname);
+		return new PostResult(series, seriesDTOList);
 	}
 
 	@GetMapping("/{nickname}/series/{seriesName}")
@@ -80,12 +87,14 @@ public class PostController {
 	}
 
 	@GetMapping("/{nickname}/main")
-	public Slice<PostReadDTO> postsRead(@PathVariable String nickname,
+	public PostResult postsRead(@PathVariable String nickname,
 		@RequestParam(required = false) String tagName,
 		@RequestParam(defaultValue = "0") int page) {
 
 		PageRequest pageRequest = PageRequest.of(page, SIZE, Sort.by(Direction.DESC, "createdDate"));
-		return postService.findPost(nickname, tagName, pageRequest);
+		Slice<PostReadDTO> posts = postService.findPost(nickname, tagName, pageRequest);
+		List<TagDTO> usedTags = tagService.getUsedTags(nickname);
+		return new PostResult(posts, usedTags);
 	}
 
 	@GetMapping("/temp")

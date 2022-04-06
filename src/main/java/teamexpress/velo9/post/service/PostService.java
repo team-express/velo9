@@ -3,7 +3,6 @@ package teamexpress.velo9.post.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -37,11 +36,11 @@ import teamexpress.velo9.post.dto.ReadDTO;
 import teamexpress.velo9.post.dto.SearchCondition;
 import teamexpress.velo9.post.dto.SeriesDTO;
 import teamexpress.velo9.post.dto.SeriesPostSummaryDTO;
+import teamexpress.velo9.post.dto.SeriesReadDTO;
 import teamexpress.velo9.post.dto.TempSavedPostDTO;
 import teamexpress.velo9.post.dto.TemporaryPostWriteDTO;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class PostService {
@@ -58,23 +57,32 @@ public class PostService {
 	private final PostTagQueryRepository postTagQueryRepository;
 
 	@Transactional
-	public Long write(PostSaveDTO postSaveDTO) {
+	public Post write(PostSaveDTO postSaveDTO) {
 		PostThumbnail postThumbnail = getPostThumbnail(postSaveDTO.getThumbnail());
 		Series series = getSeries(postSaveDTO.getSeriesId());
 		Member member = getMember(postSaveDTO.getMemberId());
-
 		if (postThumbnail != null) {
 			postThumbnailRepository.save(postThumbnail);
 		}
 
-		Post post = postSaveDTO.toPost(postThumbnail, series, member, postRepository.getCreatedDate(
-			postSaveDTO.getPostId()));
+		Post post = new Post();
 
-		postRepository.save(post);
-		postRepository.updateLoveCount(post, loveRepository.countByPost(post));
-		postRepository.updateViewCount(post.getId());
+		if (postSaveDTO.getPostId() == null) {
+			post = postRepository.save(postSaveDTO.toPost(member, series, postThumbnail));
+		}
 
-		return post.getId();
+		if (postSaveDTO.getPostId() != null) {
+			post = postRepository.findById(postSaveDTO.getPostId()).orElseThrow();
+			post.newOrEdit(postSaveDTO.getTitle(),
+				postSaveDTO.getIntroduce(),
+				postSaveDTO.getContent(),
+				postSaveDTO.getAccess(),
+				member,
+				series,
+				postThumbnail);
+		}
+
+		return post;
 	}
 
 	@Transactional
@@ -229,5 +237,10 @@ public class PostService {
 	public Slice<SeriesPostSummaryDTO> findSeriesPost(String nickname, String seriesName, PageRequest page) {
 		Slice<Post> seriesPosts = postRepository.findByJoinSeries(nickname, seriesName, page);
 		return seriesPosts.map(SeriesPostSummaryDTO::new);
+	}
+
+	public List<SeriesReadDTO> getUsedSeries(String nickname) {
+		return seriesRepository.findByNickname(nickname)
+			.stream().map(SeriesReadDTO::new).collect(Collectors.toList());
 	}
 }

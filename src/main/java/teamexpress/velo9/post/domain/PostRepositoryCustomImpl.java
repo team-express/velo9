@@ -32,9 +32,8 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 
 	@Override
 	public Slice<Post> findPost(String nickname, String tagName, Pageable pageable) {
-		List<Post> content = queryFactory.selectFrom(post)
-			.leftJoin(postTag)
-			.on(post.id.eq(postTag.post.id))
+		List<Post> content =
+			queryFactory.selectFrom(post)
 			.where(post.member.nickname.eq(nickname))
 			.where(searchTag(tagName))
 			.where(openPost())
@@ -52,8 +51,6 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 		JPAQuery<Post> query = queryFactory
 			.selectFrom(post)
 			.join(post.member).fetchJoin()
-			.leftJoin(postTag)
-			.on(post.id.eq(postTag.post.id))
 			.where(searchMain(condition))
 			.where(openPost())
 			.offset(pageable.getOffset())
