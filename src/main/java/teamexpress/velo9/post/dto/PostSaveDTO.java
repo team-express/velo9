@@ -1,6 +1,5 @@
 package teamexpress.velo9.post.dto;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Data;
@@ -38,7 +37,6 @@ public class PostSaveDTO {
 		this.title = post.getTitle();
 		this.introduce = post.getIntroduce();
 		this.content = post.getContent();
-
 		this.memberId = post.getMember().getId();
 
 		if (post.getAccess() != null) {
@@ -61,12 +59,11 @@ public class PostSaveDTO {
 
 	}
 
-	public Post toPost(PostThumbnail postThumbnail, Series series, Member member, LocalDateTime createdDate) {
+	public Post toPost(Member member, Series series, PostThumbnail postThumbnail) {
 		setIntroduce();
 		setAccess();
 
 		return Post.builder()
-			.id(this.postId)
 			.title(this.title)
 			.introduce(this.introduce)
 			.content(this.content)
@@ -75,8 +72,6 @@ public class PostSaveDTO {
 			.member(member)
 			.series(series)
 			.postThumbnail(postThumbnail)
-			.createdDate(createdDate)
-			.temporaryPost(null)
 			.build();
 	}
 

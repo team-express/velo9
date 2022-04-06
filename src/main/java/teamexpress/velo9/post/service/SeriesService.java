@@ -45,7 +45,7 @@ public class SeriesService {
 	}
 
 	private void checkName(Long memberId, String name) {
-		if (this.getAll(memberId).stream().map(SeriesReadDTO::getName).collect(Collectors.toList()).contains(name)) {
+		if (this.getAll(memberId).stream().map(SeriesReadDTO::getSeriesName).collect(Collectors.toList()).contains(name)) {
 			throw new DuplicateElementException("이미 있는 이름의 시리즈 입니다.");
 		}
 	}

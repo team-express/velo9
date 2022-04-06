@@ -11,6 +11,7 @@ import teamexpress.velo9.post.domain.PostTag;
 import teamexpress.velo9.post.domain.PostTagRepository;
 import teamexpress.velo9.post.domain.Tag;
 import teamexpress.velo9.post.domain.TagRepository;
+import teamexpress.velo9.post.dto.TagDTO;
 
 @Service
 @RequiredArgsConstructor
@@ -22,14 +23,12 @@ public class TagService {
 	private final PostTagRepository postTagRepository;
 
 	@Transactional
-	public void addTags(Long postId, List<String> tagNames) {
+	public void addTags(Post post, List<String> tagNames) {
 		if (tagNames == null) {
 			return;
 		}
 
 		List<String> tags = removeDuplication(tagNames);
-
-		Post post = postRepository.findById(postId).orElse(null);
 
 		List<String> realTagNames = tagRepository.getTagNames();
 
@@ -52,7 +51,12 @@ public class TagService {
 			.forEach(tagRepository::delete);
 	}
 
-	private List removeDuplication(List<String> tagNames) {
+	private List<String> removeDuplication(List<String> tagNames) {
 		return tagNames.stream().distinct().collect(Collectors.toList());
+	}
+
+
+	public List<TagDTO> getUsedTags(String nickname) {
+		return tagRepository.findUsedTags(nickname).stream().map(TagDTO::new).collect(Collectors.toList());
 	}
 }

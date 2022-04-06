@@ -1,10 +1,8 @@
 package teamexpress.velo9.post.service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +19,8 @@ import teamexpress.velo9.post.domain.PostRepository;
 import teamexpress.velo9.post.domain.PostStatus;
 import teamexpress.velo9.post.domain.PostTag;
 import teamexpress.velo9.post.domain.PostTagQueryRepository;
+import teamexpress.velo9.post.domain.PostThumbnail;
+import teamexpress.velo9.post.domain.PostThumbnailRepository;
 import teamexpress.velo9.post.domain.Series;
 import teamexpress.velo9.post.domain.SeriesRepository;
 import teamexpress.velo9.post.domain.TemporaryPost;
@@ -31,15 +31,16 @@ import teamexpress.velo9.post.dto.LovePostDTO;
 import teamexpress.velo9.post.dto.PostMainDTO;
 import teamexpress.velo9.post.dto.PostReadDTO;
 import teamexpress.velo9.post.dto.PostSaveDTO;
+import teamexpress.velo9.post.dto.PostThumbnailDTO;
 import teamexpress.velo9.post.dto.ReadDTO;
 import teamexpress.velo9.post.dto.SearchCondition;
 import teamexpress.velo9.post.dto.SeriesDTO;
 import teamexpress.velo9.post.dto.SeriesPostSummaryDTO;
+import teamexpress.velo9.post.dto.SeriesReadDTO;
 import teamexpress.velo9.post.dto.TempSavedPostDTO;
 import teamexpress.velo9.post.dto.TemporaryPostWriteDTO;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class PostService {
@@ -52,29 +53,36 @@ public class PostService {
 	private final LoveRepository loveRepository;
 	private final LookRepository lookRepository;
 	private final TemporaryPostRepository temporaryPostRepository;
+	private final PostThumbnailRepository postThumbnailRepository;
 	private final PostTagQueryRepository postTagQueryRepository;
 
 	@Transactional
-	public Long write(PostSaveDTO postSaveDTO) {
-		Post findPost = postRepository.findById(postSaveDTO.getPostId()).orElse(new Post());
-		Member findMember = getMember(postSaveDTO.getMemberId());
-
-		if (findMember == null) {
-			throw new IllegalStateException("잘못된 요청입니다.");
+	public Post write(PostSaveDTO postSaveDTO) {
+		PostThumbnail postThumbnail = getPostThumbnail(postSaveDTO.getThumbnail());
+		Series series = getSeries(postSaveDTO.getSeriesId());
+		Member member = getMember(postSaveDTO.getMemberId());
+		if (postThumbnail != null) {
+			postThumbnailRepository.save(postThumbnail);
 		}
 
-		if (!Objects.equals(findPost.getMember().getId(), findMember.getId())) {
-			throw new IllegalStateException("잘못된 요청입니다.");
+		Post post = new Post();
+
+		if (postSaveDTO.getPostId() == null) {
+			post = postRepository.save(postSaveDTO.toPost(member, series, postThumbnail));
 		}
 
-		findPost.newOrEdit(
-			postSaveDTO.getTitle(),
-			postSaveDTO.getIntroduce(),
-			postSaveDTO.getContent(),
-			postSaveDTO.getAccess(),
-			findMember);
+		if (postSaveDTO.getPostId() != null) {
+			post = postRepository.findById(postSaveDTO.getPostId()).orElseThrow();
+			post.edit(postSaveDTO.getTitle(),
+				postSaveDTO.getIntroduce(),
+				postSaveDTO.getContent(),
+				postSaveDTO.getAccess(),
+				member,
+				series,
+				postThumbnail);
+		}
 
-		return findPost.getId();
+		return post;
 	}
 
 	@Transactional
@@ -95,7 +103,7 @@ public class PostService {
 	}
 
 	public PostSaveDTO getPostById(Long id) {
-		Post post = postRepository.findWritePost(id).orElse(new Post());
+		Post post = postRepository.findById(id).orElse(new Post());
 		List<PostTag> postTags = postTagQueryRepository.findByPost(post);
 		return new PostSaveDTO(post, postTags);
 	}
@@ -137,6 +145,14 @@ public class PostService {
 			.collect(Collectors.toList());
 	}
 
+	private PostThumbnail getPostThumbnail(PostThumbnailDTO postThumbnailDTO) {
+		PostThumbnail postThumbnail = null;
+		if (postThumbnailDTO != null) {
+			postThumbnail = postThumbnailDTO.toPostThumbnail();
+		}
+		return postThumbnail;
+	}
+
 	private Member getMember(Long memberId) {
 		if (memberId == null) {
 			throw new NullPointerException("no member is NOT NULL!!!");
@@ -144,6 +160,10 @@ public class PostService {
 
 		return memberRepository.findById(memberId)
 			.orElseThrow(() -> new NullPointerException("no member"));
+	}
+
+	private Series getSeries(Long seriesId) {
+		return seriesId == null ? null : seriesRepository.findById(seriesId).orElse(null);
 	}
 
 	private void writeAlternativeTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {
@@ -217,5 +237,10 @@ public class PostService {
 	public Slice<SeriesPostSummaryDTO> findSeriesPost(String nickname, String seriesName, PageRequest page) {
 		Slice<Post> seriesPosts = postRepository.findByJoinSeries(nickname, seriesName, page);
 		return seriesPosts.map(SeriesPostSummaryDTO::new);
+	}
+
+	public List<SeriesReadDTO> getUsedSeries(String nickname) {
+		return seriesRepository.findUsedSeries(nickname)
+			.stream().map(SeriesReadDTO::new).collect(Collectors.toList());
 	}
 }
