@@ -8,5 +8,5 @@ import lombok.Data;
 public class PostResult<T> {
 
 	private T data;
-	private T list;
+	private T subData;
 }

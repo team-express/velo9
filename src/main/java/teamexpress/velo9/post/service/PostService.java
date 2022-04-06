@@ -73,7 +73,7 @@ public class PostService {
 
 		if (postSaveDTO.getPostId() != null) {
 			post = postRepository.findById(postSaveDTO.getPostId()).orElseThrow();
-			post.newOrEdit(postSaveDTO.getTitle(),
+			post.edit(postSaveDTO.getTitle(),
 				postSaveDTO.getIntroduce(),
 				postSaveDTO.getContent(),
 				postSaveDTO.getAccess(),
@@ -240,7 +240,7 @@ public class PostService {
 	}
 
 	public List<SeriesReadDTO> getUsedSeries(String nickname) {
-		return seriesRepository.findByNickname(nickname)
+		return seriesRepository.findUsedSeries(nickname)
 			.stream().map(SeriesReadDTO::new).collect(Collectors.toList());
 	}
 }

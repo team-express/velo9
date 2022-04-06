@@ -80,7 +80,7 @@ public class Post {
 	@Column(name = "updated_date")
 	private LocalDateTime updatedDate;
 
-	public void newOrEdit(String title, String introduce, String content, String access, Member member, Series series, PostThumbnail postThumbnail) {
+	public void edit(String title, String introduce, String content, String access, Member member, Series series, PostThumbnail postThumbnail) {
 		this.title = title;
 		this.introduce = introduce;
 		this.content = content;
@@ -89,5 +89,6 @@ public class Post {
 		this.member = member;
 		this.series = series;
 		this.postThumbnail = postThumbnail;
+		this.temporaryPost = null;
 	}
 }

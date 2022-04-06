@@ -57,6 +57,6 @@ public class TagService {
 
 
 	public List<TagDTO> getUsedTags(String nickname) {
-		return tagRepository.test(nickname).stream().map(TagDTO::new).collect(Collectors.toList());
+		return tagRepository.findUsedTags(nickname).stream().map(TagDTO::new).collect(Collectors.toList());
 	}
 }

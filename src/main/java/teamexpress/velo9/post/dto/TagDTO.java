@@ -6,11 +6,11 @@ import teamexpress.velo9.post.domain.Tag;
 @Data
 public class TagDTO {
 
-	private Long id;
-	private String name;
+	private Long tagId;
+	private String tagName;
 
 	public TagDTO(Tag tag) {
-		this.id = tag.getId();
-		this.name = tag.getName();
+		this.tagId = tag.getId();
+		this.tagName = tag.getName();
 	}
 }

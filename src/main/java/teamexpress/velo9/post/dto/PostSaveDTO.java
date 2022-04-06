@@ -37,7 +37,6 @@ public class PostSaveDTO {
 		this.title = post.getTitle();
 		this.introduce = post.getIntroduce();
 		this.content = post.getContent();
-
 		this.memberId = post.getMember().getId();
 
 		if (post.getAccess() != null) {
@@ -73,7 +72,6 @@ public class PostSaveDTO {
 			.member(member)
 			.series(series)
 			.postThumbnail(postThumbnail)
-			.temporaryPost(null)
 			.build();
 	}
 

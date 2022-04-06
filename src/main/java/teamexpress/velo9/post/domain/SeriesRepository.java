@@ -11,5 +11,5 @@ public interface SeriesRepository extends JpaRepository<Series, Long>, SeriesRep
 
 	@Query("select distinct s from Series s join s.member m on s.member.id = m.id"
 		+ " where m.nickname = :nickname")
-	List<Series> findByNickname(@Param("nickname") String nickname);
+	List<Series> findUsedSeries(@Param("nickname") String nickname);
 }

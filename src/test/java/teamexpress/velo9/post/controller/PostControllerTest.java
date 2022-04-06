@@ -70,13 +70,14 @@ class PostControllerTest {
 					parameterWithName("nickname").description("유효한 회원의 닉네임을 입력해주세요")
 				),
 				relaxedResponseFields(
-					fieldWithPath("content").description("시리즈네임, id와 최대 3개의 게시글들로 이루어져 있습니다.").optional(),
-					fieldWithPath("size").description("한 페이지당 시리즈 개수입니다.").optional(),
-					fieldWithPath("number").description("현재 페이지입니다.").optional(),
-					fieldWithPath("first").description("첫 페이지인지 여부입니다.").optional(),
-					fieldWithPath("last").description("끝 페이지인지 여부입니다.").optional(),
-					fieldWithPath("numberOfElements").description("총 시리즈 개수입니다.").optional(),
-					fieldWithPath("empty").description("내용이 없는지 여부입니다.").optional()
+					fieldWithPath("data.content").description("시리즈네임, id와 최대 3개의 게시글들로 이루어져 있습니다.").optional(),
+					fieldWithPath("data.size").description("한 페이지당 시리즈 개수입니다.").optional(),
+					fieldWithPath("data.number").description("현재 페이지입니다.").optional(),
+					fieldWithPath("data.first").description("첫 페이지인지 여부입니다.").optional(),
+					fieldWithPath("data.last").description("끝 페이지인지 여부입니다.").optional(),
+					fieldWithPath("data.numberOfElements").description("총 시리즈 개수입니다.").optional(),
+					fieldWithPath("data.empty").description("내용이 없는지 여부입니다.").optional(),
+					fieldWithPath("subData").description("시리즈 네임 리스트가 들어가있습니다.").optional()
 				)
 			));
 	}
@@ -186,13 +187,14 @@ class PostControllerTest {
 					parameterWithName("page").description("원하는 페이지 보다 1작은 값, 없으면 첫페이지").optional()
 				),
 				relaxedResponseFields(
-					fieldWithPath("content").description("게시글 관련 정보들이 여러 개 있습니다.(제목, 댓글수, 썸네일, 태그 등)").optional(),
-					fieldWithPath("size").description("-").optional(),
-					fieldWithPath("number").description("-").optional(),
-					fieldWithPath("first").description("-").optional(),
-					fieldWithPath("last").description("-").optional(),
-					fieldWithPath("numberOfElements").description("-").optional(),
-					fieldWithPath("empty").description("-").optional()
+					fieldWithPath("data.content").description("게시글 관련 정보들이 여러 개 있습니다.(제목, 댓글수, 썸네일, 태그 등)").optional(),
+					fieldWithPath("data.size").description("-").optional(),
+					fieldWithPath("data.number").description("-").optional(),
+					fieldWithPath("data.first").description("-").optional(),
+					fieldWithPath("data.last").description("-").optional(),
+					fieldWithPath("data.numberOfElements").description("-").optional(),
+					fieldWithPath("data.empty").description("-").optional(),
+					fieldWithPath("subData").description("시리즈 네임 리스트가 들어가있습니다.").optional()
 				)
 			));
 	}
