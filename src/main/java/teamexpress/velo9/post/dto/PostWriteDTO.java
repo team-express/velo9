@@ -17,7 +17,6 @@ public class PostWriteDTO {
 	private String content;
 	private String access;
 
-	private Long memberId;
 	private Long seriesId;
 	private List<String> tags;
 
@@ -29,8 +28,6 @@ public class PostWriteDTO {
 		this.title = post.getTitle();
 		this.introduce = post.getIntroduce();
 		this.content = post.getContent();
-
-		this.memberId = post.getMember().getId();
 
 		if (post.getAccess() != null) {
 			this.access = post.getAccess().name();

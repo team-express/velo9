@@ -58,10 +58,10 @@ public class PostService {
 	private final PostTagRepository postTagRepository;
 
 	@Transactional
-	public Post write(PostSaveDTO postSaveDTO) {
+	public Post write(PostSaveDTO postSaveDTO, Long memberId) {
 		PostThumbnail postThumbnail = getPostThumbnail(postSaveDTO.getThumbnailFileName());
 		Series series = getSeries(postSaveDTO.getSeriesId());
-		Member member = getMember(postSaveDTO.getMemberId());
+		Member member = getMember(memberId);
 		if (postThumbnail != null) {
 			postThumbnailRepository.save(postThumbnail);
 		}
@@ -78,7 +78,6 @@ public class PostService {
 				postSaveDTO.getIntroduce(),
 				postSaveDTO.getContent(),
 				postSaveDTO.getAccess(),
-				member,
 				series,
 				postThumbnail);
 		}
@@ -87,12 +86,12 @@ public class PostService {
 	}
 
 	@Transactional
-	public Long writeTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {
+	public Long writeTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO, Long memberId) {
 		if (temporaryPostWriteDTO.getPostId() != null) {
-			return writeAlternativeTemporary(temporaryPostWriteDTO);
+			return writeAlternativeTemporary(temporaryPostWriteDTO, memberId);
 		}
 
-		return writeNewTemporary(temporaryPostWriteDTO);
+		return writeNewTemporary(temporaryPostWriteDTO, memberId);
 	}
 
 	@Transactional
@@ -119,8 +118,8 @@ public class PostService {
 	}
 
 	@Transactional
-	public void loveOrNot(LoveDTO loveDTO) {
-		Member member = memberRepository.findById(loveDTO.getMemberId()).orElseThrow();
+	public void loveOrNot(LoveDTO loveDTO, Long memberId) {
+		Member member = memberRepository.findById(memberId).orElseThrow();
 		Post post = postRepository.findById(loveDTO.getPostId()).orElseThrow();
 
 		toggleLove(member, post);
@@ -166,11 +165,11 @@ public class PostService {
 		return seriesId == null ? null : seriesRepository.findById(seriesId).orElse(null);
 	}
 
-	private Long writeAlternativeTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {
+	private Long writeAlternativeTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO, Long memberId) {
 		Post post = postRepository.findById(temporaryPostWriteDTO.getPostId()).orElseThrow();
 
 		if (post.getStatus().equals(PostStatus.TEMPORARY)) {
-			return writeNewTemporary(temporaryPostWriteDTO);
+			return writeNewTemporary(temporaryPostWriteDTO, memberId);
 		}
 
 		if (post.getTemporaryPost() != null) {
@@ -184,9 +183,7 @@ public class PostService {
 		return post.getId();
 	}
 
-	private Long writeNewTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {
-		Long memberId = temporaryPostWriteDTO.getMemberId();
-
+	private Long writeNewTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO, Long memberId) {
 		checkCount(memberId);
 		Member member = getMember(memberId);
 		return postRepository.save(

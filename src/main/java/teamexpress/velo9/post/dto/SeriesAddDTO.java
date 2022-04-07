@@ -8,7 +8,6 @@ import teamexpress.velo9.post.domain.Series;
 public class SeriesAddDTO {
 
 	private String name;
-	private Long memberId;
 
 	public Series toSeries(Member member) {
 		return Series.builder()

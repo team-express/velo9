@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import teamexpress.velo9.config.RestDocsConfig;
+import teamexpress.velo9.member.security.oauth.SessionConst;
 
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
@@ -35,12 +36,9 @@ public class SeriesControllerTest {
 	void getList() throws Exception {
 
 		mockMvc.perform(get("/getSeriesList")
-				.param("memberId", "2"))
+				.sessionAttr(SessionConst.LOGIN_MEMBER, 2l))
 			.andExpect(status().isOk())
 			.andDo(document("seriesList",
-				requestParameters(
-					parameterWithName("memberId").description("현재 글 작성중인 회원의 id 입니다.")
-				),
 				relaxedResponseFields(
 					fieldWithPath("data").description("시리즈의 id와 이름이 담긴 정보들이 있습니다.")
 				)
@@ -53,15 +51,14 @@ public class SeriesControllerTest {
 	void addSeries() throws Exception {
 
 		mockMvc.perform(MockMvcRequestBuilders.post("/addSeries")
+				.sessionAttr(SessionConst.LOGIN_MEMBER, 1l)
 				.content("{"
-					+ "\n\"memberId\":1,"
 					+ "\n\"name\":\"loveyou\""
 					+ "\n}")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andDo(document("addSeries",
 				requestFields(
-					fieldWithPath("memberId").description("현재 글 작성중인 회원의 id"),
 					fieldWithPath("name").description("원하는 새 시리즈 이름 입력, 단 내부적으로 중복검사 합니다.")
 				)
 			));

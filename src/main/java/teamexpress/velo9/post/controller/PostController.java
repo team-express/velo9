@@ -1,6 +1,7 @@
 package teamexpress.velo9.post.controller;
 
 import java.util.List;
+import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import teamexpress.velo9.common.controller.BaseController;
 import teamexpress.velo9.common.domain.PostResult;
 import teamexpress.velo9.common.domain.Result;
 import teamexpress.velo9.post.domain.Post;
@@ -32,7 +34,7 @@ import teamexpress.velo9.post.service.TagService;
 
 @RestController
 @RequiredArgsConstructor
-public class PostController {
+public class PostController extends BaseController {
 
 	private static final int SERIES_SIZE = 5;
 	private static final int SIZE = 10;
@@ -47,16 +49,16 @@ public class PostController {
 	}
 
 	@PostMapping("/write")
-	public Result write(@RequestBody PostSaveDTO postSaveDTO) {
-		Post post = postService.write(postSaveDTO);
+	public Result write(@RequestBody PostSaveDTO postSaveDTO, HttpSession session) {
+		Post post = postService.write(postSaveDTO, getMemberId(session));
 		tagService.addTags(post, postSaveDTO.getTags());
 		tagService.removeUselessTags();
 		return new Result<>(post.getId());
 	}
 
 	@PostMapping("/writeTemporary")
-	public Result writeTemporary(@RequestBody TemporaryPostWriteDTO temporaryPostWriteDTO) {
-		return new Result<>(postService.writeTemporary(temporaryPostWriteDTO));
+	public Result writeTemporary(@RequestBody TemporaryPostWriteDTO temporaryPostWriteDTO, HttpSession session) {
+		return new Result<>(postService.writeTemporary(temporaryPostWriteDTO, getMemberId(session)));
 	}
 
 	@PostMapping("/delete")
@@ -99,38 +101,30 @@ public class PostController {
 	}
 
 	@GetMapping("/temp")
-	public Result tempPostsRead(@RequestParam Long id) {
-		return new Result(postService.getTempSavedPost(id));
+	public Result tempPostsRead(HttpSession session) {
+		return new Result(postService.getTempSavedPost(getMemberId(session)));
 	}
 
 	@PostMapping("/love")
-	public void love(@RequestBody LoveDTO loveDTO) {
-		postService.loveOrNot(loveDTO);
+	public void love(@RequestBody LoveDTO loveDTO, HttpSession session) {
+		postService.loveOrNot(loveDTO, getMemberId(session));
 	}
 
 	@GetMapping("/archive/like")
-	public Slice<LovePostDTO> lovePostRead(
-		@RequestParam(defaultValue = "0") int page,
-		@RequestParam Long memberId) {
-
+	public Slice<LovePostDTO> lovePostRead(@RequestParam(defaultValue = "0") int page, HttpSession session) {
 		PageRequest pageRequest = PageRequest.of(page, ARCHIVE_SIZE, Sort.by(Direction.DESC, "createdDate"));
-
-		return postService.getLovePosts(memberId, pageRequest);
+		return postService.getLovePosts(getMemberId(session), pageRequest);
 	}
 
 	@GetMapping("/archive/recent")
-	public Slice<LookPostDTO> lookPostRead(
-		@RequestParam(defaultValue = "0") int page,
-		@RequestParam Long memberId) {
-
+	public Slice<LookPostDTO> lookPostRead(@RequestParam(defaultValue = "0") int page, HttpSession session) {
 		PageRequest pageRequest = PageRequest.of(page, ARCHIVE_SIZE, Sort.by(Direction.DESC, "createdDate"));
-
-		return postService.getLookPosts(memberId, pageRequest);
+		return postService.getLookPosts(getMemberId(session), pageRequest);
 	}
 
 	@GetMapping("/{nickname}/read/{postId}")
-	public ReadDTO readPost(@PathVariable String nickname, @PathVariable Long postId, @RequestParam Long memberId) {
-		postService.look(postId, memberId);
+	public ReadDTO readPost(@PathVariable String nickname, @PathVariable Long postId, HttpSession session) {
+		postService.look(postId, getMemberId(session));
 		return postService.findReadPost(postId, nickname);
 	}
 

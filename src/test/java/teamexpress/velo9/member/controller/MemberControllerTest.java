@@ -34,6 +34,29 @@ class MemberControllerTest {
 	private MockMvc mockMvc;
 
 	@Test
+	void getHeaderInfo() throws Exception {
+		this.mockMvc.perform(get("/getHeaderInfo")
+				.sessionAttr(SessionConst.LOGIN_MEMBER, 2l)
+			)
+			.andExpect(status().isOk())
+			.andDo(document("header",
+				relaxedResponseFields(
+					fieldWithPath("id").description("memberId").optional(),
+					fieldWithPath("nickname").description("nickname").optional(),
+					fieldWithPath("blogTitle").description("blogTitle").optional(),
+					fieldWithPath("thumbnail").description("thumbnail").optional()
+				)
+			));
+	}
+
+	@Test
+	void logout() throws Exception {
+		this.mockMvc.perform(get("/memberLogout"))
+			.andExpect(status().isOk())
+			.andDo(document("logout"));
+	}
+
+	@Test
 	@Transactional
 	@Rollback
 	void addMember() throws Exception {
@@ -57,12 +80,9 @@ class MemberControllerTest {
 	@Test
 	void GetEditMember() throws Exception {
 		this.mockMvc.perform(get("/setting")
-				.param("memberId", "2"))
+				.sessionAttr(SessionConst.LOGIN_MEMBER, 2l))
 			.andExpect(status().isOk())
 			.andDo(document("GetEditMember",
-				requestParameters(
-					parameterWithName("memberId").description("로그인된 회원의 id 입니다.")
-				),
 				relaxedResponseFields(
 					fieldWithPath("username").description("username"),
 					fieldWithPath("nickname").description("nickname"),
@@ -81,7 +101,7 @@ class MemberControllerTest {
 	@Rollback
 	void PostEditMember() throws Exception {
 		this.mockMvc.perform(post("/setting")
-				.param("memberId", "3")
+				.sessionAttr(SessionConst.LOGIN_MEMBER, 3l)
 				.content("{"
 					+ "\"nickname\": \"nickname\","
 					+ "\"introduce\": \"introduce\","
@@ -92,9 +112,6 @@ class MemberControllerTest {
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andDo(document("PostEditMember",
-				requestParameters(
-					parameterWithName("memberId").description("로그인된 회원 id")
-				),
 				requestFields(
 					fieldWithPath("nickname").description("바꿀 nickname(바꾸지 않더라도 기존 내용을 주긴 해야합니다.)"),
 					fieldWithPath("introduce").description("바꿀 introduce(위 사항은 아래 모두 마찬가지입니다.)"),
@@ -110,14 +127,11 @@ class MemberControllerTest {
 	@Rollback
 	void changePassword() throws Exception {
 		this.mockMvc.perform(post("/changePassword")
-				.param("memberId", "3")
+				.sessionAttr(SessionConst.LOGIN_MEMBER, 3l)
 				.content("{\"oldPassword\": \"1234\", \n\"newPassword\": \"0000\"}")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andDo(document("PostChangePw",
-				requestParameters(
-					parameterWithName("memberId").description("로그인 된 회원 id")
-				),
 				requestFields(
 					fieldWithPath("oldPassword").description("현재 비밀번호"),
 					fieldWithPath("newPassword").description("새로운 비밀번호")
@@ -130,39 +144,13 @@ class MemberControllerTest {
 	@Rollback
 	void withdraw() throws Exception {
 		this.mockMvc.perform(post("/withdraw")
-				.param("memberId", "2")
+				.sessionAttr(SessionConst.LOGIN_MEMBER, 3l)
 				.content("{\"oldPassword\": \"1234\"}")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andDo(document("PostWithdraw",
-				requestParameters(
-					parameterWithName("memberId").description("-")
-				),
 				requestFields(
 					fieldWithPath("oldPassword").description("이전 비밀번호")
-				)
-			));
-	}
-
-	@Test
-	@Transactional
-	@Rollback
-	void socialSignup() throws Exception {
-		this.mockMvc.perform(post("/socialSignup")
-				.param("memberId", "4")
-				.content("{\"username\": \"username\","
-					+ "\n\"password\": \"password\","
-					+ "\n\"nickname\": \"nickname\"}")
-				.contentType(MediaType.APPLICATION_JSON))
-			.andExpect(status().isOk())
-			.andDo(document("PostSocialSignup",
-				requestParameters(
-					parameterWithName("memberId").description("소설 가입으로 방금 생성된 회원의 id")
-				),
-				requestFields(
-					fieldWithPath("username").description("아이디"),
-					fieldWithPath("password").description("비밀번호"),
-					fieldWithPath("nickname").description("닉네임")
 				)
 			));
 	}

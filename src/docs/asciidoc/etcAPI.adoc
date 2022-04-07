@@ -16,8 +16,6 @@ include::{snippets}/love/request-fields.adoc[]
 
 include::{snippets}/seriesList/http-request.adoc[]
 
-include::{snippets}/seriesList/request-parameters.adoc[]
-
 === 2. response
 
 include::{snippets}/seriesList/response-body.adoc[]

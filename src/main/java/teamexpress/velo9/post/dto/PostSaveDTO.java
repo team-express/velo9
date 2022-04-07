@@ -23,7 +23,6 @@ public class PostSaveDTO {
 	private String content;
 	private String access;
 
-	private Long memberId;
 	private Long seriesId;
 	private List<String> tags;
 
