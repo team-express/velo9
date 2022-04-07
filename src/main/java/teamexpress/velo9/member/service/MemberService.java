@@ -1,6 +1,7 @@
 package teamexpress.velo9.member.service;
 
 import java.util.Map;
+import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,6 +24,7 @@ import teamexpress.velo9.member.dto.MemberSignupDTO;
 import teamexpress.velo9.member.dto.MemberThumbnailDTO;
 import teamexpress.velo9.member.dto.PasswordDTO;
 import teamexpress.velo9.member.dto.SocialSignupDTO;
+import teamexpress.velo9.member.security.oauth.SessionConst;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -151,12 +153,13 @@ public class MemberService {
 			});
 	}
 
-	public boolean getMemberByEmail(Authentication authentication) {
+	public boolean getMemberByEmail(Authentication authentication, HttpSession session) {
 		OAuth2User principal = (OAuth2User) authentication.getPrincipal();
 		Map<String, Object> attributes = principal.getAttributes();
 		String email = (String) attributes.get("email");
 		Member member = memberRepository.findByEmail(email).orElse(null);
-		return member != null;
+		saveSession(member, session);
+		return isExistMember(member);
 	}
 
 	public MemberDTO getLoginMember(Long memberId) {
@@ -213,5 +216,15 @@ public class MemberService {
 			.build();
 
 		memberRepository.save(member);
+	}
+
+	private void saveSession(Member member, HttpSession session) {
+		if (isExistMember(member)) {
+			session.setAttribute(SessionConst.LOGIN_MEMBER, member.getId());
+		}
+	}
+
+	private boolean isExistMember(Member member) {
+		return member != null;
 	}
 }
