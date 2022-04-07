@@ -36,7 +36,7 @@ class MemberControllerTest {
 	@Test
 	void getHeaderInfo() throws Exception {
 		this.mockMvc.perform(get("/getHeaderInfo")
-				.sessionAttr(SessionConst.LOGIN_MEMBER, "2")
+				.sessionAttr(SessionConst.LOGIN_MEMBER, 2l)
 			)
 			.andExpect(status().isOk())
 			.andDo(document("header",
@@ -80,7 +80,7 @@ class MemberControllerTest {
 	@Test
 	void GetEditMember() throws Exception {
 		this.mockMvc.perform(get("/setting")
-				.sessionAttr(SessionConst.LOGIN_MEMBER, "2"))
+				.sessionAttr(SessionConst.LOGIN_MEMBER, 2l))
 			.andExpect(status().isOk())
 			.andDo(document("GetEditMember",
 				relaxedResponseFields(
@@ -101,7 +101,7 @@ class MemberControllerTest {
 	@Rollback
 	void PostEditMember() throws Exception {
 		this.mockMvc.perform(post("/setting")
-				.sessionAttr(SessionConst.LOGIN_MEMBER, "3")
+				.sessionAttr(SessionConst.LOGIN_MEMBER, 3l)
 				.content("{"
 					+ "\"nickname\": \"nickname\","
 					+ "\"introduce\": \"introduce\","
@@ -127,7 +127,7 @@ class MemberControllerTest {
 	@Rollback
 	void changePassword() throws Exception {
 		this.mockMvc.perform(post("/changePassword")
-				.sessionAttr(SessionConst.LOGIN_MEMBER, "3")
+				.sessionAttr(SessionConst.LOGIN_MEMBER, 3l)
 				.content("{\"oldPassword\": \"1234\", \n\"newPassword\": \"0000\"}")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
@@ -144,7 +144,7 @@ class MemberControllerTest {
 	@Rollback
 	void withdraw() throws Exception {
 		this.mockMvc.perform(post("/withdraw")
-				.sessionAttr(SessionConst.LOGIN_MEMBER, "3")
+				.sessionAttr(SessionConst.LOGIN_MEMBER, 3l)
 				.content("{\"oldPassword\": \"1234\"}")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())

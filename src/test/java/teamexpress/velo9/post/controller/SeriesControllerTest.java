@@ -36,7 +36,7 @@ public class SeriesControllerTest {
 	void getList() throws Exception {
 
 		mockMvc.perform(get("/getSeriesList")
-				.sessionAttr(SessionConst.LOGIN_MEMBER, "2"))
+				.sessionAttr(SessionConst.LOGIN_MEMBER, 2l))
 			.andExpect(status().isOk())
 			.andDo(document("seriesList",
 				relaxedResponseFields(
@@ -51,7 +51,7 @@ public class SeriesControllerTest {
 	void addSeries() throws Exception {
 
 		mockMvc.perform(MockMvcRequestBuilders.post("/addSeries")
-				.sessionAttr(SessionConst.LOGIN_MEMBER, "1")
+				.sessionAttr(SessionConst.LOGIN_MEMBER, 1l)
 				.content("{"
 					+ "\n\"name\":\"loveyou\""
 					+ "\n}")

@@ -89,7 +89,7 @@ class PostControllerTest {
 	void writePost() throws Exception {
 
 		mockMvc.perform(post("/write")
-				.sessionAttr(SessionConst.LOGIN_MEMBER, "2")
+				.sessionAttr(SessionConst.LOGIN_MEMBER, 2l)
 				.content("{"
 					+ "\n\"postId\":1,"
 					+ "\n\"title\":\"testtest\","
@@ -154,7 +154,7 @@ class PostControllerTest {
 	void writeTemporary() throws Exception {
 
 		mockMvc.perform(post("/writeTemporary")
-				.sessionAttr(SessionConst.LOGIN_MEMBER, "2")
+				.sessionAttr(SessionConst.LOGIN_MEMBER, 2l)
 				.content("{"
 					+ "\n\"postId\":2,"
 					+ "\n\"title\":\"testTMP\","
@@ -223,7 +223,7 @@ class PostControllerTest {
 	@Test
 	void tempPostsRead() throws Exception {
 		this.mockMvc.perform(get("/temp")
-				.sessionAttr(SessionConst.LOGIN_MEMBER, "2"))
+				.sessionAttr(SessionConst.LOGIN_MEMBER, 2l))
 			.andExpect(status().isOk())
 			.andDo(document("GetTemp",
 				relaxedResponseFields(
@@ -235,7 +235,7 @@ class PostControllerTest {
 	@Test
 	void lovePostRead() throws Exception {
 		this.mockMvc.perform(get("/archive/like")
-				.sessionAttr(SessionConst.LOGIN_MEMBER, "2"))
+				.sessionAttr(SessionConst.LOGIN_MEMBER, 2l))
 			.andExpect(status().isOk())
 			.andDo(document("GetLovePostRead",
 				relaxedResponseFields(
@@ -252,7 +252,7 @@ class PostControllerTest {
 	@Test
 	void lookPostRead() throws Exception {
 		this.mockMvc.perform(get("/archive/recent")
-				.sessionAttr(SessionConst.LOGIN_MEMBER, "2"))
+				.sessionAttr(SessionConst.LOGIN_MEMBER, 2l))
 			.andExpect(status().isOk())
 			.andDo(document("GetLookPostRead",
 				relaxedResponseFields(
@@ -271,7 +271,7 @@ class PostControllerTest {
 	@Rollback
 	void love() throws Exception {
 		mockMvc.perform(post("/love")
-				.sessionAttr(SessionConst.LOGIN_MEMBER, "2")
+				.sessionAttr(SessionConst.LOGIN_MEMBER, 2l)
 				.content("{"
 					+ "\n\"postId\":1"
 					+ "\n}")
@@ -288,7 +288,7 @@ class PostControllerTest {
 	void readPost() throws Exception {
 
 		this.mockMvc.perform(RestDocumentationRequestBuilders.get("/{nickname}/read/{postId}", "admin", "2")
-				.sessionAttr(SessionConst.LOGIN_MEMBER, "3"))
+				.sessionAttr(SessionConst.LOGIN_MEMBER, 3l))
 			.andExpect(status().isOk())
 			.andDo(document("GetReadPost",
 				pathParameters(
