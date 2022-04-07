@@ -61,9 +61,7 @@ public class AjaxSecurityConfig extends WebSecurityConfigurerAdapter {
 			.anyRequest().authenticated()
 			.and()
 			.oauth2Login()
-			.authorizationEndpoint()
-			.baseUri("/oauth2/authorization")
-			.and()
+			.defaultSuccessUrl("/checkFirstLogin")
 			.userInfoEndpoint()
 			.userService(customOAuth2UserService);
 

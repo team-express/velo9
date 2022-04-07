@@ -231,7 +231,7 @@ public class PostService {
 	}
 
 	public ReadDTO findReadPost(Long postId, String nickname) {
-		Post findPost = postRepository.findById(postId).orElseThrow();
+		Post findPost = postRepository.findPostMemberById(postId).orElseThrow();
 		checkOwner(findPost, nickname);
 		List<Post> pagePost = postRepository.findPrevNextPost(findPost);
 		List<PostTag> postTags = postTagRepository.findByPost(findPost);

@@ -1,7 +1,12 @@
 package teamexpress.velo9.member.controller;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -81,6 +86,12 @@ public class MemberController {
 		memberService.withdraw(memberId, passwordDTO);
 	}
 
+	@GetMapping("/checkFirstLogin")
+	public Result socialCheck() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		boolean checkResult = memberService.getMemberByEmail(authentication);
+		return new Result(checkResult);
+	}
 	@PostMapping("/socialSignup")
 	public void socialSignup(@Validated @RequestBody SocialSignupDTO socialSignupDTO, @RequestParam Long memberId) {
 		memberService.joinSocial(socialSignupDTO, memberId);
@@ -105,6 +116,15 @@ public class MemberController {
 	@PostMapping("/changePasswordAfterFindPW")
 	public void changePw(@RequestBody MemberNewPwDTO memberNewPwDTO) {
 		memberService.changeNewPw(memberNewPwDTO);
+	}
+
+	@GetMapping("/memberLogout")
+	public void logout(HttpServletRequest request, HttpServletResponse response) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+		if (authentication != null) {
+			new SecurityContextLogoutHandler().logout(request, response, authentication);
+		}
 	}
 
 	@GetMapping("/validateUsername")
