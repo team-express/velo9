@@ -43,10 +43,6 @@ public class MemberController {
 		return memberIdStr != null ? memberService.getHeaderInfo(Long.valueOf(memberIdStr)) : new MemberHeaderDTO();
 	}
 
-	@GetMapping("/signup")
-	public void addMember() {
-	}
-
 	@PostMapping("/signup")
 	public void addMember(@Validated @RequestBody MemberSignupDTO memberSignupDTO) {
 		memberService.join(memberSignupDTO);

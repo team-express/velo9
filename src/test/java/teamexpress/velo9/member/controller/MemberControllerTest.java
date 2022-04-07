@@ -50,6 +50,13 @@ class MemberControllerTest {
 	}
 
 	@Test
+	void logout() throws Exception {
+		this.mockMvc.perform(get("/memberLogout"))
+			.andExpect(status().isOk())
+			.andDo(document("logout"));
+	}
+
+	@Test
 	@Transactional
 	@Rollback
 	void addMember() throws Exception {

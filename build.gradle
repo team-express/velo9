@@ -27,10 +27,6 @@ ext {
 
 bootJar {
     dependsOn asciidoctor
-    copy {
-        from "${asciidoctor.outputDir}"
-        into '/static/docs'
-    }
 }
 
 repositories {
