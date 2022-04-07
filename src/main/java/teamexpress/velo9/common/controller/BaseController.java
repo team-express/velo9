@@ -6,10 +6,10 @@ import teamexpress.velo9.member.security.oauth.SessionConst;
 public class BaseController {
 
 	protected Long getMemberId(HttpSession session) {
-		String memberIdStr = (String) session.getAttribute(SessionConst.LOGIN_MEMBER);
-		if (memberIdStr == null) {
+		Long memberId = Long.valueOf((String) session.getAttribute(SessionConst.LOGIN_MEMBER));
+		if (memberId == null) {
 			throw new NullPointerException("로그인 되어있지 않습니다.");
 		}
-		return Long.valueOf(memberIdStr);
+		return memberId;
 	}
 }

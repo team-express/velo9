@@ -111,8 +111,6 @@ include::{snippets}/GetReadPost/httpie-request.adoc[]
 
 include::{snippets}/GetReadPost/path-parameters.adoc[]
 
-include::{snippets}/GetReadPost/request-parameters.adoc[]
-
 include::{snippets}/GetReadPost/response-body.adoc[]
 
 include::{snippets}/GetReadPost/response-fields.adoc[]
@@ -131,8 +129,6 @@ include::{snippets}/delete/request-parameters.adoc[]
 
 include::{snippets}/GetTemp/httpie-request.adoc[]
 
-include::{snippets}/GetTemp/request-parameters.adoc[]
-
 === 2. response
 
 include::{snippets}/GetTemp/response-body.adoc[]
@@ -145,8 +141,6 @@ include::{snippets}/GetTemp/response-fields.adoc[]
 
 include::{snippets}/GetLovePostRead/httpie-request.adoc[]
 
-include::{snippets}/GetLovePostRead/request-parameters.adoc[]
-
 === 2. response
 
 include::{snippets}/GetLovePostRead/response-body.adoc[]
@@ -158,8 +152,6 @@ include::{snippets}/GetLovePostRead/response-fields.adoc[]
 === 1. request
 
 include::{snippets}/GetLookPostRead/httpie-request.adoc[]
-
-include::{snippets}/GetLookPostRead/request-parameters.adoc[]
 
 === 2. response
 

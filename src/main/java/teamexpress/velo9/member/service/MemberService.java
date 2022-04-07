@@ -196,7 +196,6 @@ public class MemberService {
 		return new MemberHeaderDTO(getMember(memberId));
 	}
 
-
 	private Map<String, Object> getAttributes() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		OAuth2User principal = (OAuth2User) authentication.getPrincipal();

@@ -1,7 +1,6 @@
 package teamexpress.velo9.member.controller;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -78,9 +77,9 @@ public class MemberController extends BaseController {
 	}
 
 	@PostMapping("/withdraw")
-	public void withdrawMember(@RequestBody PasswordDTO passwordDTO, HttpSession session) {
-		memberService.withdraw(getMemberId(session), passwordDTO);
-		//세션에서 제거 작업까지 추가
+	public void withdrawMember(@RequestBody PasswordDTO passwordDTO, HttpServletRequest request) {
+		memberService.withdraw(getMemberId(request.getSession()), passwordDTO);
+		new SecurityContextLogoutHandler().logout(request, null, null);
 	}
 
 	@GetMapping("/checkFirstLogin")
@@ -117,12 +116,8 @@ public class MemberController extends BaseController {
 	}
 
 	@GetMapping("/memberLogout")
-	public void logout(HttpServletRequest request, HttpServletResponse response) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-		if (authentication != null) {
-			new SecurityContextLogoutHandler().logout(request, response, authentication);
-		}
+	public void logout(HttpServletRequest request) {
+		new SecurityContextLogoutHandler().logout(request, null, null);
 	}
 
 	@GetMapping("/validateUsername")

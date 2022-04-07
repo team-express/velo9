@@ -6,5 +6,4 @@ import lombok.Data;
 public class LoveDTO {
 
 	private Long postId;
-	private Long memberId;
 }

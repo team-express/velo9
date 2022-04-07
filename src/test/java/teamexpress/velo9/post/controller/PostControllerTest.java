@@ -7,7 +7,6 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.relaxedR
 import static org.springframework.restdocs.payload.PayloadDocumentation.relaxedResponseFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
@@ -28,6 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import teamexpress.velo9.config.RestDocsConfig;
+import teamexpress.velo9.member.security.oauth.SessionConst;
 
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
@@ -55,7 +55,6 @@ class PostControllerTest {
 					fieldWithPath("introduce").description("소개글"),
 					fieldWithPath("content").description("본문"),
 					fieldWithPath("access").description("공개설정"),
-					fieldWithPath("memberId").description("작성글 주인의 식별 값입니다. post 방식으로 넘어갈 때 사용하면 좋을 것 같습니다."),
 					fieldWithPath("seriesId").description("속해있는 시리즈의 id 입니다.").optional(),
 					fieldWithPath("tags").description("달려있는 태그의 이름들 입니다.").optional(),
 					fieldWithPath("thumbnail").description("썸네일 파일 이름 관련 정보가 들어 있을 수도 있습니다.").optional(),
@@ -79,7 +78,7 @@ class PostControllerTest {
 					fieldWithPath("data.last").description("끝 페이지인지 여부입니다.").optional(),
 					fieldWithPath("data.numberOfElements").description("총 시리즈 개수입니다.").optional(),
 					fieldWithPath("data.empty").description("내용이 없는지 여부입니다.").optional(),
-					fieldWithPath("subData").description("시리즈 네임 리스트가 들어가있습니다.").optional()
+					fieldWithPath("subData").description("시리즈 네임 리스트가 들어가있습니다.(좌측 nav활용)").optional()
 				)
 			));
 	}
@@ -90,13 +89,13 @@ class PostControllerTest {
 	void writePost() throws Exception {
 
 		mockMvc.perform(post("/write")
+				.sessionAttr(SessionConst.LOGIN_MEMBER, "2")
 				.content("{"
 					+ "\n\"postId\":1,"
 					+ "\n\"title\":\"testtest\","
 					+ "\n\"introduce\":\"1\","
 					+ "\n\"content\":\"333333\","
 					+ "\n\"access\":\"PRIVATE\","
-					+ "\n\"memberId\":2,"
 					+ "\n\"seriesId\":1,"
 					+ "\n\"tags\":[\"A\",\"B\"],"
 					+ "\n\"thumbnailFileName\":\"2020/03/01/s_uuid_name.png\""
@@ -111,7 +110,6 @@ class PostControllerTest {
 					fieldWithPath("introduce").description("없으면 백엔드에서 알아서 content 일부 떼와서 넣어줍니다.").optional(),
 					fieldWithPath("content").description(""),
 					fieldWithPath("access").description("PUBLIC(전체공개), PRIVATE(비공개) 중에서 적습니다(화면에서는 기본적으로 public에 파랗게 색칠되어 있습니다.)"),
-					fieldWithPath("memberId").description("적절한 회원의 id를 주시길 바랍니다(세션 or get 방식의 memberId).\n"),
 					fieldWithPath("seriesId").description("상세조건에서 시리즈를 선택하면 선택된 시리즈Object내부의 id값을 의미합니다.").optional(),
 					fieldWithPath("tags").description("태그를 입력했다면, array로([]) 주십시오").optional(),
 					fieldWithPath("thumbnailFileName").description("업로드나, 게시글 볼 때 반환되는 썸네일 오브젝트를 변수로 가지고 있다가\n"
@@ -156,11 +154,11 @@ class PostControllerTest {
 	void writeTemporary() throws Exception {
 
 		mockMvc.perform(post("/writeTemporary")
+				.sessionAttr(SessionConst.LOGIN_MEMBER, "2")
 				.content("{"
 					+ "\n\"postId\":2,"
 					+ "\n\"title\":\"testTMP\","
-					+ "\n\"content\":\"TMPTMP\","
-					+ "\n\"memberId\":2"
+					+ "\n\"content\":\"TMPTMP\""
 					+ "\n}")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
@@ -171,8 +169,7 @@ class PostControllerTest {
 						+ "기존 게시글의 대안 임시글을 생성(임시글목록에는 안보이고 수정화면에서 임시데이터가 있으면 불러오는 창나옴)"
 						+ "하는 경우입니다.").optional(),
 					fieldWithPath("title").description("title"),
-					fieldWithPath("content").description("content"),
-					fieldWithPath("memberId").description("/write와 마찬가지로 작성중인 회원의 id를 의미합니다.")
+					fieldWithPath("content").description("content")
 				),
 				responseFields(
 					fieldWithPath("data").description("임시저장이 되었을 때 해당 글의 id를 반환합니다."
@@ -226,12 +223,9 @@ class PostControllerTest {
 	@Test
 	void tempPostsRead() throws Exception {
 		this.mockMvc.perform(get("/temp")
-				.param("id", "2"))
+				.sessionAttr(SessionConst.LOGIN_MEMBER, "2"))
 			.andExpect(status().isOk())
 			.andDo(document("GetTemp",
-				requestParameters(
-					parameterWithName("id").description("로그인된 사용자의 id 값입니다./마찬가지로 memberId이므로 일단 보류입니다.(물론 구현은 하셔도 됩니다.)")
-				),
 				relaxedResponseFields(
 					fieldWithPath("data").description("임시글 목록에 나올 게시글들의 요약정보들이 들어있습니다.").optional()
 				)
@@ -241,13 +235,9 @@ class PostControllerTest {
 	@Test
 	void lovePostRead() throws Exception {
 		this.mockMvc.perform(get("/archive/like")
-				.param("memberId", "2"))
+				.sessionAttr(SessionConst.LOGIN_MEMBER, "2"))
 			.andExpect(status().isOk())
 			.andDo(document("GetLovePostRead",
-				requestParameters(
-					parameterWithName("memberId").description("로그인된 사용자의 id 값입니다.\nlike, temp, read모두 memberId"
-						+ "보류 이슈에 관하여 공통이라 일단 수정하지 않고 놔두겠습니다.")
-				),
 				relaxedResponseFields(
 					fieldWithPath("content").description("좋아요를 누른 게시글의 요약 정보들이 들어있습니다.").optional(),
 					fieldWithPath("number").description("-").optional(),
@@ -262,12 +252,9 @@ class PostControllerTest {
 	@Test
 	void lookPostRead() throws Exception {
 		this.mockMvc.perform(get("/archive/recent")
-				.param("memberId", "2"))
+				.sessionAttr(SessionConst.LOGIN_MEMBER, "2"))
 			.andExpect(status().isOk())
 			.andDo(document("GetLookPostRead",
-				requestParameters(
-					parameterWithName("memberId").description("로그인된 사용자의 id 값입니다.")
-				),
 				relaxedResponseFields(
 					fieldWithPath("content").description("최근 읽은 게시글의 요약 정보들이 들어있습니다.").optional(),
 					fieldWithPath("number").description("-").optional(),
@@ -284,16 +271,15 @@ class PostControllerTest {
 	@Rollback
 	void love() throws Exception {
 		mockMvc.perform(post("/love")
+				.sessionAttr(SessionConst.LOGIN_MEMBER, "2")
 				.content("{"
-					+ "\n\"postId\":1,"
-					+ "\n\"memberId\":2"
+					+ "\n\"postId\":1"
 					+ "\n}")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andDo(document("love",
 				requestFields(
-					fieldWithPath("postId").description("좋아요 누른 게시글 id"),
-					fieldWithPath("memberId").description("좋아요 누른 회원 id")
+					fieldWithPath("postId").description("좋아요 누른 게시글 id")
 				)
 			));
 	}
@@ -302,16 +288,12 @@ class PostControllerTest {
 	void readPost() throws Exception {
 
 		this.mockMvc.perform(RestDocumentationRequestBuilders.get("/{nickname}/read/{postId}", "admin", "2")
-				.param("memberId", "3"))
+				.sessionAttr(SessionConst.LOGIN_MEMBER, "3"))
 			.andExpect(status().isOk())
 			.andDo(document("GetReadPost",
 				pathParameters(
 					parameterWithName("nickname").description("유효한 닉네임"),
 					parameterWithName("postId").description("상세보기할 게시글")
-				),
-				requestParameters(
-					parameterWithName("memberId").description("해당 게시글을 보고 있는 회원의 id / 이를 포함한 모든"
-						+ "memberId를 주는 요청은 상이한 포트문제를 해결한 후 다시 수정할 예정입니다.").optional()
 				),
 				relaxedResponseFields(
 					fieldWithPath("title").description("제목"),

@@ -33,5 +33,4 @@ public class MemberHeaderDTO {
 
 		return result;
 	}
-
 }

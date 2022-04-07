@@ -13,7 +13,6 @@ public class TemporaryPostWriteDTO {
 	private Long postId;
 	private String title;
 	private String content;
-	private Long memberId;
 
 	private Long alternativeId;
 
