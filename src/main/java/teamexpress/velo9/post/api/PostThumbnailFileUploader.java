@@ -1,63 +1,47 @@
-package teamexpress.velo9.member.api;
+package teamexpress.velo9.post.api;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
-import javax.imageio.ImageIO;
 import net.coobird.thumbnailator.Thumbnailator;
 import org.springframework.http.HttpHeaders;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
-import teamexpress.velo9.member.dto.MemberThumbnailDTO;
 import teamexpress.velo9.post.domain.PostThumbnailType;
+import teamexpress.velo9.post.dto.PostThumbnailDTO;
 
-@Component
-public class MemberThumbnailFileUploader {
+@Service
+public class PostThumbnailFileUploader {
 
-	private static final String ROOT_PATH = "C:\\memberThumbnail";
+	private static final String ROOT_PATH = "c:\\postThumbnail";
 	private static final String BACKSLASH = "\\";
-	private static final String uploadFileName = "default.png";
 
-	public MemberThumbnailDTO upload(String urlStr) {
-		MemberThumbnailDTO memberThumbnailDTO = getThumbnailInfo();
+	public static PostThumbnailDTO divideFileName(String fileName) {
+		String[] strings = fileName.split("_");
 
-		try {
-			URL url = new URL(urlStr);
-			BufferedImage img = ImageIO.read(url);
+		PostThumbnailDTO postThumbnailDTO = new PostThumbnailDTO();
+		postThumbnailDTO.setPath(strings[0].substring(0,strings[0].length()-2));
+		postThumbnailDTO.setUuid(strings[1]);
+		postThumbnailDTO.setName(strings[2]);
 
-			File uploadPath = getUploadPath(memberThumbnailDTO.getPath());
-
-			File file = new File(uploadPath, memberThumbnailDTO.getFileName());
-			ImageIO.write(img, "png", file);
-
-			File thumbnail = new File(uploadPath, memberThumbnailDTO.getSFileName());
-
-			Thumbnailator.createThumbnail(file, thumbnail, img.getWidth(), img.getHeight());
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return memberThumbnailDTO;
+		return postThumbnailDTO;
 	}
 
-	public MemberThumbnailDTO upload(MultipartFile uploadFile) {
+	public PostThumbnailDTO upload(MultipartFile uploadFile) {
 		checkUploadFile(uploadFile);
 
-		MemberThumbnailDTO memberThumbnailDTO = getThumbnailInfo(getUploadFileName(uploadFile));
+		PostThumbnailDTO postThumbnailDTO = getThumbnailInfo(getUploadFileName(uploadFile));
 
-		createFile(uploadFile, memberThumbnailDTO);
+		createFile(uploadFile, postThumbnailDTO);
 
-		return memberThumbnailDTO;
+		return postThumbnailDTO;
 	}
 
 	public byte[] getImage(String fileName) {
@@ -132,22 +116,13 @@ public class MemberThumbnailFileUploader {
 		return uploadPath;
 	}
 
-	private MemberThumbnailDTO getThumbnailInfo() {
-		MemberThumbnailDTO memberThumbnailDTO = new MemberThumbnailDTO();
-		memberThumbnailDTO.setName(uploadFileName);
-		memberThumbnailDTO.setPath(getFolder());
-		memberThumbnailDTO.setUuid(UUID.randomUUID().toString());
+	private PostThumbnailDTO getThumbnailInfo(String uploadFileName) {
+		PostThumbnailDTO postThumbnailDTO = new PostThumbnailDTO();
+		postThumbnailDTO.setName(uploadFileName);
+		postThumbnailDTO.setPath(getFolder());
+		postThumbnailDTO.setUuid(UUID.randomUUID().toString());
 
-		return memberThumbnailDTO;
-	}
-
-	private MemberThumbnailDTO getThumbnailInfo(String uploadFileName) {
-		MemberThumbnailDTO memberThumbnailDTO = new MemberThumbnailDTO();
-		memberThumbnailDTO.setName(uploadFileName);
-		memberThumbnailDTO.setPath(getFolder());
-		memberThumbnailDTO.setUuid(UUID.randomUUID().toString());
-
-		return memberThumbnailDTO;
+		return postThumbnailDTO;
 	}
 
 
@@ -163,15 +138,15 @@ public class MemberThumbnailFileUploader {
 		return uploadFileName;
 	}
 
-	private void createFile(MultipartFile uploadFile, MemberThumbnailDTO memberThumbnailDTO) {
-		File uploadPath = getUploadPath(memberThumbnailDTO.getPath());
-		File saveFile = new File(uploadPath, memberThumbnailDTO.getFileName());
+	private void createFile(MultipartFile uploadFile, PostThumbnailDTO postThumbnailDTO) {
+		File uploadPath = getUploadPath(postThumbnailDTO.getPath());
+		File saveFile = new File(uploadPath, postThumbnailDTO.getFileName());
 
 		try {
 			uploadFile.transferTo(saveFile);
 
 			FileOutputStream thumbnail =
-				new FileOutputStream(new File(uploadPath, memberThumbnailDTO.getSFileName()));
+				new FileOutputStream(new File(uploadPath, postThumbnailDTO.getSFileName()));
 
 			Thumbnailator.createThumbnail(uploadFile.getInputStream(), thumbnail, 80, 80);
 

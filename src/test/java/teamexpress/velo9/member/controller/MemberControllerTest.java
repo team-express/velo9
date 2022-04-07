@@ -2,6 +2,7 @@ package teamexpress.velo9.member.controller;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.relaxedResponseFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
@@ -62,14 +63,15 @@ class MemberControllerTest {
 				requestParameters(
 					parameterWithName("memberId").description("로그인된 회원의 id 입니다.")
 				),
-				responseFields(
+				relaxedResponseFields(
 					fieldWithPath("username").description("username"),
 					fieldWithPath("nickname").description("nickname"),
 					fieldWithPath("email").description("email 내용"),
 					fieldWithPath("introduce").description("introduce 내용").optional(),
 					fieldWithPath("blogTitle").description("blogTitle 내용"),
 					fieldWithPath("socialEmail").description("socialEmail 내용").optional(),
-					fieldWithPath("socialGithub").description("socialGithub 내용").optional()
+					fieldWithPath("socialGithub").description("socialGithub 내용").optional(),
+					fieldWithPath("thumbnail").description("섬네일 파일 이름").optional()
 				)
 			));
 	}
@@ -94,20 +96,11 @@ class MemberControllerTest {
 					parameterWithName("memberId").description("로그인된 회원 id")
 				),
 				requestFields(
-					fieldWithPath("nickname").description("바꿀 nickname(이하 모두 바꾸지 않더라도 기존 내용을 주긴 해야합니다.)"),
-					fieldWithPath("introduce").description("바꿀 introduce"),
+					fieldWithPath("nickname").description("바꿀 nickname(바꾸지 않더라도 기존 내용을 주긴 해야합니다.)"),
+					fieldWithPath("introduce").description("바꿀 introduce(위 사항은 아래 모두 마찬가지입니다.)"),
 					fieldWithPath("blogTitle").description("바꿀 blogTitle"),
 					fieldWithPath("socialEmail").description("바꿀 socialEmail"),
 					fieldWithPath("socialGithub").description("socialGithub 내용")
-				),
-				responseFields(
-					fieldWithPath("username").description("username"),
-					fieldWithPath("nickname").description("바뀐 nickname"),
-					fieldWithPath("email").description("email"),
-					fieldWithPath("introduce").description("바뀐 introduce"),
-					fieldWithPath("blogTitle").description("바뀐 blogTitle"),
-					fieldWithPath("socialEmail").description("바뀐 socialEmail"),
-					fieldWithPath("socialGithub").description("바뀐 socialGithub")
 				)
 			));
 	}
@@ -225,13 +218,13 @@ class MemberControllerTest {
 	@Transactional
 	@Rollback
 	void changePw() throws Exception {
-		this.mockMvc.perform(post("/changePw")
-				.content("{\"id\":\"2\", \"password\": \"0000\"}")
+		this.mockMvc.perform(post("/changePasswordAfterFindPW")
+				.content("{\"memberId\":\"2\", \"password\": \"0000\"}")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andDo(document("PostChangePw2",
 				requestFields(
-					fieldWithPath("id").description("아까 /findPw로 찾아온 회원 id"),
+					fieldWithPath("memberId").description("아까 /findPw로 찾아온 회원 id"),
 					fieldWithPath("password").description("새로운 비밀번호")
 				)
 			));
@@ -240,14 +233,15 @@ class MemberControllerTest {
 	@Test
 	void checkNumber() throws Exception {
 
-		this.mockMvc.perform(post("/checkNumber")
+		this.mockMvc.perform(post("/certifyNumber")
 				.sessionAttr(SessionConst.RANDOM_NUMBER, "000000")
 				.content("{\"inputNumber\": \"000000\"}")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andDo(document("PostCheckNumber",
 				requestFields(
-					fieldWithPath("inputNumber").description("이 인증번호가 알맞아 비동기 호출이 성공해야만 changePw를 진행하면 됩니다.")
+					fieldWithPath("inputNumber").description("이 인증번호가 알맞아 비동기 호출이 성공해야만 "
+						+ "changePasswordAfterFindPW를 진행하면 됩니다.")
 				)
 			));
 	}

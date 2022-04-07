@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class MemberNewPwDTO {
 
-	private Long id;
+	private Long memberId;
 	private String password;
 }

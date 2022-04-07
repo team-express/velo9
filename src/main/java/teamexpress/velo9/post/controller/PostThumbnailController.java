@@ -7,30 +7,30 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import teamexpress.velo9.post.dto.PostThumbnailDTO;
-import teamexpress.velo9.post.service.PostThumbnailFileService;
+import teamexpress.velo9.common.dto.ThumbnailResponseDTO;
+import teamexpress.velo9.post.api.PostThumbnailFileUploader;
 
 @RestController
 @RequiredArgsConstructor
-public class PostThumbnailFileController {
+public class PostThumbnailController {
 
-	private final PostThumbnailFileService postThumbnailFileService;
+	private final PostThumbnailFileUploader postThumbnailFileUploader;
 
 	@GetMapping("/displayPostThumbnail")
 	public ResponseEntity<byte[]> display(String fileName) {
 		return new ResponseEntity<>(
-			postThumbnailFileService.getImage(fileName),
-			postThumbnailFileService.getHeader(fileName),
+			postThumbnailFileUploader.getImage(fileName),
+			postThumbnailFileUploader.getHeader(fileName),
 			HttpStatus.OK);
 	}
 
 	@PostMapping("/uploadPostThumbnail")
-	public PostThumbnailDTO upload(MultipartFile uploadFile) {
-		return postThumbnailFileService.upload(uploadFile);
+	public ThumbnailResponseDTO upload(MultipartFile uploadFile) {
+		return new ThumbnailResponseDTO(postThumbnailFileUploader.upload(uploadFile).getSFileNameWithPath());
 	}
 
 	@PostMapping("/deletePostThumbnail")
 	public void delete(String fileName) {
-		postThumbnailFileService.deleteFile(fileName);
+		postThumbnailFileUploader.deleteFile(fileName);
 	}
 }

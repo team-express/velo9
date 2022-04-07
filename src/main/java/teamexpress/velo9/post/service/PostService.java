@@ -14,11 +14,12 @@ import teamexpress.velo9.member.domain.Love;
 import teamexpress.velo9.member.domain.LoveRepository;
 import teamexpress.velo9.member.domain.Member;
 import teamexpress.velo9.member.domain.MemberRepository;
+import teamexpress.velo9.post.api.PostThumbnailFileUploader;
 import teamexpress.velo9.post.domain.Post;
 import teamexpress.velo9.post.domain.PostRepository;
 import teamexpress.velo9.post.domain.PostStatus;
 import teamexpress.velo9.post.domain.PostTag;
-import teamexpress.velo9.post.domain.PostTagQueryRepository;
+import teamexpress.velo9.post.domain.PostTagRepository;
 import teamexpress.velo9.post.domain.PostThumbnail;
 import teamexpress.velo9.post.domain.PostThumbnailRepository;
 import teamexpress.velo9.post.domain.Series;
@@ -31,7 +32,7 @@ import teamexpress.velo9.post.dto.LovePostDTO;
 import teamexpress.velo9.post.dto.PostMainDTO;
 import teamexpress.velo9.post.dto.PostReadDTO;
 import teamexpress.velo9.post.dto.PostSaveDTO;
-import teamexpress.velo9.post.dto.PostThumbnailDTO;
+import teamexpress.velo9.post.dto.PostWriteDTO;
 import teamexpress.velo9.post.dto.ReadDTO;
 import teamexpress.velo9.post.dto.SearchCondition;
 import teamexpress.velo9.post.dto.SeriesDTO;
@@ -54,11 +55,11 @@ public class PostService {
 	private final LookRepository lookRepository;
 	private final TemporaryPostRepository temporaryPostRepository;
 	private final PostThumbnailRepository postThumbnailRepository;
-	private final PostTagQueryRepository postTagQueryRepository;
+	private final PostTagRepository postTagRepository;
 
 	@Transactional
 	public Post write(PostSaveDTO postSaveDTO) {
-		PostThumbnail postThumbnail = getPostThumbnail(postSaveDTO.getThumbnail());
+		PostThumbnail postThumbnail = getPostThumbnail(postSaveDTO.getThumbnailFileName());
 		Series series = getSeries(postSaveDTO.getSeriesId());
 		Member member = getMember(postSaveDTO.getMemberId());
 		if (postThumbnail != null) {
@@ -86,13 +87,12 @@ public class PostService {
 	}
 
 	@Transactional
-	public void writeTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {
+	public Long writeTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {
 		if (temporaryPostWriteDTO.getPostId() != null) {
-			writeAlternativeTemporary(temporaryPostWriteDTO);
-			return;
+			return writeAlternativeTemporary(temporaryPostWriteDTO);
 		}
 
-		writeNewTemporary(temporaryPostWriteDTO);
+		return writeNewTemporary(temporaryPostWriteDTO);
 	}
 
 	@Transactional
@@ -102,10 +102,10 @@ public class PostService {
 		postRepository.deleteById(id);
 	}
 
-	public PostSaveDTO getPostById(Long id) {
+	public PostWriteDTO getPostById(Long id) {
 		Post post = postRepository.findById(id).orElse(new Post());
-		List<PostTag> postTags = postTagQueryRepository.findByPost(post);
-		return new PostSaveDTO(post, postTags);
+		List<PostTag> postTags = postTagRepository.findByPost(post);
+		return new PostWriteDTO(post, postTags);
 	}
 
 	public Slice<SeriesDTO> findSeries(String nickname, Pageable pageable) {
@@ -145,10 +145,10 @@ public class PostService {
 			.collect(Collectors.toList());
 	}
 
-	private PostThumbnail getPostThumbnail(PostThumbnailDTO postThumbnailDTO) {
+	private PostThumbnail getPostThumbnail(String fileName) {
 		PostThumbnail postThumbnail = null;
-		if (postThumbnailDTO != null) {
-			postThumbnail = postThumbnailDTO.toPostThumbnail();
+		if (fileName != null) {
+			postThumbnail = PostThumbnailFileUploader.divideFileName(fileName).toPostThumbnail();
 		}
 		return postThumbnail;
 	}
@@ -166,12 +166,11 @@ public class PostService {
 		return seriesId == null ? null : seriesRepository.findById(seriesId).orElse(null);
 	}
 
-	private void writeAlternativeTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {
+	private Long writeAlternativeTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {
 		Post post = postRepository.findById(temporaryPostWriteDTO.getPostId()).orElseThrow();
 
 		if (post.getStatus().equals(PostStatus.TEMPORARY)) {
-			writeNewTemporary(temporaryPostWriteDTO);
-			return;
+			return writeNewTemporary(temporaryPostWriteDTO);
 		}
 
 		if (post.getTemporaryPost() != null) {
@@ -181,14 +180,19 @@ public class PostService {
 		TemporaryPost temporaryPost = temporaryPostWriteDTO.toTemporaryPost();
 		temporaryPostRepository.save(temporaryPost);
 		postRepository.updateTempPost(post.getId(), temporaryPost);
+
+		return post.getId();
 	}
 
-	private void writeNewTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {
+	private Long writeNewTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO) {
 		Long memberId = temporaryPostWriteDTO.getMemberId();
 
 		checkCount(memberId);
 		Member member = getMember(memberId);
-		postRepository.save(temporaryPostWriteDTO.toPost(member, postRepository.getCreatedDate(temporaryPostWriteDTO.getPostId())));
+		return postRepository.save(
+				temporaryPostWriteDTO.toPost(
+					member, postRepository.getCreatedDate(temporaryPostWriteDTO.getPostId())))
+			.getId();
 	}
 
 	private void toggleLove(Member member, Post post) {
@@ -228,10 +232,10 @@ public class PostService {
 
 	public ReadDTO findReadPost(Long postId, String nickname) {
 		Post findPost = postRepository.findById(postId).orElseThrow();
+		checkOwner(findPost, nickname);
 		List<Post> pagePost = postRepository.findPrevNextPost(findPost);
-		Post readPost = postRepository.findReadPost(postId, nickname);
-		List<PostTag> postTags = postTagQueryRepository.findByPost(findPost);
-		return new ReadDTO(readPost, pagePost, postTags);
+		List<PostTag> postTags = postTagRepository.findByPost(findPost);
+		return new ReadDTO(findPost, pagePost, postTags);
 	}
 
 	public Slice<SeriesPostSummaryDTO> findSeriesPost(String nickname, String seriesName, PageRequest page) {
@@ -242,5 +246,11 @@ public class PostService {
 	public List<SeriesReadDTO> getUsedSeries(String nickname) {
 		return seriesRepository.findUsedSeries(nickname)
 			.stream().map(SeriesReadDTO::new).collect(Collectors.toList());
+	}
+
+	private void checkOwner(Post findPost, String nickname) {
+		if (!findPost.getMember().getNickname().equals(nickname)) {
+			throw new IllegalStateException("비정상적인 접근입니다.");
+		}
 	}
 }
