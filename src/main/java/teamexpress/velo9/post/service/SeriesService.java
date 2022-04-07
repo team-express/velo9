@@ -29,10 +29,10 @@ public class SeriesService {
 	}
 
 	@Transactional
-	public void add(SeriesAddDTO seriesAddDTO) {
-		checkName(seriesAddDTO.getMemberId(), seriesAddDTO.getName());
+	public void add(SeriesAddDTO seriesAddDTO, Long memberId) {
+		checkName(memberId, seriesAddDTO.getName());
 
-		Member member = memberRepository.findById(seriesAddDTO.getMemberId()).orElseThrow();
+		Member member = memberRepository.findById(memberId).orElseThrow();
 		Series series = seriesAddDTO.toSeries(member);
 
 		seriesRepository.save(series);

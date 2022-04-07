@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import teamexpress.velo9.common.controller.BaseController;
 import teamexpress.velo9.common.domain.Result;
 import teamexpress.velo9.member.dto.FindInfoDTO;
 import teamexpress.velo9.member.dto.MailDTO;
@@ -31,7 +32,7 @@ import teamexpress.velo9.member.service.MemberService;
 
 @RequiredArgsConstructor
 @RestController
-public class MemberController {
+public class MemberController extends BaseController {
 
 	public static final int INTERVAL = 180;
 	private final MemberService memberService;
@@ -39,8 +40,7 @@ public class MemberController {
 
 	@GetMapping("/getHeaderInfo")
 	public MemberHeaderDTO getHeaderInfo(HttpSession session) {
-		String memberIdStr = (String) session.getAttribute(SessionConst.LOGIN_MEMBER);
-		return memberIdStr != null ? memberService.getHeaderInfo(Long.valueOf(memberIdStr)) : new MemberHeaderDTO();
+		return memberService.getHeaderInfo(getMemberId(session));
 	}
 
 	@PostMapping("/signup")
@@ -63,23 +63,24 @@ public class MemberController {
 	}
 
 	@GetMapping("/setting")
-	public MemberDTO editMember(@RequestParam Long memberId) {
-		return memberService.getLoginMember(memberId);
+	public MemberDTO editMember(HttpSession session) {
+		return memberService.getLoginMember(getMemberId(session));
 	}
 
 	@PostMapping("/setting")
-	public void editMember(@RequestBody MemberEditDTO memberEditDTO, @RequestParam Long memberId) {
-		memberService.editMember(memberId, memberEditDTO);
+	public void editMember(@RequestBody MemberEditDTO memberEditDTO, HttpSession session) {
+		memberService.editMember(getMemberId(session), memberEditDTO);
 	}
 
 	@PostMapping("/changePassword")
-	public void changePassword(@RequestBody PasswordDTO passwordDTO, @RequestParam Long memberId) {
-		memberService.changePassword(memberId, passwordDTO);
+	public void changePassword(@RequestBody PasswordDTO passwordDTO, HttpSession session) {
+		memberService.changePassword(getMemberId(session), passwordDTO);
 	}
 
 	@PostMapping("/withdraw")
-	public void withdrawMember(@RequestBody PasswordDTO passwordDTO, @RequestParam Long memberId) {
-		memberService.withdraw(memberId, passwordDTO);
+	public void withdrawMember(@RequestBody PasswordDTO passwordDTO, HttpSession session) {
+		memberService.withdraw(getMemberId(session), passwordDTO);
+		//세션에서 제거 작업까지 추가
 	}
 
 	@GetMapping("/checkFirstLogin")
@@ -88,9 +89,10 @@ public class MemberController {
 		boolean checkResult = memberService.getMemberByEmail(authentication);
 		return new Result(checkResult);
 	}
-	@PostMapping("/socialSignup")
-	public void socialSignup(@Validated @RequestBody SocialSignupDTO socialSignupDTO, @RequestParam Long memberId) {
-		memberService.joinSocial(socialSignupDTO, memberId);
+
+	@PostMapping("/socialSignup")//일단보류
+	public void socialSignup(@Validated @RequestBody SocialSignupDTO socialSignupDTO, @RequestParam Long id) {
+		memberService.joinSocial(socialSignupDTO, id);
 	}
 
 	@PostMapping("/findId")
