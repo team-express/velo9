@@ -13,6 +13,7 @@ import teamexpress.velo9.member.dto.FindInfoDTO;
 import teamexpress.velo9.member.dto.MailDTO;
 import teamexpress.velo9.member.dto.MemberDTO;
 import teamexpress.velo9.member.dto.MemberEditDTO;
+import teamexpress.velo9.member.dto.MemberHeaderDTO;
 import teamexpress.velo9.member.dto.MemberNewPwDTO;
 import teamexpress.velo9.member.dto.MemberSignupDTO;
 import teamexpress.velo9.member.dto.NumberDTO;
@@ -30,6 +31,12 @@ public class MemberController {
 	public static final int INTERVAL = 180;
 	private final MemberService memberService;
 	private final MailService mailService;
+
+	@GetMapping("/getHeaderInfo")
+	public MemberHeaderDTO getHeaderInfo(HttpSession session) {
+		String memberIdStr = (String) session.getAttribute(SessionConst.LOGIN_MEMBER);
+		return memberIdStr != null ? memberService.getHeaderInfo(Long.valueOf(memberIdStr)) : new MemberHeaderDTO();
+	}
 
 	@GetMapping("/signup")
 	public void addMember() {
@@ -101,12 +108,12 @@ public class MemberController {
 	}
 
 	@GetMapping("/validateUsername")
-	public void checkUsername(@RequestParam String username){
+	public void checkUsername(@RequestParam String username) {
 		memberService.validateUsername(username);
 	}
 
 	@GetMapping("/validateNickname")
-	public void checkNickname(@RequestParam String nickname){
+	public void checkNickname(@RequestParam String nickname) {
 		memberService.validateNickname(nickname);
 	}
 

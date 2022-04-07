@@ -34,6 +34,22 @@ class MemberControllerTest {
 	private MockMvc mockMvc;
 
 	@Test
+	void getHeaderInfo() throws Exception {
+		this.mockMvc.perform(get("/getHeaderInfo")
+				.sessionAttr(SessionConst.LOGIN_MEMBER, "2")
+			)
+			.andExpect(status().isOk())
+			.andDo(document("header",
+				relaxedResponseFields(
+					fieldWithPath("id").description("memberId, 로그인 되어있지 않으면 모두가 null이 나옵니다.").optional(),
+					fieldWithPath("nickname").description("nickname").optional(),
+					fieldWithPath("blogTitle").description("blogTitle").optional(),
+					fieldWithPath("thumbnail").description("thumbnail").optional()
+				)
+			));
+	}
+
+	@Test
 	@Transactional
 	@Rollback
 	void addMember() throws Exception {

@@ -15,14 +15,6 @@ group = 'teamexpress'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
-ext {
-    snippetsDir = file('build/generated-snippets')
-}
-
-test {
-    outputs.dir snippetsDir
-}
-
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
@@ -76,7 +68,6 @@ dependencies {
 }
 
 test {
-    useJUnitPlatform()
     outputs.dir snippetsDir
 }
 

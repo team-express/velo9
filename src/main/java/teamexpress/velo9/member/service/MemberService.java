@@ -10,6 +10,7 @@ import teamexpress.velo9.member.dto.FindInfoDTO;
 import teamexpress.velo9.member.dto.MailDTO;
 import teamexpress.velo9.member.dto.MemberDTO;
 import teamexpress.velo9.member.dto.MemberEditDTO;
+import teamexpress.velo9.member.dto.MemberHeaderDTO;
 import teamexpress.velo9.member.dto.MemberNewPwDTO;
 import teamexpress.velo9.member.dto.MemberSignupDTO;
 import teamexpress.velo9.member.dto.MemberThumbnailDTO;
@@ -161,5 +162,9 @@ public class MemberService {
 	public MemberDTO getLoginMember(Long memberId) {
 		Member member = getMember(memberId);
 		return new MemberDTO(member);
+	}
+
+	public MemberHeaderDTO getHeaderInfo(Long memberId) {
+		return new MemberHeaderDTO(getMember(memberId));
 	}
 }
