@@ -83,15 +83,16 @@ public class MemberController extends BaseController {
 	}
 
 	@GetMapping("/checkFirstLogin")
-	public Result socialCheck() {
+	public Result socialCheck(HttpSession session) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		boolean checkResult = memberService.getMemberByEmail(authentication);
+		boolean checkResult = memberService.getMemberByEmail(authentication, session);
 		return new Result(checkResult);
 	}
 
 	@PostMapping("/socialSignup")
-	public void socialSignup(@Validated @RequestBody SocialSignupDTO socialSignupDTO) {
+	public void socialSignup(@Validated @RequestBody SocialSignupDTO socialSignupDTO, HttpServletRequest request) {
 		memberService.joinSocial(socialSignupDTO);
+		new SecurityContextLogoutHandler().logout(request, null, null);
 	}
 
 	@PostMapping("/findId")
