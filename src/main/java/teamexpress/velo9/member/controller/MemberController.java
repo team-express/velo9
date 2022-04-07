@@ -111,7 +111,7 @@ public class MemberController {
 		memberService.changeNewPw(memberNewPwDTO);
 	}
 
-	@GetMapping("/logout")
+	@GetMapping("/memberLogout")
 	public void logout(HttpServletRequest request, HttpServletResponse response) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 

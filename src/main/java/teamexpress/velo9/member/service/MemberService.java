@@ -171,6 +171,6 @@ public class MemberService {
 		Map<String, Object> attributes = principal.getAttributes();
 		String email = (String) attributes.get("email");
 		Member member = memberRepository.findByEmail(email).orElse(null);
-		return member != null;
+		return member.getUsername() != null;
 	}
 }
