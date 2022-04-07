@@ -156,29 +156,6 @@ class MemberControllerTest {
 	}
 
 	@Test
-	@Transactional
-	@Rollback
-	void socialSignup() throws Exception {
-		this.mockMvc.perform(post("/socialSignup")
-				.param("id", "4")
-				.content("{\"username\": \"username\","
-					+ "\n\"password\": \"password\","
-					+ "\n\"nickname\": \"nickname\"}")
-				.contentType(MediaType.APPLICATION_JSON))
-			.andExpect(status().isOk())
-			.andDo(document("PostSocialSignup",
-				requestParameters(
-					parameterWithName("id").description("소설 가입으로 방금 생성된 회원의 id")
-				),
-				requestFields(
-					fieldWithPath("username").description("아이디"),
-					fieldWithPath("password").description("비밀번호"),
-					fieldWithPath("nickname").description("닉네임")
-				)
-			));
-	}
-
-	@Test
 	void sendMail() throws Exception {
 		this.mockMvc.perform(post("/sendMail")
 				.content("{\"email\": \"email2@test.com\"}")

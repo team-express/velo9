@@ -21,6 +21,9 @@ include::{snippets}/header/response-fields.adoc[]
 
 include::{snippets}/logout/httpie-request.adoc[]
 
+* 로그아웃을 하실 때 해당 url을 호출하셔야 세션에서 삭제됩니다.
+또한 헤더 정보들을 직접적으로 초기화하시면 될 것 같습니다.
+
 == 일반회원가입 [ /signup, POST ]
 
 === request
@@ -45,8 +48,6 @@ include::{snippets}/PostSocialSignup/request-fields.adoc[]
 
 include::{snippets}/GetEditMember/httpie-request.adoc[]
 
-include::{snippets}/GetEditMember/request-parameters.adoc[]
-
 === response
 
 include::{snippets}/GetEditMember/response-body.adoc[]
@@ -59,8 +60,6 @@ include::{snippets}/GetEditMember/response-fields.adoc[]
 
 include::{snippets}/PostEditMember/http-request.adoc[]
 
-include::{snippets}/PostEditMember/request-parameters.adoc[]
-
 include::{snippets}/PostEditMember/request-fields.adoc[]
 
 == 비밀번호 변경(설정화면에서) [ /changePassword, POST]
@@ -69,8 +68,6 @@ include::{snippets}/PostEditMember/request-fields.adoc[]
 
 include::{snippets}/PostChangePw/http-request.adoc[]
 
-include::{snippets}/PostChangePw/request-parameters.adoc[]
-
 include::{snippets}/PostChangePw/request-fields.adoc[]
 
 == 회원 탈퇴 [ /withdraw, POST]
@@ -78,8 +75,6 @@ include::{snippets}/PostChangePw/request-fields.adoc[]
 === request
 
 include::{snippets}/PostWithdraw/http-request.adoc[]
-
-include::{snippets}/PostWithdraw/request-parameters.adoc[]
 
 include::{snippets}/PostWithdraw/request-fields.adoc[]
 
@@ -134,7 +129,7 @@ include::{snippets}/PostCheckNumber/request-fields.adoc[]
 
 === request
 
-include::{snippets}/UsernameCheck/http-request.adoc[]
+include::{snippets}/UsernameCheck/httpie-request.adoc[]
 
 include::{snippets}/UsernameCheck/request-parameters.adoc[]
 
@@ -142,7 +137,7 @@ include::{snippets}/UsernameCheck/request-parameters.adoc[]
 
 === request
 
-include::{snippets}/NicknameCheck/http-request.adoc[]
+include::{snippets}/NicknameCheck/httpie-request.adoc[]
 
 include::{snippets}/NicknameCheck/request-parameters.adoc[]
 

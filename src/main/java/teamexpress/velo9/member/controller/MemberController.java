@@ -90,9 +90,9 @@ public class MemberController extends BaseController {
 		return new Result(checkResult);
 	}
 
-	@PostMapping("/socialSignup")//일단보류
-	public void socialSignup(@Validated @RequestBody SocialSignupDTO socialSignupDTO, @RequestParam Long id) {
-		memberService.joinSocial(socialSignupDTO, id);
+	@PostMapping("/socialSignup")
+	public void socialSignup(@Validated @RequestBody SocialSignupDTO socialSignupDTO) {
+		memberService.joinSocial(socialSignupDTO);
 	}
 
 	@PostMapping("/findId")

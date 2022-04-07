@@ -3,12 +3,17 @@ package teamexpress.velo9.member.service;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import teamexpress.velo9.member.api.MemberThumbnailFileUploader;
 import teamexpress.velo9.member.domain.Member;
 import teamexpress.velo9.member.domain.MemberRepository;
+import teamexpress.velo9.member.domain.MemberThumbnail;
+import teamexpress.velo9.member.domain.MemberThumbnailRepository;
+import teamexpress.velo9.member.domain.Role;
 import teamexpress.velo9.member.dto.FindInfoDTO;
 import teamexpress.velo9.member.dto.MailDTO;
 import teamexpress.velo9.member.dto.MemberDTO;
@@ -27,6 +32,8 @@ public class MemberService {
 
 	private final MemberRepository memberRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final MemberThumbnailRepository memberThumbnailRepository;
+	private final MemberThumbnailFileUploader uploader;
 
 	@Transactional
 	public void join(MemberSignupDTO signupDTO) {
@@ -90,14 +97,16 @@ public class MemberService {
 	}
 
 	@Transactional
-	public void joinSocial(SocialSignupDTO socialSignupDTO, Long memberId) {
-		Member member = getMember(memberId);
+	public void joinSocial(SocialSignupDTO socialSignupDTO) {
 		checkDuplicateMember(socialSignupDTO.getUsername(), socialSignupDTO.getNickname());
-		String encodePassword = passwordEncoder.encode(socialSignupDTO.getPassword());
-		member.registerSocialMember(
-			socialSignupDTO.getUsername(),
-			encodePassword,
-			socialSignupDTO.getNickname());
+
+		Map<String, Object> attributes = getAttributes();
+
+		String email = (String) attributes.get("email");
+		String picture = getPicture(attributes);
+		MemberThumbnail memberThumbnail = saveMemberThumbnail(picture);
+
+		saveSocialMember(socialSignupDTO, email, memberThumbnail);
 	}
 
 	public Long findPw(FindInfoDTO findInfoDTO) {
@@ -143,8 +152,21 @@ public class MemberService {
 			});
 	}
 
-	private Member changeMemberInfo(MemberEditDTO memberEditDTO, Member findMember) {
-		return findMember.edit(
+	public boolean getMemberByEmail(Authentication authentication) {
+		OAuth2User principal = (OAuth2User) authentication.getPrincipal();
+		Map<String, Object> attributes = principal.getAttributes();
+		String email = (String) attributes.get("email");
+		Member member = memberRepository.findByEmail(email).orElse(null);
+		return member != null;
+	}
+
+	public MemberDTO getLoginMember(Long memberId) {
+		Member member = getMember(memberId);
+		return new MemberDTO(member);
+	}
+
+	private void changeMemberInfo(MemberEditDTO memberEditDTO, Member findMember) {
+		findMember.edit(
 			memberEditDTO.getNickname(), memberEditDTO.getIntroduce(),
 			memberEditDTO.getBlogTitle(), memberEditDTO.getSocialEmail(),
 			memberEditDTO.getSocialGithub());
@@ -162,20 +184,40 @@ public class MemberService {
 		}
 	}
 
-	public MemberDTO getLoginMember(Long memberId) {
-		Member member = getMember(memberId);
-		return new MemberDTO(member);
+	private MemberThumbnail saveMemberThumbnail(String picture) {
+		MemberThumbnailDTO memberThumbnailDTO = uploader.upload(picture);
+		MemberThumbnail memberThumbnail = memberThumbnailDTO.toMemberThumbnail();
+
+		memberThumbnailRepository.save(memberThumbnail);
+		return memberThumbnail;
 	}
 
 	public MemberHeaderDTO getHeaderInfo(Long memberId) {
 		return new MemberHeaderDTO(getMember(memberId));
 	}
 
-	public boolean getMemberByEmail(Authentication authentication) {
+
+	private Map<String, Object> getAttributes() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		OAuth2User principal = (OAuth2User) authentication.getPrincipal();
-		Map<String, Object> attributes = principal.getAttributes();
-		String email = (String) attributes.get("email");
-		Member member = memberRepository.findByEmail(email).orElse(null);
-		return member.getUsername() != null;
+		return principal.getAttributes();
+	}
+
+	private String getPicture(Map<String, Object> attributes) {
+		return attributes.get("picture") == null
+			? (String) attributes.get("avatar_url") : (String) attributes.get("picture");
+	}
+
+	private void saveSocialMember(SocialSignupDTO socialSignupDTO, String email, MemberThumbnail memberThumbnail) {
+		Member member = Member.builder()
+			.username(socialSignupDTO.getUsername())
+			.password(passwordEncoder.encode(socialSignupDTO.getPassword()))
+			.nickname(socialSignupDTO.getNickname())
+			.email(email)
+			.role(Role.ROLE_SOCIAL)
+			.memberThumbnail(memberThumbnail)
+			.build();
+
+		memberRepository.save(member);
 	}
 }
