@@ -85,9 +85,10 @@ public class MemberController {
 		boolean checkResult = memberService.getMemberByEmail(authentication);
 		return new Result(checkResult);
 	}
+
 	@PostMapping("/socialSignup")
-	public void socialSignup(@Validated @RequestBody SocialSignupDTO socialSignupDTO, @RequestParam Long memberId) {
-		memberService.joinSocial(socialSignupDTO, memberId);
+	public void socialSignup(@Validated @RequestBody SocialSignupDTO socialSignupDTO) {
+		memberService.joinSocial(socialSignupDTO);
 	}
 
 	@PostMapping("/findId")

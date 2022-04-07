@@ -1,7 +1,6 @@
 package teamexpress.velo9.member.security.oauth;
 
 import java.util.Collections;
-import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,24 +12,13 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import teamexpress.velo9.member.api.MemberThumbnailFileUploader;
-import teamexpress.velo9.member.domain.Member;
-import teamexpress.velo9.member.domain.MemberRepository;
-import teamexpress.velo9.member.domain.MemberThumbnail;
-import teamexpress.velo9.member.domain.MemberThumbnailRepository;
 import teamexpress.velo9.member.domain.Role;
-import teamexpress.velo9.member.dto.MemberThumbnailDTO;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
-
-	private final MemberRepository memberRepository;
-	private final MemberThumbnailRepository memberThumbnailRepository;
-	private final HttpSession httpSession;
-	private final MemberThumbnailFileUploader uploader;
 
 	@Transactional
 	@Override
@@ -50,36 +38,9 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 				userNameAttributeName,
 				oAuth2User.getAttributes());
 
-		Member member = save(attributes);
-		httpSession.setAttribute(SessionConst.LOGIN_MEMBER, member.getId());
-
 		return new DefaultOAuth2User(
-			Collections.singleton(new SimpleGrantedAuthority(member.getRoleKey())),
+			Collections.singleton(new SimpleGrantedAuthority(Role.ROLE_SOCIAL.name())),
 			attributes.getAttributes(),
 			attributes.getNameAttributeKey());
-	}
-
-	private Member save(OAuthAttributes attributes) {
-		Member findMember = checkEmail(attributes);
-		if (findMember != null) {
-			return findMember;
-		}
-
-		MemberThumbnailDTO memberThumbnailDTO = uploader.upload(attributes.getPicture());
-		MemberThumbnail memberThumbnail = memberThumbnailDTO.toMemberThumbnail();
-
-		memberThumbnailRepository.save(memberThumbnail);
-
-		Member member = Member.builder()
-			.email(attributes.getEmail())
-			.role(Role.ROLE_SOCIAL)
-			.memberThumbnail(memberThumbnail)
-			.build();
-
-		return memberRepository.save(member);
-	}
-
-	private Member checkEmail(OAuthAttributes attributes) {
-		return memberRepository.findByEmail(attributes.getEmail()).orElse(null);
 	}
 }
