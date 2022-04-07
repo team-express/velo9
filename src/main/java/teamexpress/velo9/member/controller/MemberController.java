@@ -80,9 +80,10 @@ public class MemberController {
 	}
 
 	@GetMapping("/checkFirstLogin")
-	public boolean socialCheck() {
+	public Result socialCheck() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		return memberService.getMemberByEmail(authentication);
+		boolean checkResult = memberService.getMemberByEmail(authentication);
+		return new Result(checkResult);
 	}
 	@PostMapping("/socialSignup")
 	public void socialSignup(@Validated @RequestBody SocialSignupDTO socialSignupDTO, @RequestParam Long memberId) {
@@ -110,7 +111,7 @@ public class MemberController {
 		memberService.changeNewPw(memberNewPwDTO);
 	}
 
-	@GetMapping("/logout")
+	@GetMapping("/memberLogout")
 	public void logout(HttpServletRequest request, HttpServletResponse response) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
