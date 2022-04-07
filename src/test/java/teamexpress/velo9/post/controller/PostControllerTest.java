@@ -57,7 +57,7 @@ class PostControllerTest {
 					fieldWithPath("access").description("공개설정"),
 					fieldWithPath("memberId").description("작성글 주인의 식별 값입니다. post 방식으로 넘어갈 때 사용하면 좋을 것 같습니다."),
 					fieldWithPath("seriesId").description("속해있는 시리즈의 id 입니다.").optional(),
-					fieldWithPath("tagNames").description("달려있는 태그의 이름들 입니다.").optional(),
+					fieldWithPath("tags").description("달려있는 태그의 이름들 입니다.").optional(),
 					fieldWithPath("thumbnail").description("썸네일 파일 이름 관련 정보가 들어 있을 수도 있습니다.").optional(),
 					fieldWithPath("temporary").description("임시저장된 제목과 내용이 들어 있을 수도 있습니다.").optional()
 				)
@@ -88,6 +88,7 @@ class PostControllerTest {
 	@Transactional
 	@Rollback
 	void writePost() throws Exception {
+
 		mockMvc.perform(post("/write")
 				.content("{"
 					+ "\n\"postId\":1,"
@@ -97,8 +98,8 @@ class PostControllerTest {
 					+ "\n\"access\":\"PRIVATE\","
 					+ "\n\"memberId\":2,"
 					+ "\n\"seriesId\":1,"
-					+ "\n\"tagNames\":[\"A\",\"B\"],"
-					+ "\n\"thumbnail\":{\"uuid\":\"1\", \"path\":\"bird\", \"name\":\"girl.avi\"}"
+					+ "\n\"tags\":[\"A\",\"B\"],"
+					+ "\n\"thumbnailFileName\":\"2020/03/01/s_uuid_name.png\""
 					+ "\n}")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
@@ -109,12 +110,12 @@ class PostControllerTest {
 					fieldWithPath("title").description(""),
 					fieldWithPath("introduce").description("없으면 백엔드에서 알아서 content 일부 떼와서 넣어줍니다.").optional(),
 					fieldWithPath("content").description(""),
-					fieldWithPath("access").description("PUBLIC(전체공개), PRIVATE(비공개) 중에서 적습니다(물론, 없으면 PUBLIC입니다).").optional(),
+					fieldWithPath("access").description("PUBLIC(전체공개), PRIVATE(비공개) 중에서 적습니다(화면에서는 기본적으로 public에 파랗게 색칠되어 있습니다.)"),
 					fieldWithPath("memberId").description("적절한 회원의 id를 주시길 바랍니다(세션 or get 방식의 memberId).\n"),
 					fieldWithPath("seriesId").description("상세조건에서 시리즈를 선택하면 선택된 시리즈Object내부의 id값을 의미합니다.").optional(),
-					fieldWithPath("tagNames").description("태그를 입력했다면, array로([]) 주십시오").optional(),
-					fieldWithPath("thumbnail").description("필드 3개(uuid, path, name)를 가지고 있는 어떤 객체가 있을 수 있습니다.\n"
-						+ "해당 객체를 변수로 지니고 있다가 주세요").optional()
+					fieldWithPath("tags").description("태그를 입력했다면, array로([]) 주십시오").optional(),
+					fieldWithPath("thumbnailFileName").description("업로드나, 게시글 볼 때 반환되는 썸네일 오브젝트를 변수로 가지고 있다가\n"
+						+ "글이 작성될 때 Object.fileName을 주세요").optional()
 				),
 				responseFields(
 					fieldWithPath("data").description("방금 작성(수정)된 글의 id 입니다. 작성(수정)후에는 작성된 게시글 상세보기로 가야합니다.")
@@ -166,12 +167,18 @@ class PostControllerTest {
 			.andDo(document("writeTemporaryPost",
 				requestFields(
 					fieldWithPath("postId").description("id가 없으면 새 글을 임시저장하는 경우(임시글목록에 보임)이며,"
-						+ " id가 없으면 기존 임시글의 덮어쓰기(임시글목록에 보임) 또는"
+						+ " id가 있으면 기존 임시글의 덮어쓰기(임시글목록에 보임) 또는"
 						+ "기존 게시글의 대안 임시글을 생성(임시글목록에는 안보이고 수정화면에서 임시데이터가 있으면 불러오는 창나옴)"
 						+ "하는 경우입니다.").optional(),
 					fieldWithPath("title").description("title"),
 					fieldWithPath("content").description("content"),
 					fieldWithPath("memberId").description("/write와 마찬가지로 작성중인 회원의 id를 의미합니다.")
+				),
+				responseFields(
+					fieldWithPath("data").description("임시저장이 되었을 때 해당 글의 id를 반환합니다."
+						+ "\n최초에 타이머에 의해 임시저장을 하고나면 그 다음 타이머에의한 임시저장은 \n"
+						+ "id가 없는 새 글이 아니라 id가 있는 기존 글의 수정이어야 하기 때문에\n"
+						+ "두 번째 타이머 이벤트 부터는 이 id 값을 가지고 url호출을 하면 좋을 것 같습니다.")
 				)
 			));
 	}

@@ -20,6 +20,7 @@ import teamexpress.velo9.post.dto.LoveDTO;
 import teamexpress.velo9.post.dto.LovePostDTO;
 import teamexpress.velo9.post.dto.PostReadDTO;
 import teamexpress.velo9.post.dto.PostSaveDTO;
+import teamexpress.velo9.post.dto.PostWriteDTO;
 import teamexpress.velo9.post.dto.ReadDTO;
 import teamexpress.velo9.post.dto.SeriesDTO;
 import teamexpress.velo9.post.dto.SeriesPostSummaryDTO;
@@ -41,21 +42,21 @@ public class PostController {
 	private final TagService tagService;
 
 	@GetMapping("/write")
-	public PostSaveDTO write(@RequestParam Long id) {
+	public PostWriteDTO write(@RequestParam Long id) {
 		return postService.getPostById(id);
 	}
 
 	@PostMapping("/write")
 	public Result write(@RequestBody PostSaveDTO postSaveDTO) {
 		Post post = postService.write(postSaveDTO);
-		tagService.addTags(post, postSaveDTO.getTagNames());
+		tagService.addTags(post, postSaveDTO.getTags());
 		tagService.removeUselessTags();
 		return new Result<>(post.getId());
 	}
 
 	@PostMapping("/writeTemporary")
-	public void writeTemporary(@RequestBody TemporaryPostWriteDTO temporaryPostWriteDTO) {
-		postService.writeTemporary(temporaryPostWriteDTO);
+	public Result writeTemporary(@RequestBody TemporaryPostWriteDTO temporaryPostWriteDTO) {
+		return new Result<>(postService.writeTemporary(temporaryPostWriteDTO));
 	}
 
 	@PostMapping("/delete")

@@ -1,14 +1,12 @@
 package teamexpress.velo9.post.dto;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import teamexpress.velo9.member.domain.Member;
 import teamexpress.velo9.post.domain.Post;
 import teamexpress.velo9.post.domain.PostAccess;
 import teamexpress.velo9.post.domain.PostStatus;
-import teamexpress.velo9.post.domain.PostTag;
 import teamexpress.velo9.post.domain.PostThumbnail;
 import teamexpress.velo9.post.domain.Series;
 
@@ -27,37 +25,10 @@ public class PostSaveDTO {
 
 	private Long memberId;
 	private Long seriesId;
-	private List<String> tagNames;
+	private List<String> tags;
 
-	private PostThumbnailDTO thumbnail;
+	private String thumbnailFileName;
 	private TemporaryPostReadDTO temporary;
-
-	public PostSaveDTO(Post post, List<PostTag> postTags) {
-		this.postId = post.getId();
-		this.title = post.getTitle();
-		this.introduce = post.getIntroduce();
-		this.content = post.getContent();
-		this.memberId = post.getMember().getId();
-
-		if (post.getAccess() != null) {
-			this.access = post.getAccess().name();
-		}
-
-		if (post.getSeries() != null) {
-			this.seriesId = post.getSeries().getId();
-		}
-
-		this.tagNames = postTags.stream()
-			.map(postTag -> postTag.getTag().getName())
-			.collect(Collectors.toList());
-
-		this.thumbnail = new PostThumbnailDTO(post.getPostThumbnail());
-
-		if (post.getTemporaryPost() != null) {
-			this.temporary = new TemporaryPostReadDTO(post.getTemporaryPost());
-		}
-
-	}
 
 	public Post toPost(Member member, Series series, PostThumbnail postThumbnail) {
 		setIntroduce();

@@ -10,10 +10,13 @@ import teamexpress.velo9.post.domain.PostThumbnail;
 @NoArgsConstructor
 public class PostThumbnailDTO {
 
+	private static final String NAME_SEPARATOR = "_";
+	private static final String THUMBNAIL_MARK = "s_";
+	private static final String BACKSLASH = "\\";
+
 	private String uuid;
 	private String name;
 	private String path;
-
 
 	public PostThumbnailDTO(PostThumbnail postThumbnail) {
 		if (postThumbnail != null) {
@@ -29,5 +32,17 @@ public class PostThumbnailDTO {
 			.path(this.path)
 			.name(this.name)
 			.build();
+	}
+
+	public String getFileName() {
+		return this.uuid + NAME_SEPARATOR + this.name;
+	}
+
+	public String getSFileName() {
+		return THUMBNAIL_MARK + this.getFileName();
+	}
+
+	public String getSFileNameWithPath() {
+		return this.path + BACKSLASH + this.getSFileName();
 	}
 }

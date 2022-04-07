@@ -14,7 +14,6 @@ public class MemberThumbnailDTO {
 	private static final String THUMBNAIL_MARK = "s_";
 	private static final String BACKSLASH = "\\";
 
-	private Long thumbnailId;
 	private String uuid;
 	private String name;
 	private String path;
@@ -28,7 +27,6 @@ public class MemberThumbnailDTO {
 	public MemberThumbnail toMemberThumbnail() {
 
 		return MemberThumbnail.builder()
-			.id(this.thumbnailId)
 			.uuid(this.uuid)
 			.path(this.path)
 			.name(this.name)
