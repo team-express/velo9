@@ -203,7 +203,7 @@ public class MemberService {
 	}
 
 	private void saveSocialMember(SocialSignupDTO socialSignupDTO, String email, MemberThumbnail memberThumbnail) {
-		Member.builder()
+		Member member = Member.builder()
 			.username(socialSignupDTO.getUsername())
 			.password(passwordEncoder.encode(socialSignupDTO.getPassword()))
 			.nickname(socialSignupDTO.getNickname())
@@ -211,5 +211,7 @@ public class MemberService {
 			.role(Role.ROLE_SOCIAL)
 			.memberThumbnail(memberThumbnail)
 			.build();
+
+		memberRepository.save(member);
 	}
 }
