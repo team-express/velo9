@@ -16,6 +16,7 @@ import teamexpress.velo9.member.domain.Member;
 import teamexpress.velo9.member.domain.MemberRepository;
 import teamexpress.velo9.post.api.PostThumbnailFileUploader;
 import teamexpress.velo9.post.domain.Post;
+import teamexpress.velo9.post.domain.PostAccess;
 import teamexpress.velo9.post.domain.PostRepository;
 import teamexpress.velo9.post.domain.PostStatus;
 import teamexpress.velo9.post.domain.PostTag;
@@ -47,6 +48,8 @@ import teamexpress.velo9.post.dto.TemporaryPostWriteDTO;
 public class PostService {
 
 	private static final int MAX_TEMPORARY_COUNT = 20;
+	private static final int MAX_INTRODUCE_LENGTH = 150;
+	private static final int FIRST_INDEX = 0;
 
 	private final PostRepository postRepository;
 	private final SeriesRepository seriesRepository;
@@ -66,7 +69,9 @@ public class PostService {
 			postThumbnailRepository.save(postThumbnail);
 		}
 
-		Post post = new Post();
+		Post post = null;
+
+		setDefault(postSaveDTO);
 
 		if (postSaveDTO.getPostId() == null) {
 			post = postRepository.save(postSaveDTO.toPost(member, series, postThumbnail));
@@ -83,6 +88,29 @@ public class PostService {
 		}
 
 		return post;
+	}
+
+	private void setDefault(PostSaveDTO postSaveDTO) {
+		setAccess(postSaveDTO);
+		setIntroduce(postSaveDTO);
+	}
+
+	private void setAccess(PostSaveDTO postSaveDTO) {
+		if (postSaveDTO.getAccess() == null) {
+			postSaveDTO.setAccess(PostAccess.PUBLIC.name());
+		}
+	}
+
+	private void setIntroduce(PostSaveDTO postSaveDTO) {
+		if (postSaveDTO.getIntroduce() != null) {
+			return;
+		}
+		String content = postSaveDTO.getContent();
+		if (content.length() < MAX_INTRODUCE_LENGTH) {
+			postSaveDTO.setIntroduce(content);
+			return;
+		}
+		postSaveDTO.setIntroduce(content.substring(FIRST_INDEX, MAX_INTRODUCE_LENGTH));
 	}
 
 	@Transactional
@@ -154,7 +182,7 @@ public class PostService {
 
 	private Member getMember(Long memberId) {
 		if (memberId == null) {
-			throw new NullPointerException("no member is NOT NULL!!!");
+			throw new NullPointerException("member id MUST NOT BE NULL!!!");
 		}
 
 		return memberRepository.findById(memberId)
@@ -205,8 +233,7 @@ public class PostService {
 	}
 
 	private void makeLook(Long memberId, Long postId) {
-		if (memberId != null && lookRepository.findByPostAndMember(postId, memberId).isEmpty()) {
-			//세션문제가 해결되면 이 주석과 함께 수정할것
+		if (lookRepository.findByPostAndMember(postId, memberId).isEmpty()) {
 			lookRepository.saveLook(memberId, postId);
 		}
 	}
