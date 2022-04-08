@@ -48,6 +48,8 @@ public class MemberService {
 	@Transactional
 	public void editMember(Long memberId, MemberEditDTO memberEditDTO) {
 		Member findMember = getMember(memberId);
+		validateNickname(memberEditDTO.getNickname());
+		validateBlogTitle(memberEditDTO.getBlogTitle());
 		changeMemberInfo(memberEditDTO, findMember);
 	}
 
@@ -151,6 +153,13 @@ public class MemberService {
 		memberRepository.findByNickname(nickname)
 			.ifPresent(m -> {
 				throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");
+			});
+	}
+
+	private void validateBlogTitle(String blogTitle) {
+		memberRepository.findByBlogTitle(blogTitle)
+			.ifPresent(m -> {
+				throw new IllegalArgumentException("이미 존재하는 블로그 제목입니다.");
 			});
 	}
 
