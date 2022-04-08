@@ -49,7 +49,6 @@ public class MemberService {
 	public void editMember(Long memberId, MemberEditDTO memberEditDTO) {
 		Member findMember = getMember(memberId);
 		validateEditNickname(findMember, memberEditDTO.getNickname());
-		validateEditBlogTitle(findMember, memberEditDTO.getBlogTitle());
 		changeMemberInfo(memberEditDTO, findMember);
 	}
 
@@ -161,15 +160,6 @@ public class MemberService {
 			memberRepository.findByNickname(nickname)
 				.ifPresent(m -> {
 					throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");
-				});
-		}
-	}
-
-	private void validateEditBlogTitle(Member findMember, String blogTitle) {
-		if (!blogTitle.equals(findMember.getBlogTitle())) {
-			memberRepository.findByBlogTitle(blogTitle)
-				.ifPresent(m -> {
-					throw new IllegalArgumentException("이미 존재하는 블로그 제목입니다.");
 				});
 		}
 	}
