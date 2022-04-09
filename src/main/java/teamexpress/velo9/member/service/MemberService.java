@@ -48,6 +48,7 @@ public class MemberService {
 	@Transactional
 	public void editMember(Long memberId, MemberEditDTO memberEditDTO) {
 		Member findMember = getMember(memberId);
+		validateEditNickname(findMember, memberEditDTO.getNickname());
 		changeMemberInfo(memberEditDTO, findMember);
 	}
 
@@ -152,6 +153,15 @@ public class MemberService {
 			.ifPresent(m -> {
 				throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");
 			});
+	}
+
+	public void validateEditNickname(Member findMember, String nickname) {
+		if (!nickname.equals(findMember.getNickname())) {
+			memberRepository.findByNickname(nickname)
+				.ifPresent(m -> {
+					throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");
+				});
+		}
 	}
 
 	public boolean getMemberByEmail(Authentication authentication, HttpSession session) {
