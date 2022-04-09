@@ -47,8 +47,6 @@ import teamexpress.velo9.post.dto.TemporaryPostWriteDTO;
 public class PostService {
 
 	private static final int MAX_TEMPORARY_COUNT = 20;
-	private static final int MAX_INTRODUCE_LENGTH = 150;
-	private static final int FIRST_INDEX = 0;
 
 	private final PostRepository postRepository;
 	private final SeriesRepository seriesRepository;
