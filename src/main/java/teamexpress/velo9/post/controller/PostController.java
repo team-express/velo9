@@ -2,6 +2,7 @@ package teamexpress.velo9.post.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
@@ -50,7 +51,7 @@ public class PostController extends BaseController {
 	}
 
 	@PostMapping("/write")
-	public Result write(@RequestBody PostSaveDTO postSaveDTO, HttpSession session) {
+	public Result write(@Valid @RequestBody PostSaveDTO postSaveDTO, HttpSession session) {
 		Post post = postService.write(postSaveDTO, getMemberId(session));
 		tagService.addTags(post, postSaveDTO.getTags());
 		tagService.removeUselessTags();

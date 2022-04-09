@@ -1,6 +1,7 @@
 package teamexpress.velo9.post.dto;
 
 import java.util.List;
+import javax.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import teamexpress.velo9.member.domain.Member;
@@ -18,8 +19,10 @@ public class PostSaveDTO {
 	private static final int FIRST_INDEX = 0;
 
 	private Long postId;
+	@NotBlank
 	private String title;
 	private String introduce;
+	@NotBlank
 	private String content;
 	private String access;
 
@@ -27,7 +30,6 @@ public class PostSaveDTO {
 	private List<String> tags;
 
 	private String thumbnailFileName;
-	private TemporaryPostReadDTO temporary;
 
 	public Post toPost(Member member, Series series, PostThumbnail postThumbnail) {
 		setIntroduce();
