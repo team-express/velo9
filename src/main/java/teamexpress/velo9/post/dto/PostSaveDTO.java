@@ -14,6 +14,9 @@ import teamexpress.velo9.post.domain.Series;
 @NoArgsConstructor
 public class PostSaveDTO {
 
+	private static final int MAX_INTRODUCE_LENGTH = 150;
+	private static final int FIRST_INDEX = 0;
+
 	private Long postId;
 	private String title;
 	private String introduce;
@@ -27,6 +30,9 @@ public class PostSaveDTO {
 	private TemporaryPostReadDTO temporary;
 
 	public Post toPost(Member member, Series series, PostThumbnail postThumbnail) {
+		setIntroduce();
+		setAccess();
+
 		return Post.builder()
 			.title(this.title)
 			.introduce(this.introduce)
@@ -37,5 +43,30 @@ public class PostSaveDTO {
 			.series(series)
 			.postThumbnail(postThumbnail)
 			.build();
+	}
+
+	private void setIntroduce() {
+		if (!isIntroduceNull()) {
+			return;
+		}
+		if (smallerThanMax(this.content)) {
+			this.introduce = this.content;
+			return;
+		}
+		this.introduce = this.content.substring(FIRST_INDEX, MAX_INTRODUCE_LENGTH);
+	}
+
+	private void setAccess() {
+		if (this.access == null) {
+			this.access = PostAccess.PUBLIC.name();
+		}
+	}
+
+	private boolean smallerThanMax(String content) {
+		return content.length() < MAX_INTRODUCE_LENGTH;
+	}
+
+	private boolean isIntroduceNull() {
+		return this.introduce == null;
 	}
 }

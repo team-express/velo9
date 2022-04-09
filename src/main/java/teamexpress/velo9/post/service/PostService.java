@@ -16,7 +16,6 @@ import teamexpress.velo9.member.domain.Member;
 import teamexpress.velo9.member.domain.MemberRepository;
 import teamexpress.velo9.post.api.PostThumbnailFileUploader;
 import teamexpress.velo9.post.domain.Post;
-import teamexpress.velo9.post.domain.PostAccess;
 import teamexpress.velo9.post.domain.PostRepository;
 import teamexpress.velo9.post.domain.PostStatus;
 import teamexpress.velo9.post.domain.PostTag;
@@ -71,8 +70,6 @@ public class PostService {
 
 		Post post = null;
 
-		setDefault(postSaveDTO);
-
 		if (postSaveDTO.getPostId() == null) {
 			post = postRepository.save(postSaveDTO.toPost(member, series, postThumbnail));
 		}
@@ -88,29 +85,6 @@ public class PostService {
 		}
 
 		return post;
-	}
-
-	private void setDefault(PostSaveDTO postSaveDTO) {
-		setAccess(postSaveDTO);
-		setIntroduce(postSaveDTO);
-	}
-
-	private void setAccess(PostSaveDTO postSaveDTO) {
-		if (postSaveDTO.getAccess() == null) {
-			postSaveDTO.setAccess(PostAccess.PUBLIC.name());
-		}
-	}
-
-	private void setIntroduce(PostSaveDTO postSaveDTO) {
-		if (postSaveDTO.getIntroduce() != null) {
-			return;
-		}
-		String content = postSaveDTO.getContent();
-		if (content.length() < MAX_INTRODUCE_LENGTH) {
-			postSaveDTO.setIntroduce(content);
-			return;
-		}
-		postSaveDTO.setIntroduce(content.substring(FIRST_INDEX, MAX_INTRODUCE_LENGTH));
 	}
 
 	@Transactional
