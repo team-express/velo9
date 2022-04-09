@@ -49,8 +49,19 @@ public class MailService {
 
 	private MailContentDTO getFindMailContent(FindInfoDTO mailDTO, String findUsername) {
 		String email = mailDTO.getEmail();
-		String title = "회원님의 아이디 입니다.";
-		String message = "회원님의 아이디는 : " + findUsername + " 입니다,";
+		String subStringName = getSubString(findUsername);
+		String title = "Velo9 회원님 아이디 관련 이메일입니다..";
+		String message = "회원님의 아이디는 : " + subStringName + " 입니다,";
 		return new MailContentDTO(email, title, message);
+	}
+
+	private String getSubString(String findUsername) {
+		int length = findUsername.length();
+		String username = findUsername.substring(0, getEndIndex(length));
+		return username + "*".repeat(Math.max(0, getEndIndex(length)));
+	}
+
+	private int getEndIndex(int length) {
+		return (int) (length / 2.0 + 0.5);
 	}
 }

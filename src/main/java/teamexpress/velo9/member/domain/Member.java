@@ -78,23 +78,15 @@ public class Member extends BaseEntity {
 		this.memberThumbnail = memberThumbnail;
 	}
 
-	public Member edit(String nickname, String introduce, String blogTitle, String socialEmail, String socialGithub) {
+	public void edit(String nickname, String introduce, String blogTitle, String socialEmail, String socialGithub) {
 		this.nickname = nickname;
 		this.introduce = introduce;
 		this.blogTitle = blogTitle;
 		this.socialEmail = socialEmail;
 		this.socialGithub = socialGithub;
-		return this;
 	}
 
 	public void changePassword(String encodedPassword) {
 		password = encodedPassword;
-	}
-
-	public void registerSocialMember(String username, String password, String nickname) {
-		this.username = username;
-		this.password = password;
-		this.nickname = nickname;
-		this.blogTitle = nickname;
 	}
 }
