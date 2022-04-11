@@ -106,10 +106,12 @@ class PostControllerTest {
 				relaxedRequestFields(
 					fieldWithPath("postId").description("해당 필드가 없으면(null) 새 글(또는 임시글)이 작성됩니다.\n"
 						+ "해당 필드가 있으면 기존에 존재하는 글(또는 임시글)의 수정(덮어쓰기)가 됩니다.").optional(),
-					fieldWithPath("title").description(""),
-					fieldWithPath("introduce").description("없으면 백엔드에서 알아서 content 일부 떼와서 넣어줍니다.").optional(),
-					fieldWithPath("content").description(""),
-					fieldWithPath("access").description("PUBLIC(전체공개), PRIVATE(비공개) 중에서 적습니다(화면에서는 기본적으로 public에 파랗게 색칠되어 있습니다.)"),
+					fieldWithPath("title").description("제목"),
+					fieldWithPath("introduce").description("새 글작성일 때 introduce가 비어있을 경우 content의 150자 이내가 소개글이 됩니다.\n"
+						+ "수정의 경우 이전의 소개글이 유지됩니다.").optional(),
+					fieldWithPath("content").description("본문내용"),
+					fieldWithPath("access").description("PUBLIC(전체공개), PRIVATE(비공개) 중에서 적습니다.\n"
+						+ "적지 않으면 새 글의 경우 public이 들어가고, 수정의 경우 유지가 됩니다."),
 					fieldWithPath("seriesId").description("상세조건에서 시리즈를 선택하면 선택된 시리즈Object내부의 id값을 의미합니다.").optional(),
 					fieldWithPath("tags").description("태그를 입력했다면, array로([]) 주십시오").optional(),
 					fieldWithPath("thumbnailFileName").description("업로드나, 게시글 볼 때 반환되는 썸네일 오브젝트를 변수로 가지고 있다가\n"

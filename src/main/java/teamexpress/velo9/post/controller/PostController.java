@@ -2,6 +2,7 @@ package teamexpress.velo9.post.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import teamexpress.velo9.common.controller.BaseController;
 import teamexpress.velo9.common.domain.PostResult;
 import teamexpress.velo9.common.domain.Result;
+import teamexpress.velo9.member.security.oauth.SessionConst;
 import teamexpress.velo9.post.domain.Post;
 import teamexpress.velo9.post.dto.LookPostDTO;
 import teamexpress.velo9.post.dto.LoveDTO;
@@ -49,7 +51,7 @@ public class PostController extends BaseController {
 	}
 
 	@PostMapping("/write")
-	public Result write(@RequestBody PostSaveDTO postSaveDTO, HttpSession session) {
+	public Result write(@Valid @RequestBody PostSaveDTO postSaveDTO, HttpSession session) {
 		Post post = postService.write(postSaveDTO, getMemberId(session));
 		tagService.addTags(post, postSaveDTO.getTags());
 		tagService.removeUselessTags();
@@ -124,7 +126,10 @@ public class PostController extends BaseController {
 
 	@GetMapping("/{nickname}/read/{postId}")
 	public ReadDTO readPost(@PathVariable String nickname, @PathVariable Long postId, HttpSession session) {
-		postService.look(postId, getMemberId(session));
+		if (session.getAttribute(SessionConst.LOGIN_MEMBER) != null) {
+			postService.look(postId, getMemberId(session));
+		}
+
 		return postService.findReadPost(postId, nickname);
 	}
 

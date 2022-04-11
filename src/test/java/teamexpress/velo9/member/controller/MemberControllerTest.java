@@ -114,10 +114,10 @@ class MemberControllerTest {
 			.andDo(document("PostEditMember",
 				requestFields(
 					fieldWithPath("nickname").description("바꿀 nickname(바꾸지 않더라도 기존 내용을 주긴 해야합니다.)"),
-					fieldWithPath("introduce").description("바꿀 introduce(위 사항은 아래 모두 마찬가지입니다.)"),
+					fieldWithPath("introduce").description("바꿀 introduce(위 사항은 아래 모두 마찬가지입니다.)").optional(),
 					fieldWithPath("blogTitle").description("바꿀 blogTitle"),
-					fieldWithPath("socialEmail").description("바꿀 socialEmail"),
-					fieldWithPath("socialGithub").description("socialGithub 내용")
+					fieldWithPath("socialEmail").description("바꿀 socialEmail").optional(),
+					fieldWithPath("socialGithub").description("socialGithub 내용").optional()
 				)
 			));
 	}

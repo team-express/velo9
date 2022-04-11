@@ -70,10 +70,6 @@ public class Member extends BaseEntity {
 	@JsonIgnore
 	private List<Series> series = new ArrayList<>();
 
-	public String getRoleKey() {
-		return role.getKey();
-	}
-
 	public void uploadThumbnail(MemberThumbnail memberThumbnail) {
 		this.memberThumbnail = memberThumbnail;
 	}

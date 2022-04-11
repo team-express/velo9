@@ -25,6 +25,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.util.StringUtils;
 import teamexpress.velo9.member.domain.Member;
 
 @Entity
@@ -82,9 +83,13 @@ public class Post {
 
 	public void edit(String title, String introduce, String content, String access, Series series, PostThumbnail postThumbnail) {
 		this.title = title;
-		this.introduce = introduce;
+		if (StringUtils.hasText(introduce)) {
+			this.introduce = introduce;
+		}
 		this.content = content;
-		this.access = PostAccess.valueOf(access);
+		if (StringUtils.hasText(access)) {
+			this.access = PostAccess.valueOf(access);
+		}
 		this.status = PostStatus.GENERAL;
 		this.series = series;
 		this.postThumbnail = postThumbnail;
