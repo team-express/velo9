@@ -2,11 +2,11 @@ package teamexpress.velo9.member.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,12 +43,12 @@ public class MemberController extends BaseController {
 	}
 
 	@PostMapping("/signup")
-	public void addMember(@Validated @RequestBody MemberSignupDTO memberSignupDTO) {
+	public void addMember(@Valid @RequestBody MemberSignupDTO memberSignupDTO) {
 		memberService.join(memberSignupDTO);
 	}
 
 	@PostMapping("/sendMail")
-	public void sendMail(@Validated @RequestBody MailDTO mailDTO, HttpSession session) {
+	public void sendMail(@Valid @RequestBody MailDTO mailDTO, HttpSession session) {
 		String randomNumber = getNumber();
 		memberService.findEmail(mailDTO);
 		mailService.sendNumberMail(mailDTO.getEmail(), randomNumber);
@@ -90,19 +90,19 @@ public class MemberController extends BaseController {
 	}
 
 	@PostMapping("/socialSignup")
-	public void socialSignup(@Validated @RequestBody SocialSignupDTO socialSignupDTO, HttpServletRequest request) {
+	public void socialSignup(@Valid @RequestBody SocialSignupDTO socialSignupDTO, HttpServletRequest request) {
 		memberService.joinSocial(socialSignupDTO);
 		new SecurityContextLogoutHandler().logout(request, null, null);
 	}
 
 	@PostMapping("/findId")
-	public void findId(@Validated @RequestBody FindInfoDTO findInfoDTO) {
+	public void findId(@Valid @RequestBody FindInfoDTO findInfoDTO) {
 		String findUsername = memberService.findIdByEmail(findInfoDTO);
 		mailService.sendMailFindId(findInfoDTO, findUsername);
 	}
 
 	@PostMapping("/findPw")
-	public Result findPw(@Validated @RequestBody FindInfoDTO findInfoDTO, HttpSession session) {
+	public Result findPw(@Valid @RequestBody FindInfoDTO findInfoDTO, HttpSession session) {
 		String randomNumber = getNumber();
 		Long memberId = memberService.findPw(findInfoDTO);
 		mailService.sendNumberMail(findInfoDTO.getEmail(), randomNumber);
