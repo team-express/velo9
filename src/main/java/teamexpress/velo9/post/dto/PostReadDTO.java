@@ -17,7 +17,6 @@ public class PostReadDTO {
 	private String introduce;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd-HH-mm-ss", timezone = "Asia/Seoul")
 	private LocalDateTime createdDate;
-	private int replyCount;
 	private ThumbnailResponseDTO thumbnail;
 	private List<String> tags;
 
@@ -26,7 +25,6 @@ public class PostReadDTO {
 		title = post.getTitle();
 		introduce = post.getIntroduce();
 		createdDate = post.getCreatedDate();
-		replyCount = post.getReplyCount();
 		thumbnail = makeThumbnail(post.getPostThumbnail());
 
 		tags = post.getPostTags().stream()

@@ -44,7 +44,6 @@ public class Post {
 	private String introduce;
 	private String content;
 	private int loveCount;
-	private int replyCount;
 	private int viewCount;
 
 	@ManyToOne(fetch = FetchType.LAZY)
