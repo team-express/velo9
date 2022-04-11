@@ -102,7 +102,8 @@ public class PostService {
 	}
 
 	public PostWriteDTO getPostById(Long id) {
-		Post post = postRepository.findById(id).orElse(new Post());
+		Post post = postRepository.findById(id).orElseThrow(
+			() -> new IllegalStateException("존재하지 않는 포스트입니다."));
 		List<PostTag> postTags = postTagRepository.findByPost(post);
 		return new PostWriteDTO(post, postTags);
 	}

@@ -46,8 +46,8 @@ public class PostController extends BaseController {
 	private final TagService tagService;
 
 	@GetMapping("/write")
-	public PostWriteDTO write(@RequestParam(value = "id", required = false) Long id) {
-		return postService.getPostById(id);
+	public PostWriteDTO write(@RequestParam(required = false) Long id) {
+		return id == null ? null : postService.getPostById(id);
 	}
 
 	@PostMapping("/write")
