@@ -44,7 +44,6 @@ public class PostControllerTest {
 			mockMvc.perform(get("/write")
 					.param("id", String.valueOf(postId + 1)))
 				.andExpect(status().isOk())).isInstanceOf(Exception.class);
-
 	}
 
 	@Test
