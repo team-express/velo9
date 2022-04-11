@@ -95,13 +95,13 @@ public class PostService {
 	}
 
 	@Transactional
-	public void delete(Long id) {
+	public void remove(Long id) {
 		lookRepository.deleteByPostId(id);
 		loveRepository.deleteByPostId(id);
 		postRepository.deleteById(id);
 	}
 
-	public PostWriteDTO getPostById(Long id) {
+	public PostWriteDTO findPostById(Long id) {
 		Post post = postRepository.findById(id).orElseThrow(
 			() -> new IllegalStateException("존재하지 않는 포스트입니다."));
 		List<PostTag> postTags = postTagRepository.findByPost(post);
@@ -113,7 +113,7 @@ public class PostService {
 		return seriesList.map(SeriesDTO::new);
 	}
 
-	public Slice<PostReadDTO> findPost(String nickname, String tagName, Pageable pageable) {
+	public Slice<PostReadDTO> findMainPost(String nickname, String tagName, Pageable pageable) {
 		Slice<Post> posts = postRepository.findPost(nickname, tagName, pageable);
 		return posts.map(PostReadDTO::new);
 	}
@@ -137,7 +137,7 @@ public class PostService {
 		return postRepository.search(searchCondition, pageable).map(PostMainDTO::new);
 	}
 
-	public List<TempSavedPostDTO> getTempSavedPost(Long id) {
+	public List<TempSavedPostDTO> findTempPosts(Long id) {
 		List<Post> findPosts = postRepository.getTempSavedPost(id, PostStatus.TEMPORARY);
 
 		return findPosts.stream()
@@ -185,12 +185,11 @@ public class PostService {
 	}
 
 	private Long writeNewTemporary(TemporaryPostWriteDTO temporaryPostWriteDTO, Long memberId) {
-		checkCount(memberId);
+		checkCountTemp(memberId);
 		Member member = getMember(memberId);
 		return postRepository.save(
-				temporaryPostWriteDTO.toPost(
-					member, postRepository.getCreatedDate(temporaryPostWriteDTO.getPostId())))
-			.getId();
+			temporaryPostWriteDTO.toPost(
+				member, postRepository.getCreatedDate(temporaryPostWriteDTO.getPostId()))).getId();
 	}
 
 	private void toggleLove(Member member, Post post) {
@@ -211,23 +210,23 @@ public class PostService {
 		}
 	}
 
-	private void checkCount(Long memberId) {
+	private void checkCountTemp(Long memberId) {
 		if (postRepository.countByMemberAndStatus(memberRepository.findById(memberId).orElseThrow(), PostStatus.TEMPORARY) >= MAX_TEMPORARY_COUNT) {
 			throw new IllegalStateException("임시저장은 " + MAX_TEMPORARY_COUNT + "개까지만 가능");
 		}
 	}
 
-	public Slice<LovePostDTO> getLovePosts(Long memberId, PageRequest page) {
+	public Slice<LovePostDTO> findLovePosts(Long memberId, PageRequest page) {
 		Slice<Post> lovePosts = postRepository.findByJoinLove(memberId, page);
 		return lovePosts.map(LovePostDTO::new);
 	}
 
-	public Slice<LookPostDTO> getLookPosts(Long memberId, PageRequest page) {
+	public Slice<LookPostDTO> findReadPost(Long memberId, PageRequest page) {
 		Slice<Post> lookPosts = postRepository.findByJoinLook(memberId, page);
 		return lookPosts.map(LookPostDTO::new);
 	}
 
-	public ReadDTO findReadPost(Long postId, String nickname) {
+	public ReadDTO findPostDetails(Long postId, String nickname) {
 		Post findPost = postRepository.findPostMemberById(postId).orElseThrow();
 		checkOwner(findPost, nickname);
 		List<Post> pagePost = postRepository.findPrevNextPost(findPost);
@@ -235,12 +234,12 @@ public class PostService {
 		return new ReadDTO(findPost, pagePost, postTags);
 	}
 
-	public Slice<SeriesPostSummaryDTO> findSeriesPost(String nickname, String seriesName, PageRequest page) {
+	public Slice<SeriesPostSummaryDTO> findPostsInSeries(String nickname, String seriesName, PageRequest page) {
 		Slice<Post> seriesPosts = postRepository.findByJoinSeries(nickname, seriesName, page);
 		return seriesPosts.map(SeriesPostSummaryDTO::new);
 	}
 
-	public List<SeriesReadDTO> getUsedSeries(String nickname) {
+	public List<SeriesReadDTO> findAllSeries(String nickname) {
 		return seriesRepository.findUsedSeries(nickname)
 			.stream().map(SeriesReadDTO::new).collect(Collectors.toList());
 	}

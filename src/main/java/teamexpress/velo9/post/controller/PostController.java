@@ -47,7 +47,7 @@ public class PostController extends BaseController {
 
 	@GetMapping("/write")
 	public PostWriteDTO write(@RequestParam(required = false) Long id) {
-		return id == null ? null : postService.getPostById(id);
+		return id == null ? null : postService.findPostById(id);
 	}
 
 	@PostMapping("/write")
@@ -65,7 +65,7 @@ public class PostController extends BaseController {
 
 	@PostMapping("/delete")
 	public void delete(@RequestParam Long id) {
-		postService.delete(id);
+		postService.remove(id);
 		tagService.removeUselessTags();
 	}
 
@@ -75,7 +75,7 @@ public class PostController extends BaseController {
 		@RequestParam(defaultValue = "0") int page) {
 
 		Slice<SeriesDTO> series = postService.findSeries(nickname, PageRequest.of(page, SERIES_SIZE));
-		List<SeriesReadDTO> seriesDTOList = postService.getUsedSeries(nickname);
+		List<SeriesReadDTO> seriesDTOList = postService.findAllSeries(nickname);
 		return new PostResult(series, seriesDTOList);
 	}
 
@@ -88,23 +88,23 @@ public class PostController extends BaseController {
 
 		PageRequest pageRequest = getPageRequest(page, sortCondition);
 
-		return postService.findSeriesPost(nickname, seriesName, pageRequest);
+		return postService.findPostsInSeries(nickname, seriesName, pageRequest);
 	}
 
 	@GetMapping("/{nickname}/main")
-	public PostResult postsRead(@PathVariable String nickname,
+	public PostResult main(@PathVariable String nickname,
 		@RequestParam(required = false) String tagName,
 		@RequestParam(defaultValue = "0") int page) {
 
 		PageRequest pageRequest = PageRequest.of(page, SIZE, Sort.by(Direction.DESC, "createdDate"));
-		Slice<PostReadDTO> posts = postService.findPost(nickname, tagName, pageRequest);
-		List<TagDTO> usedTags = tagService.getUsedTags(nickname);
+		Slice<PostReadDTO> posts = postService.findMainPost(nickname, tagName, pageRequest);
+		List<TagDTO> usedTags = tagService.findAllTags(nickname);
 		return new PostResult(posts, usedTags);
 	}
 
 	@GetMapping("/temp")
 	public Result tempPostsRead(HttpSession session) {
-		return new Result(postService.getTempSavedPost(getMemberId(session)));
+		return new Result(postService.findTempPosts(getMemberId(session)));
 	}
 
 	@PostMapping("/love")
@@ -115,22 +115,22 @@ public class PostController extends BaseController {
 	@GetMapping("/archive/like")
 	public Slice<LovePostDTO> lovePostRead(@RequestParam(defaultValue = "0") int page, HttpSession session) {
 		PageRequest pageRequest = PageRequest.of(page, ARCHIVE_SIZE, Sort.by(Direction.DESC, "createdDate"));
-		return postService.getLovePosts(getMemberId(session), pageRequest);
+		return postService.findLovePosts(getMemberId(session), pageRequest);
 	}
 
 	@GetMapping("/archive/recent")
 	public Slice<LookPostDTO> lookPostRead(@RequestParam(defaultValue = "0") int page, HttpSession session) {
 		PageRequest pageRequest = PageRequest.of(page, ARCHIVE_SIZE, Sort.by(Direction.DESC, "createdDate"));
-		return postService.getLookPosts(getMemberId(session), pageRequest);
+		return postService.findReadPost(getMemberId(session), pageRequest);
 	}
 
 	@GetMapping("/{nickname}/read/{postId}")
-	public ReadDTO readPost(@PathVariable String nickname, @PathVariable Long postId, HttpSession session) {
+	public ReadDTO read(@PathVariable String nickname, @PathVariable Long postId, HttpSession session) {
 		if (session.getAttribute(SessionConst.LOGIN_MEMBER) != null) {
 			postService.look(postId, getMemberId(session));
 		}
 
-		return postService.findReadPost(postId, nickname);
+		return postService.findPostDetails(postId, nickname);
 	}
 
 	private PageRequest getPageRequest(int page, String sortValue) {

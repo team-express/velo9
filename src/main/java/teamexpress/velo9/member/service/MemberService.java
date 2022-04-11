@@ -157,16 +157,12 @@ public class MemberService {
 
 	public void validateEditNickname(Member findMember, String nickname) {
 		if (!nickname.equals(findMember.getNickname())) {
-			memberRepository.findByNickname(nickname)
-				.ifPresent(m -> {
-					throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");
-				});
+			validateNickname(nickname);
 		}
 	}
 
 	public boolean getMemberByEmail(Authentication authentication, HttpSession session) {
-		OAuth2User principal = (OAuth2User) authentication.getPrincipal();
-		Map<String, Object> attributes = principal.getAttributes();
+		Map<String, Object> attributes = getAttributes();
 		String email = (String) attributes.get("email");
 		Member member = memberRepository.findByEmail(email).orElse(null);
 		saveSession(member, session);
