@@ -1,6 +1,7 @@
 package teamexpress.velo9.post.dto;
 
 import java.util.List;
+import javax.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import teamexpress.velo9.member.domain.Member;
@@ -14,12 +15,14 @@ import teamexpress.velo9.post.domain.Series;
 @NoArgsConstructor
 public class PostSaveDTO {
 
-	private static final int MAX = 150;
+	private static final int MAX_INTRODUCE_LENGTH = 150;
 	private static final int FIRST_INDEX = 0;
 
 	private Long postId;
+	@NotBlank
 	private String title;
 	private String introduce;
+	@NotBlank
 	private String content;
 	private String access;
 
@@ -27,7 +30,6 @@ public class PostSaveDTO {
 	private List<String> tags;
 
 	private String thumbnailFileName;
-	private TemporaryPostReadDTO temporary;
 
 	public Post toPost(Member member, Series series, PostThumbnail postThumbnail) {
 		setIntroduce();
@@ -53,7 +55,7 @@ public class PostSaveDTO {
 			this.introduce = this.content;
 			return;
 		}
-		this.introduce = this.content.substring(FIRST_INDEX, MAX);
+		this.introduce = this.content.substring(FIRST_INDEX, MAX_INTRODUCE_LENGTH);
 	}
 
 	private void setAccess() {
@@ -63,7 +65,7 @@ public class PostSaveDTO {
 	}
 
 	private boolean smallerThanMax(String content) {
-		return content.length() < MAX;
+		return content.length() < MAX_INTRODUCE_LENGTH;
 	}
 
 	private boolean isIntroduceNull() {

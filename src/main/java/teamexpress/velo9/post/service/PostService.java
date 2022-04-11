@@ -66,7 +66,7 @@ public class PostService {
 			postThumbnailRepository.save(postThumbnail);
 		}
 
-		Post post = new Post();
+		Post post = null;
 
 		if (postSaveDTO.getPostId() == null) {
 			post = postRepository.save(postSaveDTO.toPost(member, series, postThumbnail));
@@ -154,7 +154,7 @@ public class PostService {
 
 	private Member getMember(Long memberId) {
 		if (memberId == null) {
-			throw new NullPointerException("no member is NOT NULL!!!");
+			throw new NullPointerException("member id MUST NOT BE NULL!!!");
 		}
 
 		return memberRepository.findById(memberId)
@@ -205,8 +205,7 @@ public class PostService {
 	}
 
 	private void makeLook(Long memberId, Long postId) {
-		if (memberId != null && lookRepository.findByPostAndMember(postId, memberId).isEmpty()) {
-			//세션문제가 해결되면 이 주석과 함께 수정할것
+		if (lookRepository.findByPostAndMember(postId, memberId).isEmpty()) {
 			lookRepository.saveLook(memberId, postId);
 		}
 	}
