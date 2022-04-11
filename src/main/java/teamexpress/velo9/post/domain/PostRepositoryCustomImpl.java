@@ -99,16 +99,6 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 		return new SliceImpl<>(content, pageable, hasNext);
 	}
 
-	@Override
-	public Post findReadPost(Long postId, String nickname) {
-		return queryFactory
-			.selectFrom(post)
-			.join(post.member).fetchJoin()
-			.where(post.id.eq(postId))
-			.where(post.member.nickname.eq(nickname))
-			.fetchOne();
-	}
-
 	public Slice<Post> findByJoinSeries(String nickname, String seriesName, Pageable pageable) {
 		JPAQuery<Post> query = queryFactory
 			.selectFrom(post)

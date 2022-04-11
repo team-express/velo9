@@ -187,9 +187,8 @@ public class PostService {
 		checkCount(memberId);
 		Member member = getMember(memberId);
 		return postRepository.save(
-				temporaryPostWriteDTO.toPost(
-					member, postRepository.getCreatedDate(temporaryPostWriteDTO.getPostId())))
-			.getId();
+			temporaryPostWriteDTO.toPost(
+				member, postRepository.getCreatedDate(temporaryPostWriteDTO.getPostId()))).getId();
 	}
 
 	private void toggleLove(Member member, Post post) {

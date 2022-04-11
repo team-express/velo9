@@ -51,7 +51,7 @@ public class MemberController extends BaseController {
 	public void sendMail(@Validated @RequestBody MailDTO mailDTO, HttpSession session) {
 		String randomNumber = getNumber();
 		memberService.findEmail(mailDTO);
-		mailService.sendMail(mailDTO.getEmail(), randomNumber);
+		mailService.sendNumberMail(mailDTO.getEmail(), randomNumber);
 		session.setAttribute(SessionConst.RANDOM_NUMBER, randomNumber);
 		session.setMaxInactiveInterval(INTERVAL);
 	}
@@ -105,7 +105,7 @@ public class MemberController extends BaseController {
 	public Result findPw(@Validated @RequestBody FindInfoDTO findInfoDTO, HttpSession session) {
 		String randomNumber = getNumber();
 		Long memberId = memberService.findPw(findInfoDTO);
-		mailService.sendMail(findInfoDTO.getEmail(), randomNumber);
+		mailService.sendNumberMail(findInfoDTO.getEmail(), randomNumber);
 		session.setAttribute(SessionConst.RANDOM_NUMBER, randomNumber);
 		session.setMaxInactiveInterval(INTERVAL);
 		return new Result(memberId);
@@ -142,7 +142,6 @@ public class MemberController extends BaseController {
 		if (!isEquals(certificationNumber, numberDTO)) {
 			throw new IllegalArgumentException("인증번호가 일치하지 않습니다.");
 		}
-		session.removeAttribute(SessionConst.RANDOM_NUMBER);
 	}
 
 	private boolean isEquals(String certificationNumber, NumberDTO numberDTO) {

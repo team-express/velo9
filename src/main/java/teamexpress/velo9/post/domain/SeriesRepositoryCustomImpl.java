@@ -2,9 +2,11 @@ package teamexpress.velo9.post.domain;
 
 import static teamexpress.velo9.post.domain.QSeries.series;
 
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
-import java.util.Optional;
+import java.util.function.Supplier;
 import javax.persistence.EntityManager;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -22,8 +24,8 @@ public class SeriesRepositoryCustomImpl implements SeriesRepositoryCustom {
 	public Slice<Series> findPostBySeriesName(String nickname, Pageable pageable) {
 		List<Series> content = queryFactory
 			.selectFrom(series)
-			.where(series.member.nickname.eq(nickname)
-				.and(series.posts.isNotEmpty()))
+			.where(series.posts.isNotEmpty()
+				.and(checkNickname(nickname)))
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize() + 1)
 			.fetch();
@@ -40,5 +42,17 @@ public class SeriesRepositoryCustomImpl implements SeriesRepositoryCustom {
 			hasNext = true;
 		}
 		return hasNext;
+	}
+
+	private BooleanBuilder nullSafeBuilder(Supplier<BooleanExpression> f) {
+		try {
+			return new BooleanBuilder(f.get());
+		} catch (NullPointerException e) {
+			return new BooleanBuilder();
+		}
+	}
+
+	private BooleanBuilder checkNickname(String nickname) {
+		return nullSafeBuilder(() -> series.member.nickname.eq(nickname));
 	}
 }

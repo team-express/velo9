@@ -15,8 +15,8 @@ public class MailService {
 	private final MailSender mailSender;
 
 	@Async
-	public void sendMail(String email, String number) {
-		send(email, number);
+	public void sendNumberMail(String email, String number) {
+		sendNumber(email, number);
 	}
 
 	@Async
@@ -26,7 +26,7 @@ public class MailService {
 		mailSender.send(message);
 	}
 
-	private void send(String email, String number) {
+	private void sendNumber(String email, String number) {
 		MailContentDTO mailContent = getMailContent(email, number);
 		SimpleMailMessage message = setEmailContent(mailContent);
 		mailSender.send(message);
@@ -43,7 +43,7 @@ public class MailService {
 
 	private MailContentDTO getMailContent(String email, String number) {
 		String title = "Velo9 이메일 인증번호입니다.";
-		String message = "인증번호 : " + number;
+		String message = "인증번호 : " + number + " 인증 번호는 3분간 유효합니다.";
 		return new MailContentDTO(email, title, message);
 	}
 
