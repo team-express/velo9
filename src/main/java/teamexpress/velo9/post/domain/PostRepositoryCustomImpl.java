@@ -34,12 +34,12 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 	public Slice<Post> findPost(String nickname, String tagName, Pageable pageable) {
 		List<Post> content =
 			queryFactory.selectFrom(post)
-			.where(post.member.nickname.eq(nickname))
-			.where(searchTag(tagName))
-			.where(openPost())
-			.offset(pageable.getOffset())
-			.limit(pageable.getPageSize() + 1)
-			.fetch();
+				.where(nicknameEq(nickname)
+					.and(searchTag(tagName))
+					.and(openPost()))
+				.offset(pageable.getOffset())
+				.limit(pageable.getPageSize() + 1)
+				.fetch();
 
 		boolean hasNext = isHasNext(content, pageable);
 
@@ -99,21 +99,10 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 		return new SliceImpl<>(content, pageable, hasNext);
 	}
 
-	@Override
-	public Post findReadPost(Long postId, String nickname) {
-		return queryFactory
-			.selectFrom(post)
-			.join(post.member).fetchJoin()
-			.where(post.id.eq(postId))
-			.where(post.member.nickname.eq(nickname))
-			.fetchOne();
-	}
-
 	public Slice<Post> findByJoinSeries(String nickname, String seriesName, Pageable pageable) {
 		JPAQuery<Post> query = queryFactory
 			.selectFrom(post)
-			.where(post.member.nickname.eq(nickname))
-			.where(post.series.name.eq(seriesName))
+			.where(nicknameEq(nickname).and(seriesNameEq(seriesName)))
 			.offset(pageable.getOffset());
 
 		List<Post> content = getQuerydsl().applyPagination(pageable, query).limit(pageable.getPageSize() + 1).fetch();
@@ -128,6 +117,7 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 		return queryFactory
 			.select(post)
 			.from(post)
+			.where(openPost())
 			.where(post.id.eq(
 					select(post.id.max())
 						.from(post)
@@ -207,6 +197,14 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 
 	private BooleanBuilder searchTag(String tagName) {
 		return tagName != null ? nullSafeBuilder(() -> postTag.tag.name.eq(tagName)) : new BooleanBuilder();
+	}
+
+	private BooleanBuilder nicknameEq(String nickname) {
+		return nullSafeBuilder(() -> post.member.nickname.eq(nickname));
+	}
+
+	private BooleanBuilder seriesNameEq(String seriesName) {
+		return nullSafeBuilder(() -> post.series.name.eq(seriesName));
 	}
 
 	private BooleanBuilder checkPostId(Long postId) {
