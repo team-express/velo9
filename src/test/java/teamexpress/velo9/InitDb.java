@@ -106,14 +106,8 @@ public class InitDb {
 
 			Tag tag1 = new Tag("tag1");
 			Tag tag2 = new Tag("tag2");
-			Tag tag3 = new Tag("tag3");
-			Tag tag4 = new Tag("tag4");
-			Tag tag5 = new Tag("tag5");
 			tagRepository.save(tag1);
 			tagRepository.save(tag2);
-			tagRepository.save(tag3);
-			tagRepository.save(tag4);
-			tagRepository.save(tag5);
 
 			Post savedPost = postRepository.save(Post.builder()
 				.member(member)
