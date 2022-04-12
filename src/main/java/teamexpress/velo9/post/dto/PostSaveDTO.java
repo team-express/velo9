@@ -24,6 +24,7 @@ public class PostSaveDTO {
 	private String introduce;
 	@NotBlank
 	private String content;
+	@NotBlank
 	private String access;
 
 	private Long seriesId;
@@ -33,7 +34,6 @@ public class PostSaveDTO {
 
 	public Post toPost(Member member, Series series, PostThumbnail postThumbnail) {
 		setIntroduce();
-		setAccess();
 
 		return Post.builder()
 			.title(this.title)
@@ -48,7 +48,7 @@ public class PostSaveDTO {
 	}
 
 	private void setIntroduce() {
-		if (!isIntroduceNull()) {
+		if (!isIntroduceInvalid()) {
 			return;
 		}
 		if (smallerThanMax(this.content)) {
@@ -58,17 +58,11 @@ public class PostSaveDTO {
 		this.introduce = this.content.substring(FIRST_INDEX, MAX_INTRODUCE_LENGTH);
 	}
 
-	private void setAccess() {
-		if (this.access == null) {
-			this.access = PostAccess.PUBLIC.name();
-		}
-	}
-
 	private boolean smallerThanMax(String content) {
 		return content.length() < MAX_INTRODUCE_LENGTH;
 	}
 
-	private boolean isIntroduceNull() {
-		return this.introduce == null;
+	private boolean isIntroduceInvalid() {
+		return this.introduce == null || this.introduce.isBlank();
 	}
 }
