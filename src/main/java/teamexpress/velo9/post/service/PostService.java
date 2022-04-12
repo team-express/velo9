@@ -73,6 +73,7 @@ public class PostService {
 		}
 
 		if (postSaveDTO.getPostId() != null) {
+			//체크
 			post = postRepository.findById(postSaveDTO.getPostId()).orElseThrow();
 			post.edit(postSaveDTO.getTitle(),
 				postSaveDTO.getIntroduce(),

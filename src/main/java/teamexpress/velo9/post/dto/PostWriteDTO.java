@@ -17,7 +17,7 @@ public class PostWriteDTO {
 	private String content;
 	private String access;
 
-	private Long seriesId;
+	private SeriesReadDTO series;
 	private List<String> tags;
 
 	private ThumbnailResponseDTO thumbnail;
@@ -34,7 +34,7 @@ public class PostWriteDTO {
 		}
 
 		if (post.getSeries() != null) {
-			this.seriesId = post.getSeries().getId();
+			this.series = new SeriesReadDTO(post.getSeries());
 		}
 
 		this.tags = postTags.stream()

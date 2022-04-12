@@ -1,4 +1,4 @@
-package teamexpress.velo9.post.controller;
+package teamexpress.velo9.post.controller.docs;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
