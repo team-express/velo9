@@ -222,7 +222,7 @@ public class MemberService {
 			.password(passwordEncoder.encode(socialSignupDTO.getPassword()))
 			.nickname(socialSignupDTO.getNickname())
 			.email(email)
-			.role(Role.ROLE_SOCIAL)
+			.role(Role.ROLE_USER)
 			.memberThumbnail(memberThumbnail)
 			.build();
 
