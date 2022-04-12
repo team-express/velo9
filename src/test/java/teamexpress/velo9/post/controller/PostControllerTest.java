@@ -22,7 +22,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import teamexpress.velo9.member.security.oauth.SessionConst;
 import teamexpress.velo9.post.domain.PostStatus;
-import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -58,7 +57,7 @@ public class PostControllerTest {
 	@Test
 	@Transactional
 	@Rollback
-	void 새글작성시_제목_내용_공개설정이_비어있으면_에러가_발생한다(){
+	void 새글작성시_제목_내용_공개설정이_비어있으면_에러가_발생한다() {
 
 		//제목이 없는 경우
 		assertThatThrownBy(() ->
@@ -100,7 +99,7 @@ public class PostControllerTest {
 	@Test
 	@Transactional
 	@Rollback
-	void 새글작성시_소개글을_주지_않거나_공백일_경우_본문에서_일부분을_추출한다()throws Exception {
+	void 새글작성시_소개글을_주지_않거나_공백일_경우_본문에서_일부분을_추출한다() throws Exception {
 
 		//소개글 주지 않은 경우
 		mockMvc.perform(post("/write")
@@ -116,7 +115,7 @@ public class PostControllerTest {
 		Query query = em.createNativeQuery("select MAX(post_id) from post");//방금 작성한 글의
 		Long postId = ((BigInteger) query.getSingleResult()).longValue();
 
-		query = em.createNativeQuery("select introduce from post where post_id = "+postId);//소개글
+		query = em.createNativeQuery("select introduce from post where post_id = " + postId);//소개글
 		assertThat(query.getSingleResult().equals("333333")).isTrue();
 
 		//빈 걸 준 경우
@@ -134,7 +133,7 @@ public class PostControllerTest {
 		query = em.createNativeQuery("select MAX(post_id) from post");
 		postId = ((BigInteger) query.getSingleResult()).longValue();
 
-		query = em.createNativeQuery("select introduce from post where post_id = "+postId);
+		query = em.createNativeQuery("select introduce from post where post_id = " + postId);
 		assertThat(query.getSingleResult().equals("333333")).isTrue();
 
 		//공백 준 경우
@@ -152,14 +151,14 @@ public class PostControllerTest {
 		query = em.createNativeQuery("select MAX(post_id) from post");
 		postId = ((BigInteger) query.getSingleResult()).longValue();
 
-		query = em.createNativeQuery("select introduce from post where post_id = "+postId);
+		query = em.createNativeQuery("select introduce from post where post_id = " + postId);
 		assertThat(query.getSingleResult().equals("333333")).isTrue();
 	}
 
 	@Test
 	@Transactional
 	@Rollback
-	void 새글작성시_status는_무조건_GENERAL_tempPost_없다() throws Exception{
+	void 새글작성시_status는_무조건_GENERAL_tempPost_없다() throws Exception {
 		mockMvc.perform(post("/write")
 				.sessionAttr(SessionConst.LOGIN_MEMBER, 2l)
 				.content("{"
@@ -173,33 +172,33 @@ public class PostControllerTest {
 		Query query = em.createNativeQuery("select MAX(post_id) from post");
 		Long postId = ((BigInteger) query.getSingleResult()).longValue();
 
-		query = em.createNativeQuery("select status from post where post_id = "+postId);
+		query = em.createNativeQuery("select status from post where post_id = " + postId);
 		assertThat(query.getSingleResult().equals(PostStatus.GENERAL.name())).isTrue();
-		query = em.createNativeQuery("select temporary_post_id from post where post_id = "+postId);
+		query = em.createNativeQuery("select temporary_post_id from post where post_id = " + postId);
 		assertThat(query.getSingleResult()).isNull();
 	}
 
 	@Test
 	@Transactional
 	@Rollback
-	void 새글작성시_기존에_없는_태그만_태그테이블에_새로_추가된다() throws Exception{
+	void 새글작성시_기존에_없는_태그만_태그테이블에_새로_추가된다() throws Exception {
 		//전 태그개수
 		Query query = em.createNativeQuery("select count(*) from tag");
 		Long tagCnt = ((BigInteger) query.getSingleResult()).longValue();
 
 		//있는 태그
 		String existTag = "tag1";
-		query = em.createNativeQuery("select count(*) from tag where name = ?").setParameter(1,existTag);
+		query = em.createNativeQuery("select count(*) from tag where name = ?").setParameter(1, existTag);
 		long cnt = ((BigInteger) query.getSingleResult()).longValue();
-		if(cnt != 1){
+		if (cnt != 1) {
 			throw new IllegalStateException("있어야 하는데 없거나, 중복되는 태그이름이 있습니다.");
 		}
 
 		//없는 태그
 		String notExistTag = "sirius";
-		query = em.createNativeQuery("select count(*) from tag where name = ?").setParameter(1,notExistTag);
+		query = em.createNativeQuery("select count(*) from tag where name = ?").setParameter(1, notExistTag);
 		cnt = ((BigInteger) query.getSingleResult()).longValue();
-		if(cnt != 0){
+		if (cnt != 0) {
 			throw new IllegalStateException("없어야 하는데 있는 태그이름이 있습니다.");
 		}
 
@@ -209,7 +208,7 @@ public class PostControllerTest {
 					+ "\n\"title\":\"testtest\","
 					+ "\n\"content\":\"333333\","
 					+ "\n\"access\":\"PRIVATE\","
-					+ "\n\"tags\":[\""+existTag+"\",\""+notExistTag+"\"]"
+					+ "\n\"tags\":[\"" + existTag + "\",\"" + notExistTag + "\"]"
 					+ "\n}")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk());
@@ -219,6 +218,27 @@ public class PostControllerTest {
 		tagCnt = ((BigInteger) query.getSingleResult()).longValue() - tagCnt;
 
 		assertThat(tagCnt == 1).isTrue();
+	}
+
+	@Test
+	@Transactional
+	@Rollback
+	void 새글작성시_멤버는_무조건_있어야합니다() throws Exception {
+		mockMvc.perform(post("/write")
+				.sessionAttr(SessionConst.LOGIN_MEMBER, 2l)
+				.content("{"
+					+ "\n\"title\":\"testtest\","
+					+ "\n\"content\":\"333333\","
+					+ "\n\"access\":\"PRIVATE\""
+					+ "\n}")
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk());
+
+		Query query = em.createNativeQuery("select MAX(post_id) from post");
+		Long postId = ((BigInteger) query.getSingleResult()).longValue();
+
+		query = em.createNativeQuery("select member_id from post where post_id = " + postId);
+		assertThat(query.getSingleResult()).isNotNull();
 	}
 
 	//writePOST - 기존글 수정

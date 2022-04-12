@@ -4,6 +4,7 @@ import java.util.List;
 import javax.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 import teamexpress.velo9.member.domain.Member;
 import teamexpress.velo9.post.domain.Post;
 import teamexpress.velo9.post.domain.PostAccess;
@@ -48,7 +49,7 @@ public class PostSaveDTO {
 	}
 
 	private void setIntroduce() {
-		if (!isIntroduceInvalid()) {
+		if (checkIntroduce()) {
 			return;
 		}
 		if (smallerThanMax(this.content)) {
@@ -62,7 +63,7 @@ public class PostSaveDTO {
 		return content.length() < MAX_INTRODUCE_LENGTH;
 	}
 
-	private boolean isIntroduceInvalid() {
-		return this.introduce == null || this.introduce.isBlank();
+	private boolean checkIntroduce() {
+		return StringUtils.hasText(this.introduce);
 	}
 }
