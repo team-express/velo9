@@ -1,5 +1,6 @@
 package teamexpress.velo9.post.controller;
 
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -21,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import teamexpress.velo9.member.security.oauth.SessionConst;
 import teamexpress.velo9.post.domain.PostStatus;
+import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -32,6 +34,7 @@ public class PostControllerTest {
 	@Autowired
 	private EntityManager em;
 
+	//writeGET
 	@Test
 	void id에_null이_들어왔을_경우_새글작성이므로_null을_반환한다() throws Exception {
 		mockMvc.perform(get("/write"))
@@ -51,6 +54,7 @@ public class PostControllerTest {
 
 	}
 
+	//writePOST - 새 글 작성
 	@Test
 	@Transactional
 	@Rollback
@@ -217,14 +221,15 @@ public class PostControllerTest {
 		assertThat(tagCnt == 1).isTrue();
 	}
 
-	//기존글을 수정하는 경우
+	//writePOST - 기존글 수정
+
+	//임시저장글을 해소하는 경우
 
 	//새 임시저장
 
-	//임시 저장의 임시저장
+	//임시저장의 수정
 
-	//기존글의 임시저장
+	//기존글의 새 임시저장
 
-	//임시저장글을 해소하는 경우
+	//기존글 임시저장의 수정
 }
-

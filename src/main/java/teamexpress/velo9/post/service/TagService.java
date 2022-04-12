@@ -56,7 +56,7 @@ public class TagService {
 	}
 
 
-	public List<TagDTO> getUsedTags(String nickname) {
+	public List<TagDTO> findAllTags(String nickname) {
 		return tagRepository.findUsedTags(nickname).stream().map(TagDTO::new).collect(Collectors.toList());
 	}
 }
