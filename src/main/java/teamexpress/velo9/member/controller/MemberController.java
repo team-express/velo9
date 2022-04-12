@@ -131,6 +131,10 @@ public class MemberController extends BaseController {
 		memberService.validateNickname(nickname);
 	}
 
+	@GetMapping("/denied")
+	public void denied() {
+	}
+
 	private String getNumber() {
 		RandomNumber randomNumber = RandomNumber.get();
 		return randomNumber.getNumber();

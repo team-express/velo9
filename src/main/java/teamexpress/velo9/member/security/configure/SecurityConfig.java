@@ -12,16 +12,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import teamexpress.velo9.member.security.common.AjaxLoginAuthenticationEntryPoint;
-import teamexpress.velo9.member.security.handler.AjaxAccessDeniedHandler;
-import teamexpress.velo9.member.security.handler.AjaxAuthenticationFailureHandler;
-import teamexpress.velo9.member.security.handler.AjaxAuthenticationSuccessHandler;
+import teamexpress.velo9.member.security.common.CustomLoginAuthenticationEntryPoint;
+import teamexpress.velo9.member.security.handler.CustomAccessDeniedHandler;
+import teamexpress.velo9.member.security.handler.CustomAuthenticationFailureHandler;
+import teamexpress.velo9.member.security.handler.CustomAuthenticationSuccessHandler;
 import teamexpress.velo9.member.security.oauth.CustomOAuth2UserService;
-import teamexpress.velo9.member.security.provider.AjaxAuthenticationProvider;
+import teamexpress.velo9.member.security.provider.CustomAuthenticationProvider;
 
 @RequiredArgsConstructor
 @Configuration
-public class AjaxSecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final CustomOAuth2UserService customOAuth2UserService;
 
@@ -32,22 +32,24 @@ public class AjaxSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	public AuthenticationSuccessHandler ajaxAuthenticationSuccessHandler() {
-		return new AjaxAuthenticationSuccessHandler();
+		return new CustomAuthenticationSuccessHandler();
 	}
 
 	@Bean
 	public AuthenticationFailureHandler ajaxAuthenticationFailureHandler() {
-		return new AjaxAuthenticationFailureHandler();
+		return new CustomAuthenticationFailureHandler();
 	}
 
 	@Bean
 	public AuthenticationProvider ajaxAuthenticationProvider() {
-		return new AjaxAuthenticationProvider();
+		return new CustomAuthenticationProvider();
 	}
 
 	@Bean
-	public AccessDeniedHandler ajaxAccessDeniedHandler() {
-		return new AjaxAccessDeniedHandler();
+	public AccessDeniedHandler accessDeniedHandler() {
+		CustomAccessDeniedHandler accessDeniedHandler = new CustomAccessDeniedHandler();
+		accessDeniedHandler.setErrorPage("/denied");
+		return accessDeniedHandler;
 	}
 
 	@Override
@@ -56,8 +58,9 @@ public class AjaxSecurityConfig extends WebSecurityConfigurerAdapter {
 			.httpBasic().disable()
 			.csrf().disable()
 			.authorizeRequests()
-			.antMatchers("/signup", "/sendMail", "/{nickname}/temp", "/sessionLogin", "/**")
+			.antMatchers("/login","/signup", "/sendMail", "/{nickname}/temp", "/sessionLogin", "/**")
 			.permitAll()
+			.antMatchers("/write", "/setting").hasRole("USER")
 			.anyRequest().authenticated()
 			.and()
 			.oauth2Login()
@@ -67,8 +70,8 @@ public class AjaxSecurityConfig extends WebSecurityConfigurerAdapter {
 
 		http
 			.exceptionHandling()
-			.authenticationEntryPoint(new AjaxLoginAuthenticationEntryPoint())
-			.accessDeniedHandler(ajaxAccessDeniedHandler());
+			.authenticationEntryPoint(new CustomLoginAuthenticationEntryPoint())
+			.accessDeniedHandler(accessDeniedHandler());
 
 		customConfigurerAjax(http);
 	}
@@ -80,11 +83,11 @@ public class AjaxSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private void customConfigurerAjax(HttpSecurity http) throws Exception {
 		http.
-			apply(new AjaxLoginConfigurer<>())
+			apply(new CustomLoginConfigurer<>())
 			.successHandlerAjax(ajaxAuthenticationSuccessHandler())
 			.failureHandlerAjax(ajaxAuthenticationFailureHandler())
 			.setAuthenticationManager(authenticationManagerBean())
-			.loginProcessingUrl("/api/login");
+			.loginProcessingUrl("/login");
 	}
 }
 
