@@ -24,8 +24,7 @@ public class CustomLoginProcessingFilter extends AbstractAuthenticationProcessin
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
 		throws AuthenticationException, IOException {
-
-		if (!request.getMethod().equals("POST")) {
+		if (isPost(request)) {
 			throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
 		}
 
@@ -40,5 +39,9 @@ public class CustomLoginProcessingFilter extends AbstractAuthenticationProcessin
 			memberLoginDTO.getPassword());
 
 		return getAuthenticationManager().authenticate(ajaxAuthenticationToken);
+	}
+
+	private boolean isPost(HttpServletRequest request) {
+		return !request.getMethod().equals("POST");
 	}
 }
