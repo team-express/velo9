@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +22,7 @@ import teamexpress.velo9.member.security.provider.CustomAuthenticationProvider;
 
 @RequiredArgsConstructor
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final CustomOAuth2UserService customOAuth2UserService;
@@ -47,9 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	public AccessDeniedHandler accessDeniedHandler() {
-		CustomAccessDeniedHandler accessDeniedHandler = new CustomAccessDeniedHandler();
-		accessDeniedHandler.setErrorPage("/denied");
-		return accessDeniedHandler;
+		return new CustomAccessDeniedHandler();
 	}
 
 	@Override
@@ -58,9 +58,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.httpBasic().disable()
 			.csrf().disable()
 			.authorizeRequests()
-			.antMatchers("/login", "/signup", "/sendMail", "/**")
+			.antMatchers("/","/getHeaderInfo","/signup","/sendMail","/certifyNumber","/checkFirstLogin","/socialSignup","/findId","/findPw","/changePasswordAfterFindPW","/memberLogout","/validateUsername","/validateNickname")
 			.permitAll()
-			.antMatchers("/write", "/setting", "/{nickname}/temp").hasRole("USER")
+			.antMatchers("/{nickname}/series","/{nickname}/series/{seriesName}","/{nickname}/main","/{nickname}/read/{postId}")
+			.permitAll()
+			.antMatchers("/setting","/changePassword","/withdraw").hasRole("USER")
+			.antMatchers("/write","/writeTemporary","/delete","/temp","/love","/archive/like","/archive/recent").hasRole("USER")
+			.antMatchers("/nothing").hasRole("ADMIN")
 			.anyRequest().authenticated()
 			.and()
 			.oauth2Login()
@@ -69,11 +73,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.userService(customOAuth2UserService);
 
 		http
+			.logout()
+			.logoutUrl("/logout")
+			.logoutSuccessUrl("/nothing");
+
+		http
 			.exceptionHandling()
 			.authenticationEntryPoint(new CustomLoginAuthenticationEntryPoint())
 			.accessDeniedHandler(accessDeniedHandler());
 
-		customConfigurerAjax(http);
+		customConfigurer(http);
 	}
 
 	@Override
@@ -81,7 +90,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		auth.authenticationProvider(ajaxAuthenticationProvider());
 	}
 
-	private void customConfigurerAjax(HttpSecurity http) throws Exception {
+	private void customConfigurer(HttpSecurity http) throws Exception {
 		http.
 			apply(new CustomLoginConfigurer<>())
 			.successHandlerAjax(ajaxAuthenticationSuccessHandler())

@@ -8,16 +8,8 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
-	private String errorPage;
-
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
-
-		String deniedUrl = errorPage + "?exception=" + accessDeniedException.getMessage();
-		response.sendRedirect(deniedUrl);
-	}
-
-	public void setErrorPage(String errorPage) {
-		this.errorPage = errorPage;
+		response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access is denied");
 	}
 }
