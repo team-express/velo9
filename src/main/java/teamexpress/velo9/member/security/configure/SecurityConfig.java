@@ -58,14 +58,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.httpBasic().disable()
 			.csrf().disable()
 			.authorizeRequests()
-			.antMatchers("/","/getHeaderInfo","/signup","/sendMail","/certifyNumber","/checkFirstLogin","/socialSignup","/findId","/findPw","/changePasswordAfterFindPW","/memberLogout","/validateUsername","/validateNickname")
+			.antMatchers("/login", "/", "/getHeaderInfo", "/signup", "/sendMail", "/certifyNumber", "/checkFirstLogin", "/socialSignup", "/findId", "/findPw", "/changePasswordAfterFindPW", "/memberLogout", "/validateUsername",
+				"/validateNickname")
 			.permitAll()
-			.antMatchers("/{nickname}/series","/{nickname}/series/{seriesName}","/{nickname}/main","/{nickname}/read/{postId}")
+			.antMatchers("/{nickname}/series", "/{nickname}/series/{seriesName}", "/{nickname}/main", "/{nickname}/read/{postId}")
 			.permitAll()
-			.antMatchers("/setting","/changePassword","/withdraw").hasRole("USER")
-			.antMatchers("/write","/writeTemporary","/delete","/temp","/love","/archive/like","/archive/recent").hasRole("USER")
+			.antMatchers("/setting", "/changePassword", "/withdraw").hasRole("USER")
+			.antMatchers("/write", "/writeTemporary", "/delete", "/temp", "/love", "/archive/like", "/archive/recent").hasRole("USER")
 			.antMatchers("/nothing").hasRole("ADMIN")
 			.anyRequest().authenticated()
+			.and()
+			.exceptionHandling()
+			.authenticationEntryPoint(new CustomLoginAuthenticationEntryPoint())
+			.accessDeniedHandler(accessDeniedHandler())
 			.and()
 			.oauth2Login()
 			.defaultSuccessUrl("/checkFirstLogin")
@@ -76,11 +81,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.logout()
 			.logoutUrl("/logout")
 			.logoutSuccessUrl("/nothing");
-
-		http
-			.exceptionHandling()
-			.authenticationEntryPoint(new CustomLoginAuthenticationEntryPoint())
-			.accessDeniedHandler(accessDeniedHandler());
 
 		customConfigurer(http);
 	}
