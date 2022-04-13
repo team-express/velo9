@@ -129,8 +129,7 @@ public class MemberController extends BaseController {
 	}
 
 	@GetMapping("/denied")
-	public void denied(HttpServletRequest request) {
-		new SecurityContextLogoutHandler().logout(request, null, null);
+	public void denied() {
 	}
 
 	private String getNumber() {
