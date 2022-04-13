@@ -34,6 +34,21 @@ class MemberControllerTest {
 	private MockMvc mockMvc;
 
 	@Test
+	void login() throws Exception {
+		this.mockMvc.perform(post("/login").sessionAttr(SessionConst.LOGIN_MEMBER, 3L)
+				.content("{\"username\": \"test\","
+					+ " \n\"password\": \"1234\"}")
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andDo(document("addMember",
+				requestFields(
+					fieldWithPath("username").description("username"),
+					fieldWithPath("password").description("password")
+				)
+			));
+	}
+
+	@Test
 	void getHeaderInfo() throws Exception {
 		this.mockMvc.perform(get("/getHeaderInfo")
 				.sessionAttr(SessionConst.LOGIN_MEMBER, 2l)
