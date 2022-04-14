@@ -89,6 +89,9 @@ public class Post {
 		if (StringUtils.hasText(access)) {
 			this.access = PostAccess.valueOf(access);
 		}
+		if (this.status == PostStatus.TEMPORARY) {
+			this.createdDate = LocalDateTime.now();
+		}
 		this.status = PostStatus.GENERAL;
 		this.series = series;
 		this.postThumbnail = postThumbnail;

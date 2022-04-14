@@ -73,8 +73,9 @@ public class PostService {
 		}
 
 		if (postSaveDTO.getPostId() != null) {
-			//체크
 			post = postRepository.findById(postSaveDTO.getPostId()).orElseThrow();
+			checkSameMember(post,memberId);
+			postSaveDTO.setIntroduce();
 			post.edit(postSaveDTO.getTitle(),
 				postSaveDTO.getIntroduce(),
 				postSaveDTO.getContent(),
@@ -248,6 +249,12 @@ public class PostService {
 	private void checkOwner(Post findPost, String nickname) {
 		if (!findPost.getMember().getNickname().equals(nickname)) {
 			throw new IllegalStateException("비정상적인 접근입니다.");
+		}
+	}
+
+	private void checkSameMember(Post post, Long memberId){
+		if(post.getMember().getId() != memberId){
+			throw new IllegalStateException("잘못된 접근입니다.");
 		}
 	}
 }
