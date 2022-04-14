@@ -117,7 +117,9 @@ public class InitDb {
 				.access(PostAccess.PUBLIC)
 				.series(series1)
 				.status(PostStatus.GENERAL)
-				.postThumbnail(postThumbnailRepository.save(new PostThumbnail()))
+				.postThumbnail(postThumbnailRepository.save(new PostThumbnail().builder()
+						.uuid("uuid")
+					.build()))
 				.temporaryPost(temporaryPostRepository.save(new TemporaryPost()))
 				.build()
 			);
