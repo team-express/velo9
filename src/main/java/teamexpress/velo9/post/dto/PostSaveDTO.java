@@ -48,7 +48,7 @@ public class PostSaveDTO {
 			.build();
 	}
 
-	private void setIntroduce() {
+	public void setIntroduce() {
 		if (checkIntroduce()) {
 			return;
 		}

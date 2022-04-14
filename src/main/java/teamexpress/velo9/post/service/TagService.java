@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import teamexpress.velo9.post.domain.Post;
-import teamexpress.velo9.post.domain.PostRepository;
 import teamexpress.velo9.post.domain.PostTag;
 import teamexpress.velo9.post.domain.PostTagRepository;
 import teamexpress.velo9.post.domain.Tag;
@@ -18,13 +17,13 @@ import teamexpress.velo9.post.dto.TagDTO;
 @Transactional(readOnly = true)
 public class TagService {
 
-	private final PostRepository postRepository;
 	private final TagRepository tagRepository;
 	private final PostTagRepository postTagRepository;
 
 	@Transactional
 	public void addTags(Post post, List<String> tagNames) {
 		if (tagNames == null) {
+			postTagRepository.deleteAllByPost(post);
 			return;
 		}
 

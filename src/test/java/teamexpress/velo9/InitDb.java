@@ -73,13 +73,13 @@ public class InitDb {
 				.username("id")
 				.password(passwordEncoder.encode("1234"))
 				.email("test2@nate.com")
-				.role(Role.ROLE_SOCIAL)
+				.role(Role.ROLE_USER)
 				.memberThumbnail(memberThumbnailRepository.save(new MemberThumbnail()))
 				.build()
 			);
 
-			memberRepository.save(createMember("test", "test", "1234", "test3@nate.com", Role.ROLE_SOCIAL));
-			memberRepository.save(createSocialMember("test4@nate.com", Role.ROLE_SOCIAL));
+			memberRepository.save(createMember("test", "test", "1234", "test3@nate.com", Role.ROLE_USER));
+			memberRepository.save(createSocialMember("test4@nate.com", Role.ROLE_USER));
 
 			Member member = memberRepository.findByNickname("admin").get();
 
@@ -117,7 +117,9 @@ public class InitDb {
 				.access(PostAccess.PUBLIC)
 				.series(series1)
 				.status(PostStatus.GENERAL)
-				.postThumbnail(postThumbnailRepository.save(new PostThumbnail()))
+				.postThumbnail(postThumbnailRepository.save(new PostThumbnail().builder()
+						.uuid("uuid")
+					.build()))
 				.temporaryPost(temporaryPostRepository.save(new TemporaryPost()))
 				.build()
 			);
