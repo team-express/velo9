@@ -1,6 +1,5 @@
 package teamexpress.velo9.member.security.handler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -12,7 +11,6 @@ import teamexpress.velo9.member.security.oauth.SessionConst;
 
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	@Override
 	public void onAuthenticationSuccess(
