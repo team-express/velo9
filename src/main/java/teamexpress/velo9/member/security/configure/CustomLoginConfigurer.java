@@ -10,17 +10,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-import teamexpress.velo9.member.security.filter.AjaxLoginProcessingFilter;
+import teamexpress.velo9.member.security.filter.CustomLoginProcessingFilter;
 
-public final class AjaxLoginConfigurer<H extends HttpSecurityBuilder<H>>
-	extends AbstractAuthenticationFilterConfigurer<H, AjaxLoginConfigurer<H>, AjaxLoginProcessingFilter> {
+public final class CustomLoginConfigurer<H extends HttpSecurityBuilder<H>>
+	extends AbstractAuthenticationFilterConfigurer<H, CustomLoginConfigurer<H>, CustomLoginProcessingFilter> {
 
 	private AuthenticationSuccessHandler successHandler;
 	private AuthenticationFailureHandler failureHandler;
 	private AuthenticationManager authenticationManager;
 
-	public AjaxLoginConfigurer() {
-		super(new AjaxLoginProcessingFilter(), null);
+	public CustomLoginConfigurer() {
+		super(new CustomLoginProcessingFilter(), null);
 	}
 
 	@Override
@@ -50,21 +50,21 @@ public final class AjaxLoginConfigurer<H extends HttpSecurityBuilder<H>>
 			getAuthenticationFilter().setRememberMeServices(rememberMeServices);
 		}
 
-		http.setSharedObject(AjaxLoginProcessingFilter.class, getAuthenticationFilter());
+		http.setSharedObject(CustomLoginProcessingFilter.class, getAuthenticationFilter());
 		http.addFilterBefore(getAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 	}
 
-	public AjaxLoginConfigurer<H> successHandlerAjax(AuthenticationSuccessHandler successHandler) {
+	public CustomLoginConfigurer<H> successHandlerAjax(AuthenticationSuccessHandler successHandler) {
 		this.successHandler = successHandler;
 		return this;
 	}
 
-	public AjaxLoginConfigurer<H> failureHandlerAjax(AuthenticationFailureHandler failureHandler) {
+	public CustomLoginConfigurer<H> failureHandlerAjax(AuthenticationFailureHandler failureHandler) {
 		this.failureHandler = failureHandler;
 		return this;
 	}
 
-	public AjaxLoginConfigurer<H> setAuthenticationManager(
+	public CustomLoginConfigurer<H> setAuthenticationManager(
 		AuthenticationManager authenticationManager) {
 		this.authenticationManager = authenticationManager;
 		return this;

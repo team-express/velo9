@@ -4,8 +4,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -82,13 +80,6 @@ public class MemberController extends BaseController {
 		new SecurityContextLogoutHandler().logout(request, null, null);
 	}
 
-	@GetMapping("/checkFirstLogin")
-	public Result socialCheck(HttpSession session) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		boolean checkResult = memberService.getMemberByEmail(authentication, session);
-		return new Result(checkResult);
-	}
-
 	@PostMapping("/socialSignup")
 	public void socialSignup(@Valid @RequestBody SocialSignupDTO socialSignupDTO, HttpServletRequest request) {
 		memberService.joinSocial(socialSignupDTO);
@@ -129,6 +120,10 @@ public class MemberController extends BaseController {
 	@GetMapping("/validateNickname")
 	public void checkNickname(@RequestParam String nickname) {
 		memberService.validateNickname(nickname);
+	}
+
+	@GetMapping("/denied")
+	public void denied() {
 	}
 
 	private String getNumber() {

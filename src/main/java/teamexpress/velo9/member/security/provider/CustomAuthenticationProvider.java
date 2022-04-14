@@ -10,7 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import teamexpress.velo9.member.security.MemberContext;
 import teamexpress.velo9.member.security.token.AjaxAuthenticationToken;
 
-public class AjaxAuthenticationProvider implements AuthenticationProvider {
+public class CustomAuthenticationProvider implements AuthenticationProvider {
 
 	@Autowired
 	private UserDetailsService userDetailsService;
