@@ -161,7 +161,7 @@ public class MemberService {
 		}
 	}
 
-	public boolean getMemberByEmail(Authentication authentication, HttpSession session) {
+	public boolean getMemberByEmail(HttpSession session) {
 		Map<String, Object> attributes = getAttributes();
 		String email = (String) attributes.get("email");
 		Member member = memberRepository.findByEmail(email).orElse(null);
@@ -222,7 +222,7 @@ public class MemberService {
 			.password(passwordEncoder.encode(socialSignupDTO.getPassword()))
 			.nickname(socialSignupDTO.getNickname())
 			.email(email)
-			.role(Role.ROLE_SOCIAL)
+			.role(Role.ROLE_USER)
 			.memberThumbnail(memberThumbnail)
 			.build();
 

@@ -30,8 +30,7 @@ public class OAuthAttributes {
 		return ofGoogle(userNameAttributeName, attributes);
 	}
 
-	private static OAuthAttributes ofGithub(String userNameAttributeName,
-		Map<String, Object> attributes) {
+	private static OAuthAttributes ofGithub(String userNameAttributeName, Map<String, Object> attributes) {
 		return OAuthAttributes.builder()
 			.email((String) attributes.get("email"))
 			.picture((String) attributes.get("avatar_url"))
@@ -40,8 +39,7 @@ public class OAuthAttributes {
 			.build();
 	}
 
-	private static OAuthAttributes ofGoogle(String userNameAttributeName,
-		Map<String, Object> attributes) {
+	private static OAuthAttributes ofGoogle(String userNameAttributeName, Map<String, Object> attributes) {
 		return OAuthAttributes.builder()
 			.email((String) attributes.get("email"))
 			.picture((String) attributes.get("picture"))

@@ -2,7 +2,6 @@ package teamexpress.velo9.member.security.oauth;
 
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -15,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import teamexpress.velo9.member.domain.Role;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
@@ -39,7 +37,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 				oAuth2User.getAttributes());
 
 		return new DefaultOAuth2User(
-			Collections.singleton(new SimpleGrantedAuthority(Role.ROLE_SOCIAL.name())),
+			Collections.singleton(new SimpleGrantedAuthority(Role.ROLE_NOTHING.name())),
 			attributes.getAttributes(),
 			attributes.getNameAttributeKey());
 	}
