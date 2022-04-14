@@ -13,12 +13,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import teamexpress.velo9.member.security.common.CustomLoginAuthenticationEntryPoint;
 import teamexpress.velo9.member.security.handler.CustomAccessDeniedHandler;
 import teamexpress.velo9.member.security.handler.CustomAuthenticationFailureHandler;
 import teamexpress.velo9.member.security.handler.CustomAuthenticationSuccessHandler;
 import teamexpress.velo9.member.security.oauth.CustomOAuth2UserService;
 import teamexpress.velo9.member.security.provider.CustomAuthenticationProvider;
+import teamexpress.velo9.member.security.test.OAuth2SuccessHandler;
 
 @RequiredArgsConstructor
 @Configuration
@@ -52,10 +56,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		return new CustomAccessDeniedHandler();
 	}
 
+	@Bean
+	public OAuth2SuccessHandler oAuth2SuccessHandler() {
+		return new OAuth2SuccessHandler();
+	}
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 			.httpBasic().disable()
+			.cors().configurationSource(corsConfigurationSource())
+			.and()
 			.csrf().disable()
 			.authorizeRequests()
 			.antMatchers("/login", "/", "/getHeaderInfo", "/signup", "/sendMail", "/certifyNumber", "/checkFirstLogin", "/socialSignup", "/findId", "/findPw", "/changePasswordAfterFindPW", "/memberLogout", "/validateUsername",
@@ -68,14 +79,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/nothing").hasRole("ADMIN")
 			.anyRequest().authenticated()
 			.and()
+			.formLogin().disable()
 			.exceptionHandling()
 			.authenticationEntryPoint(new CustomLoginAuthenticationEntryPoint())
 			.accessDeniedHandler(accessDeniedHandler())
 			.and()
 			.oauth2Login()
-			.defaultSuccessUrl("/checkFirstLogin")
+			.authorizationEndpoint()
+			.baseUri("/oauth2/authorization")
+			.and()
+			.redirectionEndpoint()
+			.baseUri("/oauth2/callback/*")
+			.and()
 			.userInfoEndpoint()
-			.userService(customOAuth2UserService);
+			.userService(customOAuth2UserService)
+			.and()
+			.successHandler(oAuth2SuccessHandler());
 
 		http
 			.logout()
@@ -97,6 +116,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.failureHandlerAjax(ajaxAuthenticationFailureHandler())
 			.setAuthenticationManager(authenticationManagerBean())
 			.loginProcessingUrl("/login");
+	}
+
+	@Bean
+	public CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+
+		configuration.addAllowedOrigin("https://localhost:3000");
+		configuration.addAllowedHeader("*");
+		configuration.addAllowedMethod("GET");
+		configuration.setAllowCredentials(true);
+
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
 	}
 }
 
