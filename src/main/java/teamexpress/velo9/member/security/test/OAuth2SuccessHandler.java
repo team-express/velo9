@@ -29,7 +29,7 @@ public class OAuth2SuccessHandler extends SavedRequestAwareAuthenticationSuccess
 			String targetUri = "http://localhost:3000/success";
 			return UriComponentsBuilder.fromUriString(targetUri).build().toUriString();
 		}
-		String targetUri = "http://localhost:3000/checkFirstLogin";
+		String targetUri = "http://localhost:3000/firstLogin";
 		return UriComponentsBuilder.fromUriString(targetUri).build().toUriString();
 	}
 }
