@@ -22,7 +22,7 @@ import teamexpress.velo9.member.security.handler.CustomAuthenticationFailureHand
 import teamexpress.velo9.member.security.handler.CustomAuthenticationSuccessHandler;
 import teamexpress.velo9.member.security.oauth.CustomOAuth2UserService;
 import teamexpress.velo9.member.security.provider.CustomAuthenticationProvider;
-import teamexpress.velo9.member.security.test.OAuth2SuccessHandler;
+import teamexpress.velo9.member.security.oauth.OAuth2SuccessHandler;
 
 @RequiredArgsConstructor
 @Configuration
@@ -70,7 +70,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.csrf().disable()
 			.authorizeRequests()
 			.antMatchers("/login", "/", "/getHeaderInfo", "/signup", "/sendMail", "/certifyNumber", "/checkFirstLogin", "/socialSignup", "/findId", "/findPw", "/changePasswordAfterFindPW", "/memberLogout", "/validateUsername",
-				"/validateNickname")
+				"/validateNickname","/**")
 			.permitAll()
 			.antMatchers("/{nickname}/series", "/{nickname}/series/{seriesName}", "/{nickname}/main", "/{nickname}/read/{postId}")
 			.permitAll()
@@ -122,9 +122,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
 
-		configuration.addAllowedOrigin("https://localhost:3000");
-		configuration.addAllowedHeader("*");
-		configuration.addAllowedMethod("GET");
+		configuration.addAllowedOriginPattern(CorsConfiguration.ALL);
+		configuration.addAllowedMethod(CorsConfiguration.ALL);
+		configuration.addAllowedHeader(CorsConfiguration.ALL);
 		configuration.setAllowCredentials(true);
 
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
