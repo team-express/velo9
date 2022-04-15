@@ -102,6 +102,7 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 	public Slice<Post> findByJoinSeries(String nickname, String seriesName, Pageable pageable) {
 		JPAQuery<Post> query = queryFactory
 			.selectFrom(post)
+			.join(post.series).fetchJoin()
 			.where(nicknameEq(nickname).and(seriesNameEq(seriesName)))
 			.offset(pageable.getOffset());
 
