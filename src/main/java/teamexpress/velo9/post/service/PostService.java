@@ -76,9 +76,7 @@ public class PostService {
 		Member member = getMember(memberId);
 
 		Post post = postRepository.save(postWriteDTO.toPost(member, series, postThumbnail));
-
-		updateTags(post, postWriteDTO.getTags());
-
+		addTags(post, postWriteDTO.getTags());
 		return post.getId();
 	}
 
@@ -109,7 +107,7 @@ public class PostService {
 	}
 
 	private Series getSeries(Long seriesId) {
-		return seriesId != null ? seriesRepository.findById(seriesId).orElse(null) : null;
+		return seriesId != null ? seriesRepository.findById(seriesId).orElseThrow(IllegalStateException::new) : null;
 	}
 
 	private Member getMember(Long memberId) {
@@ -119,6 +117,32 @@ public class PostService {
 
 		return memberRepository.findById(memberId)
 			.orElseThrow(() -> new NullPointerException("no member"));
+	}
+
+	private void addTags(Post post, List<String> tags) {
+		if (isEmpty(tags)) {
+			return;
+		}
+
+		tags = removeDuplication(tags);
+
+		List<Tag> existingTags = tagRepository.findAll();
+
+		List<String> tagNamesToSave = tags.stream().filter(
+			name -> existingTags.stream().map(Tag::getName).noneMatch(name::equals)
+		).collect(Collectors.toList());
+
+		List<Tag> tagsToSave = tagNamesToSave.stream().map(name -> tagRepository.save(
+			Tag.builder().name(name).build())).collect(Collectors.toList());
+
+		List<Tag> tagsToAdd = tags.stream().map(tag -> find(tag, existingTags, tagsToSave)).collect(Collectors.toList());
+
+		tagsToAdd.forEach(tag -> postTagRepository.save(
+			PostTag.builder()
+				.tag(tag)
+				.post(post)
+				.build()
+		));
 	}
 
 	private void updateTags(Post post, List<String> tags) {
@@ -157,6 +181,13 @@ public class PostService {
 
 	private boolean isEmpty(List<String> tags) {
 		return tags == null || tags.isEmpty();
+	}
+
+	private Tag find(String name, List<Tag> existingTags, List<Tag> tagsToSave) {
+		return existingTags.stream().filter(tag -> tag.getName().equals(name)).findFirst()
+			.orElseGet(() ->
+				tagsToSave.stream().filter(tag -> tag.getName().equals(name)).findFirst()
+					.orElseThrow());
 	}
 
 	@Transactional

@@ -82,19 +82,25 @@ public class Post {
 
 	public void edit(String title, String introduce, String content, String access, Series series, PostThumbnail postThumbnail) {
 		this.title = title;
-		if (StringUtils.hasText(introduce)) {
-			this.introduce = introduce;
-		}
+		this.introduce = makeIntroduce(introduce);
 		this.content = content;
-		if (StringUtils.hasText(access)) {
-			this.access = PostAccess.valueOf(access);
-		}
-		if (this.status == PostStatus.TEMPORARY) {
-			this.createdDate = LocalDateTime.now();
-		}
+		this.access = makeAccess(access);
+		this.createdDate = makeDate();
 		this.status = PostStatus.GENERAL;
 		this.series = series;
 		this.postThumbnail = postThumbnail;
 		this.temporaryPost = null;
+	}
+
+	private String makeIntroduce(String introduce) {
+		return StringUtils.hasText(introduce) ? introduce : this.introduce;
+	}
+
+	private PostAccess makeAccess(String access) {
+		return StringUtils.hasText(access) ? PostAccess.valueOf(access) : this.access;
+	}
+
+	private LocalDateTime makeDate() {
+		return this.status == PostStatus.TEMPORARY ? LocalDateTime.now() : this.createdDate;
 	}
 }
