@@ -33,4 +33,9 @@ public class Look {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
 	private Member member;
+
+	public Look(Post post, Member member) {
+		this.post = post;
+		this.member = member;
+	}
 }

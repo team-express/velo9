@@ -97,4 +97,8 @@ public class Post {
 		this.postThumbnail = postThumbnail;
 		this.temporaryPost = null;
 	}
+
+	public void addViewCount() {
+		this.viewCount++;
+	}
 }

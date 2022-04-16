@@ -126,11 +126,8 @@ public class PostController extends BaseController {
 
 	@GetMapping("/{nickname}/read/{postId}")
 	public ReadDTO read(@PathVariable String nickname, @PathVariable Long postId, HttpSession session) {
-		if (session.getAttribute(SessionConst.LOGIN_MEMBER) != null) {
-			postService.look(postId, getMemberId(session));
-		}
-
-		return postService.findPostDetails(postId, nickname);
+		Long memberId = (Long) session.getAttribute(SessionConst.LOGIN_MEMBER);
+		return postService.findPostDetails(postId, nickname, memberId);
 	}
 
 	private PageRequest getPageRequest(int page, String sortValue) {

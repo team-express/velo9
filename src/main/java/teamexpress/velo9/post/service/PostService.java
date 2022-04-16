@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import teamexpress.velo9.member.domain.Look;
 import teamexpress.velo9.member.domain.LookRepository;
 import teamexpress.velo9.member.domain.Love;
 import teamexpress.velo9.member.domain.LoveRepository;
@@ -134,9 +135,11 @@ public class PostService {
 	}
 
 	@Transactional
-	public void look(Long postId, Long memberId) {
-		makeLook(memberId, postId);
-		postRepository.updateViewCount(postId);
+	public void look(Post post, Long memberId) {
+		if (memberId != null) {
+			Member member = memberRepository.findById(memberId).orElseThrow();
+			makeLook(member, post);
+		}
 	}
 
 	public Page<PostMainDTO> searchMain(SearchCondition searchCondition, Pageable pageable) {
@@ -210,9 +213,9 @@ public class PostService {
 		);
 	}
 
-	private void makeLook(Long memberId, Long postId) {
-		if (lookRepository.findByPostAndMember(postId, memberId).isEmpty()) {
-			lookRepository.saveLook(memberId, postId);
+	private void makeLook(Member member, Post post) {
+		if (lookRepository.findByPostAndMember(post.getId(), member.getId()).isEmpty()) {
+			lookRepository.save(new Look(post, member));
 		}
 	}
 
@@ -232,8 +235,11 @@ public class PostService {
 		return lookPosts.map(LookPostDTO::new);
 	}
 
-	public ReadDTO findPostDetails(Long postId, String nickname) {
+	@Transactional
+	public ReadDTO findPostDetails(Long postId, String nickname, Long memberId) {
 		Post findPost = postRepository.findPostMemberById(postId).orElseThrow();
+		findPost.addViewCount();
+		look(findPost, memberId);
 		checkOwner(findPost, nickname);
 		List<Post> pagePost = postRepository.findPrevNextPost(findPost);
 		List<PostTag> postTags = postTagRepository.findByPost(findPost);
