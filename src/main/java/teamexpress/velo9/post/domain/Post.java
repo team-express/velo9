@@ -82,7 +82,7 @@ public class Post {
 
 	public void edit(String title, String introduce, String content, String access, Series series, PostThumbnail postThumbnail) {
 		this.title = title;
-		this.introduce = makeIntroduce(introduce);
+		this.introduce = introduce;
 		this.content = content;
 		this.access = makeAccess(access);
 		this.createdDate = makeDate();

@@ -85,8 +85,7 @@ public class PostService {
 		Series series = getSeries(postWriteDTO.getSeriesId());
 
 		Post post = postRepository.findById(postWriteDTO.getPostId()).orElseThrow();
-
-		checkSameWriter(post, memberId);
+		checkSameWriter(post, memberId);//id 부를거면 훼치조인 필요없다
 
 		postWriteDTO.makeIntroduce();
 
@@ -95,7 +94,7 @@ public class PostService {
 			postWriteDTO.getContent(),
 			postWriteDTO.getAccess(),
 			series,
-			postThumbnail);
+			postThumbnail);//새로 만들수밖에 없는가 변경감지 고민 ㄱ
 
 		updateTags(post, postWriteDTO.getTags());
 
@@ -119,7 +118,7 @@ public class PostService {
 			.orElseThrow(() -> new NullPointerException("no member"));
 	}
 
-	private void addTags(Post post, List<String> tags) {
+	private void addTags(Post post, List<String> tags) {//쿼리 생각했던대로 나가나 확인, 다중인서트 고민
 		if (isEmpty(tags)) {
 			return;
 		}
@@ -146,7 +145,7 @@ public class PostService {
 	}
 
 	private void updateTags(Post post, List<String> tags) {
-		postTagRepository.deleteAllByPost(post);
+		postTagRepository.deleteAllByPost(post);//전체삭제
 
 		if (isEmpty(tags)) {
 			return;
@@ -154,19 +153,24 @@ public class PostService {
 
 		tags = removeDuplication(tags);
 
-		List<String> realTags = tagRepository.getTagNames();
+		List<String> realTags = tagRepository.getTagNames();//전체태그이름
 
-		tags.stream().filter(name -> !realTags.contains(name))
+		tags.stream().filter(name -> !realTags.contains(name))//없는것만 저장
 			.forEach(name -> tagRepository.save(
 				Tag.builder().name(name).build()
 			));
 
-		tags.forEach(name -> postTagRepository.save(
+		tags.forEach(name -> postTagRepository.save(//매개변수 태그 저장
 			PostTag.builder()
 				.tag(tagRepository.findByName(name))
 				.post(post)
 				.build()
 		));
+
+		//vs
+		//사라진 태그만 삭제 or(queryDsl?)
+		//기존유지는 두고
+		//새로생긴 것만 저장 & 추가
 	}
 
 	private void checkSameWriter(Post post, Long memberId) {
