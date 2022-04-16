@@ -11,6 +11,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 import javax.persistence.EntityManager;
 import org.springframework.data.domain.Page;
@@ -34,6 +35,7 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 	public Slice<Post> findPost(String nickname, String tagName, Pageable pageable) {
 		List<Post> content =
 			queryFactory.selectFrom(post)
+				.leftJoin(post.postThumbnail).fetchJoin()
 				.where(nicknameEq(nickname)
 					.and(searchTag(tagName))
 					.and(openPost()))
@@ -102,6 +104,8 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 	public Slice<Post> findByJoinSeries(String nickname, String seriesName, Pageable pageable) {
 		JPAQuery<Post> query = queryFactory
 			.selectFrom(post)
+			.join(post.series).fetchJoin()
+			.leftJoin(post.postThumbnail).fetchJoin()
 			.where(nicknameEq(nickname).and(seriesNameEq(seriesName)))
 			.offset(pageable.getOffset());
 
@@ -130,12 +134,25 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 	}
 
 	@Override
-	public void updateViewCount(Long postId) {
-		queryFactory
-			.update(post)
-			.set(post.viewCount, post.viewCount.add(1))
-			.where(checkPostId(postId))
-			.execute();
+	public Optional<Post> findWritePost(Long id) {
+		return Optional.ofNullable(queryFactory
+			.selectFrom(post)
+			.leftJoin(post.series).fetchJoin()
+			.leftJoin(post.postThumbnail).fetchJoin()
+			.leftJoin(post.temporaryPost).fetchJoin()
+			.where(checkPostId(id))
+			.fetchOne());
+	}
+
+	@Override
+	public List<Post> findPostByIds(List<Long> seriesIds) {
+		return queryFactory
+			.selectFrom(post)
+			.leftJoin(post.postThumbnail).fetchJoin()
+			.where(openPost())
+			.where(post.series.id.in(seriesIds))
+			.limit(3)
+			.fetch();
 	}
 
 	private boolean isHasNext(List<Post> result, Pageable pageable) {
@@ -208,6 +225,6 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 	}
 
 	private BooleanBuilder checkPostId(Long postId) {
-		return postId != null ? nullSafeBuilder(() -> post.id.eq(postId)) : new BooleanBuilder();
+		return nullSafeBuilder(() -> post.id.eq(postId));
 	}
 }
