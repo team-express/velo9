@@ -215,7 +215,7 @@ public class PostService {
 
 	private void makeLook(Member member, Post post) {
 		if (lookRepository.findByPostAndMember(post.getId(), member.getId()).isEmpty()) {
-			lookRepository.save(new Look(post, member));
+			lookRepository.save(Look.builder().member(member).post(post).build());
 		}
 	}
 
