@@ -1,4 +1,4 @@
-package teamexpress.velo9.member.security.test;
+package teamexpress.velo9.member.security.oauth;
 
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;

@@ -21,8 +21,8 @@ import teamexpress.velo9.member.security.handler.CustomAccessDeniedHandler;
 import teamexpress.velo9.member.security.handler.CustomAuthenticationFailureHandler;
 import teamexpress.velo9.member.security.handler.CustomAuthenticationSuccessHandler;
 import teamexpress.velo9.member.security.oauth.CustomOAuth2UserService;
+import teamexpress.velo9.member.security.oauth.OAuth2SuccessHandler;
 import teamexpress.velo9.member.security.provider.CustomAuthenticationProvider;
-import teamexpress.velo9.member.security.test.OAuth2SuccessHandler;
 
 @RequiredArgsConstructor
 @Configuration
@@ -122,9 +122,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
 
-		configuration.addAllowedOrigin("https://localhost:3000");
-		configuration.addAllowedHeader("*");
-		configuration.addAllowedMethod("GET");
+		configuration.addAllowedOriginPattern(CorsConfiguration.ALL);
+		configuration.addAllowedMethod(CorsConfiguration.ALL);
+		configuration.addAllowedHeader(CorsConfiguration.ALL);
 		configuration.setAllowCredentials(true);
 
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
