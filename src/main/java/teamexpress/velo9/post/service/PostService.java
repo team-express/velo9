@@ -117,7 +117,7 @@ public class PostService {
 			.orElseThrow(() -> new NullPointerException("no member"));
 	}
 
-	private void addTags(Post post, List<String> tags) {//쿼리 생각했던대로 나가나 확인, 다중인서트 고민
+	private void addTags(Post post, List<String> tags) {
 		if (isEmpty(tags)) {
 			return;
 		}
