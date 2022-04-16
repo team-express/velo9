@@ -234,6 +234,6 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 	}
 
 	private BooleanBuilder checkPostId(Long postId) {
-		return postId != null ? nullSafeBuilder(() -> post.id.eq(postId)) : new BooleanBuilder();
+		return nullSafeBuilder(() -> post.series.id.eq(postId));
 	}
 }
