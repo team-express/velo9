@@ -138,7 +138,7 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 		queryFactory
 			.update(post)
 			.set(post.viewCount, post.viewCount.add(1))
-			.where(checkPostId(postId))
+			.where(post.id.eq(postId))
 			.execute();
 	}
 
