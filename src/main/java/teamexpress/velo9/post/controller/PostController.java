@@ -52,7 +52,7 @@ public class PostController extends BaseController {
 	@PostMapping("/write")
 	public Result<Long> write(@Valid @RequestBody PostWriteDTO postWriteDTO, HttpSession session) {
 		Long postId = postService.write(postWriteDTO, getMemberId(session));
-		tagService.removeUselessTags();
+		//tagService.removeUselessTags();
 		return new Result<>(postId);
 	}
 
