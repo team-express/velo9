@@ -134,15 +134,6 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 	}
 
 	@Override
-	public void updateViewCount(Long postId) {
-		queryFactory
-			.update(post)
-			.set(post.viewCount, post.viewCount.add(1))
-			.where(post.id.eq(postId))
-			.execute();
-	}
-
-	@Override
 	public Optional<Post> findWritePost(Long id) {
 		return Optional.ofNullable(queryFactory
 			.selectFrom(post)
