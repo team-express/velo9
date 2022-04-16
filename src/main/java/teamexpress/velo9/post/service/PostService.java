@@ -81,22 +81,62 @@ public class PostService {
 	}
 
 	private Long edit(PostWriteDTO postWriteDTO, Long memberId) {
+		System.out.println("start");
 		PostThumbnail postThumbnail = getPostThumbnail(postWriteDTO.getThumbnailFileName());
 		Series series = getSeries(postWriteDTO.getSeriesId());
 
-		Post post = postRepository.findById(postWriteDTO.getPostId()).orElseThrow();
-		checkSameWriter(post, memberId);//id 부를거면 훼치조인 필요없다
+		Post post = postRepository.findByIdJoinThumbnail(postWriteDTO.getPostId()).orElseThrow();
+		checkSameWriter(post, memberId);
 
 		postWriteDTO.makeIntroduce();
 
-		post.edit(postWriteDTO.getTitle(),
-			postWriteDTO.getIntroduce(),
-			postWriteDTO.getContent(),
-			postWriteDTO.getAccess(),
-			series,
-			postThumbnail);//새로 만들수밖에 없는가 변경감지 고민 ㄱ
+		//findById로 찾아온 fk객체도 변경감지가 된다
+		PostThumbnail savedPostThumbnail = post.getPostThumbnail();
 
-		updateTags(post, postWriteDTO.getTags());
+		if(savedPostThumbnail == null){//원래없는데
+			if(postThumbnail !=null){//있으면
+				post.edit(postWriteDTO.getTitle(),
+					postWriteDTO.getIntroduce(),
+					postWriteDTO.getContent(),
+					postWriteDTO.getAccess(),
+					series,
+					postThumbnail);
+			}
+			else{//없으면 유지
+				post.edit(postWriteDTO.getTitle(),
+					postWriteDTO.getIntroduce(),
+					postWriteDTO.getContent(),
+					postWriteDTO.getAccess(),
+					series);
+			}
+		}
+		else{//원래 있는데
+			if(postThumbnail == null){//안주면 삭제
+				post.edit(postWriteDTO.getTitle(),
+					postWriteDTO.getIntroduce(),
+					postWriteDTO.getContent(),
+					postWriteDTO.getAccess(),
+					series,
+					postThumbnail);
+			}
+			else{//원래있는데 줄때
+				//다르면 : 프록시값일때만 delete때 select나가네 -> 그럼싹다 페치조인하는게 낫겠는데
+				post.edit(postWriteDTO.getTitle(),
+					postWriteDTO.getIntroduce(),
+					postWriteDTO.getContent(),
+					postWriteDTO.getAccess(),
+					series);
+
+				if(!savedPostThumbnail.getUuid().equals(postThumbnail.getUuid())){
+					savedPostThumbnail.edit(postThumbnail.getUuid(),
+						postThumbnail.getPath(),
+						postThumbnail.getName()
+					);
+				}
+			}
+		}
+		System.out.println("end");
+		//updateTags(post, postWriteDTO.getTags());
 
 		return post.getId();
 	}
