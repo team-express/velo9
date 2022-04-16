@@ -74,7 +74,7 @@ public class PostService {
 
 		if (postSaveDTO.getPostId() != null) {
 			post = postRepository.findById(postSaveDTO.getPostId()).orElseThrow();
-			checkSameMember(post,memberId);
+			checkSameMember(post, memberId);
 			postSaveDTO.setIntroduce();
 			post.edit(postSaveDTO.getTitle(),
 				postSaveDTO.getIntroduce(),
@@ -104,7 +104,7 @@ public class PostService {
 	}
 
 	public PostWriteDTO findPostById(Long id) {
-		Post post = postRepository.findById(id).orElseThrow(
+		Post post = postRepository.findWritePost(id).orElseThrow(
 			() -> new IllegalStateException("존재하지 않는 포스트입니다."));
 		List<PostTag> postTags = postTagRepository.findByPost(post);
 		return new PostWriteDTO(post, postTags);
@@ -112,12 +112,16 @@ public class PostService {
 
 	public Slice<SeriesDTO> findSeries(String nickname, Pageable pageable) {
 		Slice<Series> seriesList = seriesRepository.findPostBySeriesName(nickname, pageable);
-		return seriesList.map(SeriesDTO::new);
+		List<Long> seriesIds = seriesList.map(Series::getId).toList();
+		List<Post> postList = postRepository.findPostByIds(seriesIds);
+		return seriesList.map(series -> new SeriesDTO(series, postList));
 	}
 
 	public Slice<PostReadDTO> findMainPost(String nickname, String tagName, Pageable pageable) {
 		Slice<Post> posts = postRepository.findPost(nickname, tagName, pageable);
-		return posts.map(PostReadDTO::new);
+		List<Long> postIds = posts.map(Post::getId).toList();
+		List<PostTag> postTagList = postTagRepository.findByPostIds(postIds);
+		return posts.map(post -> new PostReadDTO(post, postTagList));
 	}
 
 	@Transactional
@@ -238,7 +242,9 @@ public class PostService {
 
 	public Slice<SeriesPostSummaryDTO> findPostsInSeries(String nickname, String seriesName, PageRequest page) {
 		Slice<Post> seriesPosts = postRepository.findByJoinSeries(nickname, seriesName, page);
-		return seriesPosts.map(SeriesPostSummaryDTO::new);
+		List<Long> postIds = seriesPosts.map(Post::getId).toList();
+		List<PostTag> postTagList = postTagRepository.findByPostIds(postIds);
+		return seriesPosts.map(post -> new SeriesPostSummaryDTO(post, postTagList));
 	}
 
 	public List<SeriesReadDTO> findAllSeries(String nickname) {
@@ -252,8 +258,8 @@ public class PostService {
 		}
 	}
 
-	private void checkSameMember(Post post, Long memberId){
-		if(post.getMember().getId() != memberId){
+	private void checkSameMember(Post post, Long memberId) {
+		if (post.getMember().getId() != memberId) {
 			throw new IllegalStateException("잘못된 접근입니다.");
 		}
 	}

@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import lombok.Data;
 import teamexpress.velo9.common.dto.ThumbnailResponseDTO;
 import teamexpress.velo9.post.domain.Post;
+import teamexpress.velo9.post.domain.PostTag;
 import teamexpress.velo9.post.domain.PostThumbnail;
 
 @Data
@@ -20,14 +21,14 @@ public class PostReadDTO {
 	private ThumbnailResponseDTO thumbnail;
 	private List<String> tags;
 
-	public PostReadDTO(Post post) {
+	public PostReadDTO(Post post, List<PostTag> postTagList) {
 		id = post.getId();
 		title = post.getTitle();
 		introduce = post.getIntroduce();
 		createdDate = post.getCreatedDate();
 		thumbnail = makeThumbnail(post.getPostThumbnail());
 
-		tags = post.getPostTags().stream()
+		tags = postTagList.stream()
 			.map(postTag -> postTag.getTag().getName())
 			.collect(Collectors.toList());
 	}
