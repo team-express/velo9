@@ -119,6 +119,8 @@ public class InitDb {
 				.status(PostStatus.GENERAL)
 				.postThumbnail(postThumbnailRepository.save(new PostThumbnail().builder()
 						.uuid("uuid")
+						.name("name.png")
+						.path("2020/03/01")
 					.build()))
 				.temporaryPost(temporaryPostRepository.save(new TemporaryPost()))
 				.build()

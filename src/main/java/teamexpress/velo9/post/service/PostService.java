@@ -93,22 +93,13 @@ public class PostService {
 		//findById로 찾아온 fk객체도 변경감지가 된다
 		PostThumbnail savedPostThumbnail = post.getPostThumbnail();
 
-		if(savedPostThumbnail == null){//원래없는데
-			if(postThumbnail !=null){//있으면
+		if(savedPostThumbnail == null){
 				post.edit(postWriteDTO.getTitle(),
 					postWriteDTO.getIntroduce(),
 					postWriteDTO.getContent(),
 					postWriteDTO.getAccess(),
 					series,
 					postThumbnail);
-			}
-			else{//없으면 유지
-				post.edit(postWriteDTO.getTitle(),
-					postWriteDTO.getIntroduce(),
-					postWriteDTO.getContent(),
-					postWriteDTO.getAccess(),
-					series);
-			}
 		}
 		else{//원래 있는데
 			if(postThumbnail == null){//안주면 삭제
@@ -121,18 +112,17 @@ public class PostService {
 			}
 			else{//원래있는데 줄때
 				//다르면 : 프록시값일때만 delete때 select나가네 -> 그럼싹다 페치조인하는게 낫겠는데
+				savedPostThumbnail.edit(postThumbnail.getUuid(),//변경감지 하나라도 다르면 update 모든요소 나가고 다 같아야 안나가는군
+					postThumbnail.getPath(),
+					postThumbnail.getName()
+				);
+
 				post.edit(postWriteDTO.getTitle(),
 					postWriteDTO.getIntroduce(),
 					postWriteDTO.getContent(),
 					postWriteDTO.getAccess(),
-					series);
-
-				if(!savedPostThumbnail.getUuid().equals(postThumbnail.getUuid())){
-					savedPostThumbnail.edit(postThumbnail.getUuid(),
-						postThumbnail.getPath(),
-						postThumbnail.getName()
-					);
-				}
+					series,
+					post.getPostThumbnail());
 			}
 		}
 		System.out.println("end");
