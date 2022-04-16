@@ -76,7 +76,7 @@ public class PostService {
 		Member member = getMember(memberId);
 
 		Post post = postRepository.save(postWriteDTO.toPost(member, series, postThumbnail));
-		addTags(post, postWriteDTO.getTags());
+		//addTags(post, postWriteDTO.getTags());
 		return post.getId();
 	}
 
