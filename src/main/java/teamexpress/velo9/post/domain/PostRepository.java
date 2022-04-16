@@ -34,6 +34,6 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
 	@Query("select p from Post p join fetch p.member where p.id = :postId")
 	Optional<Post> findPostMemberById(@Param("postId") Long postId);
 
-	@Query("select p from Post p left join fetch p.postThumbnail where p.id = :id")
-	Optional<Post> findByIdJoinThumbnail(@Param("id") Long postId);
+	@Query("select p from Post p left join fetch p.postThumbnail left join fetch p.temporaryPost where p.id = :id")
+	Optional<Post> findByIdWithJoin(@Param("id") Long postId);
 }

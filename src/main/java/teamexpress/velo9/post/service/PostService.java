@@ -81,51 +81,20 @@ public class PostService {
 	}
 
 	private Long edit(PostWriteDTO postWriteDTO, Long memberId) {
-		System.out.println("start");
-		PostThumbnail postThumbnail = getPostThumbnail(postWriteDTO.getThumbnailFileName());
+		PostThumbnail postThumbnailToSave = getPostThumbnail(postWriteDTO.getThumbnailFileName());
 		Series series = getSeries(postWriteDTO.getSeriesId());
 
-		Post post = postRepository.findByIdJoinThumbnail(postWriteDTO.getPostId()).orElseThrow();
+		Post post = postRepository.findByIdWithJoin(postWriteDTO.getPostId()).orElseThrow();
 		checkSameWriter(post, memberId);
 
 		postWriteDTO.makeIntroduce();
+		post.edit(postWriteDTO.getTitle(),
+			postWriteDTO.getIntroduce(),
+			postWriteDTO.getContent(),
+			postWriteDTO.getAccess(),
+			series,
+			updateThumbnail(post.getPostThumbnail(), postThumbnailToSave));
 
-		//findById로 찾아온 fk객체도 변경감지가 된다
-		PostThumbnail savedPostThumbnail = post.getPostThumbnail();
-
-		if(savedPostThumbnail == null){
-				post.edit(postWriteDTO.getTitle(),
-					postWriteDTO.getIntroduce(),
-					postWriteDTO.getContent(),
-					postWriteDTO.getAccess(),
-					series,
-					postThumbnail);
-		}
-		else{//원래 있는데
-			if(postThumbnail == null){//안주면 삭제
-				post.edit(postWriteDTO.getTitle(),
-					postWriteDTO.getIntroduce(),
-					postWriteDTO.getContent(),
-					postWriteDTO.getAccess(),
-					series,
-					postThumbnail);
-			}
-			else{//원래있는데 줄때
-				//다르면 : 프록시값일때만 delete때 select나가네 -> 그럼싹다 페치조인하는게 낫겠는데
-				savedPostThumbnail.edit(postThumbnail.getUuid(),//변경감지 하나라도 다르면 update 모든요소 나가고 다 같아야 안나가는군
-					postThumbnail.getPath(),
-					postThumbnail.getName()
-				);
-
-				post.edit(postWriteDTO.getTitle(),
-					postWriteDTO.getIntroduce(),
-					postWriteDTO.getContent(),
-					postWriteDTO.getAccess(),
-					series,
-					post.getPostThumbnail());
-			}
-		}
-		System.out.println("end");
 		//updateTags(post, postWriteDTO.getTags());
 
 		return post.getId();
@@ -207,6 +176,14 @@ public class PostService {
 		if (!post.getMember().getId().equals(memberId)) {
 			throw new IllegalStateException("잘못된 접근입니다.");
 		}
+	}
+
+	private PostThumbnail updateThumbnail(PostThumbnail savedPostThumbnail, PostThumbnail postThumbnailToSave) {
+		return savedPostThumbnail != null && postThumbnailToSave != null ?
+			savedPostThumbnail.edit(postThumbnailToSave.getUuid(),
+				postThumbnailToSave.getPath(),
+				postThumbnailToSave.getName()
+			) : postThumbnailToSave;
 	}
 
 	private List<String> removeDuplication(List<String> tags) {

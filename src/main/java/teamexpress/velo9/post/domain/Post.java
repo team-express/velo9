@@ -92,21 +92,6 @@ public class Post {
 		this.temporaryPost = null;
 	}
 
-	public void edit(String title, String introduce, String content, String access, Series series) {
-		this.title = title;
-		this.introduce = introduce;
-		this.content = content;
-		this.access = makeAccess(access);
-		this.createdDate = makeDate();
-		this.status = PostStatus.GENERAL;
-		this.series = series;
-		this.temporaryPost = null;
-	}
-
-	private String makeIntroduce(String introduce) {
-		return StringUtils.hasText(introduce) ? introduce : this.introduce;
-	}
-
 	private PostAccess makeAccess(String access) {
 		return StringUtils.hasText(access) ? PostAccess.valueOf(access) : this.access;
 	}
