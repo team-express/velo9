@@ -117,30 +117,33 @@ public class PostService {
 			.orElseThrow(() -> new NullPointerException("no member"));
 	}
 
-	private void addTags(Post post, List<String> tags) {
-		if (isEmpty(tags)) {
+	private void addTags(Post post, List<String> tagNames) {
+		if (isEmpty(tagNames)) {
 			return;
 		}
 
-		tags = removeDuplication(tags);
+		tagNames = removeDuplication(tagNames);
 
 		List<Tag> existingTags = tagRepository.findAll();
 
-		List<String> tagNamesToSave = tags.stream().filter(
-			name -> existingTags.stream().map(Tag::getName).noneMatch(name::equals)
-		).collect(Collectors.toList());
+		existingTags.addAll(
+			tagNames.stream(//요청들어온 태그이름들 중
+				).filter(//기존에 존재하지않는 아이들만
+					name -> existingTags.stream().map(Tag::getName).noneMatch(name::equals)
+				).map(//저장과 동시에 엔티티로 바꾸어
+					name -> tagRepository.save(Tag.builder().name(name).build()))
+				.collect(Collectors.toList())//모은것들은
+		);//이제부터는 기존태그들이다
 
-		List<Tag> tagsToSave = tagNamesToSave.stream().map(name -> tagRepository.save(
-			Tag.builder().name(name).build())).collect(Collectors.toList());
-
-		List<Tag> tagsToAdd = tags.stream().map(tag -> find(tag, existingTags, tagsToSave)).collect(Collectors.toList());
-
-		tagsToAdd.forEach(tag -> postTagRepository.save(
+		tagNames.stream(//요청들어온 태그들을
+		).map(tagName ->//엔티티로 바꾸어
+			existingTags.stream().filter(tag -> tag.getName().equals(tagName)).findFirst().orElseThrow()
+		).forEach(tag -> postTagRepository.save(
 			PostTag.builder()
 				.tag(tag)
 				.post(post)
 				.build()
-		));
+		));//저장한다
 	}
 
 	private void updateTags(Post post, List<String> tags) {
@@ -192,13 +195,6 @@ public class PostService {
 
 	private boolean isEmpty(List<String> tags) {
 		return tags == null || tags.isEmpty();
-	}
-
-	private Tag find(String name, List<Tag> existingTags, List<Tag> tagsToSave) {
-		return existingTags.stream().filter(tag -> tag.getName().equals(name)).findFirst()
-			.orElseGet(() ->
-				tagsToSave.stream().filter(tag -> tag.getName().equals(name)).findFirst()
-					.orElseThrow());
 	}
 
 	@Transactional
