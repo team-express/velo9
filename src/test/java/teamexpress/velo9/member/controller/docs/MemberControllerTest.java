@@ -35,12 +35,12 @@ class MemberControllerTest {
 
 	@Test
 	void login() throws Exception {
-		this.mockMvc.perform(post("/login").sessionAttr(SessionConst.LOGIN_MEMBER, 3L)
+		this.mockMvc.perform(post("/login")
 				.content("{\"username\": \"test\","
 					+ " \n\"password\": \"1234\"}")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
-			.andDo(document("addMember",
+			.andDo(document("login",
 				requestFields(
 					fieldWithPath("username").description("username"),
 					fieldWithPath("password").description("password")
