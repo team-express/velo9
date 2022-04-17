@@ -41,7 +41,7 @@ public class PostWriteDTO {
 			.introduce(this.introduce)
 			.content(this.content)
 			.status(PostStatus.GENERAL)
-			.access(PostAccess.valueOf(this.access))
+			.access(makeAccess(this.access))
 			.member(member)
 			.series(series)
 			.postThumbnail(postThumbnail)
@@ -65,5 +65,9 @@ public class PostWriteDTO {
 
 	private boolean checkIntroduce() {
 		return StringUtils.hasText(this.introduce);
+	}
+
+	private PostAccess makeAccess(String access) {
+		return this.access != null ? PostAccess.valueOf(access) : PostAccess.PUBLIC;
 	}
 }
