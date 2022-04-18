@@ -52,7 +52,7 @@ public class MemberController extends BaseController {
 	}
 
 	@PostMapping("/sendMailPw")
-	public void sendMailByFinPw(@Valid @RequestBody MailDTO mailDTO, HttpSession session) {
+	public void sendMailByFindPw(@Valid @RequestBody MailDTO mailDTO, HttpSession session) {
 		memberService.findEmailByFinPW(mailDTO);
 		sendRandomNumber(mailDTO, session);
 	}
