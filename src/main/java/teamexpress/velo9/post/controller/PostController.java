@@ -94,10 +94,11 @@ public class PostController extends BaseController {
 	@GetMapping("/{nickname}/main")
 	public PostResult main(@PathVariable String nickname,
 		@RequestParam(required = false) String tagName,
-		@RequestParam(defaultValue = "0") int page) {
-
+		@RequestParam(defaultValue = "0") int page,
+		HttpSession session) {
 		PageRequest pageRequest = PageRequest.of(page, SIZE, Sort.by(Direction.DESC, "createdDate"));
-		Slice<PostReadDTO> posts = postService.findMainPost(nickname, tagName, pageRequest);
+		Long memberId = (Long) session.getAttribute(SessionConst.LOGIN_MEMBER);
+		Slice<PostReadDTO> posts = postService.findMainPost(nickname, tagName, pageRequest, memberId);
 		List<TagDTO> usedTags = tagService.findAllTags(nickname);
 		return new PostResult(posts, usedTags);
 	}

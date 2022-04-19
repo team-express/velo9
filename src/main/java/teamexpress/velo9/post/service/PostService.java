@@ -1,6 +1,7 @@
 package teamexpress.velo9.post.service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -118,8 +119,10 @@ public class PostService {
 		return seriesList.map(series -> new SeriesDTO(series, postList));
 	}
 
-	public Slice<PostReadDTO> findMainPost(String nickname, String tagName, Pageable pageable) {
-		Slice<Post> posts = postRepository.findPost(nickname, tagName, pageable);
+	public Slice<PostReadDTO> findMainPost(String nickname, String tagName, Pageable pageable, Long memberId) {
+		Member member = getMemberByNickname(nickname);
+		boolean checkOwner = isaBoolean(memberId, member);
+		Slice<Post> posts = postRepository.findPost(nickname, tagName, pageable, checkOwner);
 		List<Long> postIds = posts.map(Post::getId).toList();
 		List<PostTag> postTagList = postTagRepository.findByPostIds(postIds);
 		return posts.map(post -> new PostReadDTO(post, postTagList));
@@ -268,5 +271,15 @@ public class PostService {
 		if (post.getMember().getId() != memberId) {
 			throw new IllegalStateException("잘못된 접근입니다.");
 		}
+	}
+
+	private boolean isaBoolean(Long memberId, Member member) {
+		return Objects.equals(memberId, member.getId());
+	}
+
+	private Member getMemberByNickname(String nickname) {
+		return memberRepository.findByNickname(nickname).orElseThrow(
+			() -> {throw new IllegalStateException("존재하지 않는 회원입니다.");}
+		);
 	}
 }

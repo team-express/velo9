@@ -32,13 +32,13 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 	}
 
 	@Override
-	public Slice<Post> findPost(String nickname, String tagName, Pageable pageable) {
+	public Slice<Post> findPost(String nickname, String tagName, Pageable pageable, boolean checkOwner) {
 		List<Post> content =
 			queryFactory.selectFrom(post)
 				.leftJoin(post.postThumbnail).fetchJoin()
 				.where(nicknameEq(nickname)
 					.and(searchTag(tagName))
-					.and(openPost()))
+					.and(openPostCheckOwner(checkOwner)))
 				.offset(pageable.getOffset())
 				.limit(pageable.getPageSize() + 1)
 				.fetch();
@@ -194,6 +194,10 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 
 	private BooleanBuilder access() {
 		return nullSafeBuilder(() -> post.access.eq(PostAccess.PUBLIC));
+	}
+
+	private BooleanBuilder openPostCheckOwner(boolean checkOwner) {
+		return checkOwner ? status() : openPost();
 	}
 
 	private BooleanBuilder nullSafeBuilder(Supplier<BooleanExpression> f) {
