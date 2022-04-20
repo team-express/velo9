@@ -128,10 +128,10 @@ public class PostService {
 
 		List<Tag> existingTags = addTagsUnknown(tagNames);
 
-		putPostTags(post, existingTags, tagNames);		
+		putPostTags(post, existingTags, tagNames);
 	}
 
-	private List<Tag> addTagsUnknown(List<String> tagNames){
+	private List<Tag> addTagsUnknown(List<String> tagNames) {
 		List<Tag> existingTags = tagRepository.findAll();
 
 		existingTags.addAll(
@@ -144,7 +144,7 @@ public class PostService {
 		return existingTags;
 	}
 
-	private void putPostTags(Post post, List<Tag> existingTags, List<String> tagNames){
+	private void putPostTags(Post post, List<Tag> existingTags, List<String> tagNames) {
 		tagNames.stream(
 		).map(name ->
 			existingTags.stream().filter(tag -> tag.getName().equals(name)).findFirst().orElseThrow()
