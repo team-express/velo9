@@ -62,10 +62,7 @@ public class PostService {
 
 	@Transactional
 	public Long write(PostWriteDTO postWriteDTO, Long memberId) {
-		if (isNewPost(postWriteDTO)) {
-			return writeNew(postWriteDTO, memberId);
-		}
-		return edit(postWriteDTO, memberId);
+		return isNewPost(postWriteDTO) ? writeNew(postWriteDTO, memberId) : edit(postWriteDTO, memberId);
 	}
 
 	private boolean isNewPost(PostWriteDTO postWriteDTO) {
@@ -138,9 +135,9 @@ public class PostService {
 
 		existingTags.addAll(
 			tagNames.stream(
-				).filter(name -> existingTags.stream().map(Tag::getName).noneMatch(name::equals)
-				).map(name -> tagRepository.save(Tag.builder().name(name).build()))
-				.collect(Collectors.toList())
+			).filter(name -> existingTags.stream().map(Tag::getName).noneMatch(name::equals)
+			).map(name -> tagRepository.save(Tag.builder().name(name).build())
+			).collect(Collectors.toList())
 		);
 
 		return existingTags;
@@ -349,7 +346,9 @@ public class PostService {
 
 	private Member getMemberByNickname(String nickname) {
 		return memberRepository.findByNickname(nickname).orElseThrow(
-			() -> {throw new IllegalStateException("존재하지 않는 회원입니다.");}
+			() -> {
+				throw new IllegalStateException("존재하지 않는 회원입니다.");
+			}
 		);
 	}
 }
