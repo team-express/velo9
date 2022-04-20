@@ -76,7 +76,7 @@ public class PostService {
 		Member member = getMember(memberId);
 
 		Post post = postRepository.save(postWriteDTO.toPost(member, series, postThumbnail));
-		//addTags(post, postWriteDTO.getTags());
+		updateTags(post, postWriteDTO.getTags());
 		return post.getId();
 	}
 
@@ -95,7 +95,7 @@ public class PostService {
 			series,
 			updateThumbnail(post.getPostThumbnail(), postThumbnailToSave));
 
-		//updateTags(post, postWriteDTO.getTags());
+		updateTags(post, postWriteDTO.getTags());
 
 		return post.getId();
 	}
@@ -117,62 +117,49 @@ public class PostService {
 			.orElseThrow(() -> new NullPointerException("no member"));
 	}
 
-	private void addTags(Post post, List<String> tagNames) {
+	private void updateTags(Post post, List<String> tagNames) {
+		cleanTagsIfNecessary(post);
+
 		if (isEmpty(tagNames)) {
 			return;
 		}
 
 		tagNames = removeDuplication(tagNames);
 
+		List<Tag> existingTags = addTagsUnknown(tagNames);
+
+		putPostTags(post, existingTags, tagNames);		
+	}
+
+	private List<Tag> addTagsUnknown(List<String> tagNames){
 		List<Tag> existingTags = tagRepository.findAll();
 
 		existingTags.addAll(
-			tagNames.stream(//요청들어온 태그이름들 중
-				).filter(//기존에 존재하지않는 아이들만
-					name -> existingTags.stream().map(Tag::getName).noneMatch(name::equals)
-				).map(//저장과 동시에 엔티티로 바꾸어
-					name -> tagRepository.save(Tag.builder().name(name).build()))
-				.collect(Collectors.toList())//모은것들은
-		);//이제부터는 기존태그들이다
+			tagNames.stream(
+				).filter(name -> existingTags.stream().map(Tag::getName).noneMatch(name::equals)
+				).map(name -> tagRepository.save(Tag.builder().name(name).build()))
+				.collect(Collectors.toList())
+		);
 
-		tagNames.stream(//요청들어온 태그들을
-		).map(tagName ->//엔티티로 바꾸어
-			existingTags.stream().filter(tag -> tag.getName().equals(tagName)).findFirst().orElseThrow()
+		return existingTags;
+	}
+
+	private void putPostTags(Post post, List<Tag> existingTags, List<String> tagNames){
+		tagNames.stream(
+		).map(name ->
+			existingTags.stream().filter(tag -> tag.getName().equals(name)).findFirst().orElseThrow()
 		).forEach(tag -> postTagRepository.save(
 			PostTag.builder()
 				.tag(tag)
 				.post(post)
 				.build()
-		));//저장한다
+		));
 	}
 
-	private void updateTags(Post post, List<String> tags) {
-		postTagRepository.deleteAllByPost(post);//전체삭제
-
-		if (isEmpty(tags)) {
-			return;
+	private void cleanTagsIfNecessary(Post post) {
+		if (post.getId() != null) {
+			postTagRepository.deleteAllByPost(post);
 		}
-
-		tags = removeDuplication(tags);
-
-		List<String> realTags = tagRepository.getTagNames();//전체태그이름
-
-		tags.stream().filter(name -> !realTags.contains(name))//없는것만 저장
-			.forEach(name -> tagRepository.save(
-				Tag.builder().name(name).build()
-			));
-
-		tags.forEach(name -> postTagRepository.save(//매개변수 태그 저장
-			PostTag.builder()
-				.tag(tagRepository.findByName(name))
-				.post(post)
-				.build()
-		));
-
-		//vs
-		//사라진 태그만 삭제 or(queryDsl?)
-		//기존유지는 두고
-		//새로생긴 것만 저장 & 추가
 	}
 
 	private void checkSameWriter(Post post, Long memberId) {

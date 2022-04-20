@@ -104,8 +104,8 @@ public class InitDb {
 			seriesRepository.save(series9);
 			seriesRepository.save(series10);
 
-			Tag tag1 = new Tag("tag1");
-			Tag tag2 = new Tag("tag2");
+			Tag tag1 = Tag.builder().name("tag1").build();
+			Tag tag2 = Tag.builder().name("tag2").build();
 			tagRepository.save(tag1);
 			tagRepository.save(tag2);
 
