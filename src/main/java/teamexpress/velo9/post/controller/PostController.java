@@ -60,7 +60,7 @@ public class PostController extends BaseController {
 
 	@PostMapping("/writeTemporary")
 	public Result writeTemporary(@RequestBody TemporaryPostWriteDTO temporaryPostWriteDTO, HttpSession session) {
-		return new Result<>(postService.writeTemporary(temporaryPostWriteDTO, 2L));
+		return new Result<>(postService.writeTemporary(temporaryPostWriteDTO, getMemberId(session)));
 	}
 
 	@PostMapping("/delete")

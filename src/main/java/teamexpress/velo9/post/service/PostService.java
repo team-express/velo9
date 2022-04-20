@@ -131,7 +131,7 @@ public class PostService {
 		Post post = postRepository.findById(loveDTO.getPostId()).orElseThrow();
 
 		toggleLove(member, post);
-		postRepository.updateLoveCount(post, loveRepository.countByPost(post));
+		post.updateLoveCount(loveRepository.countByPost(post));
 	}
 
 	@Transactional

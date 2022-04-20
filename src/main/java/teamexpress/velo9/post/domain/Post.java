@@ -107,4 +107,8 @@ public class Post {
 	public void updateTempPost(TemporaryPost temporaryPost) {
 		this.temporaryPost = temporaryPost;
 	}
+
+	public void updateLoveCount(int loveCount) {
+		this.loveCount = loveCount;
+	}
 }
