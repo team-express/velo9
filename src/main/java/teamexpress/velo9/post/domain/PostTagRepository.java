@@ -14,4 +14,7 @@ public interface PostTagRepository extends JpaRepository<PostTag, Long> {
 
 	@Query("select pt from post_tag pt join fetch pt.tag where pt.post = :post")
 	List<PostTag> findByPost(@Param("post") Post post);
+
+	@Query("select pt from post_tag pt join fetch pt.tag where pt.post.id in (:postIds)")
+	List<PostTag> findByPostIds(@Param("postIds") List<Long> postIds);
 }

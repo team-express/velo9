@@ -99,4 +99,8 @@ public class Post {
 	private LocalDateTime makeDate() {
 		return this.status == PostStatus.TEMPORARY ? LocalDateTime.now() : this.createdDate;
 	}
+
+	public void addViewCount() {
+		this.viewCount++;
+	}
 }

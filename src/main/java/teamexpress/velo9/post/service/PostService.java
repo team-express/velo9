@@ -1,6 +1,7 @@
 package teamexpress.velo9.post.service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import teamexpress.velo9.member.domain.Look;
 import teamexpress.velo9.member.domain.LookRepository;
 import teamexpress.velo9.member.domain.Love;
 import teamexpress.velo9.member.domain.LoveRepository;
@@ -201,7 +203,7 @@ public class PostService {
 	}
 
 	public PostLoadDTO findPostById(Long id) {
-		Post post = postRepository.findById(id).orElseThrow(
+		Post post = postRepository.findWritePost(id).orElseThrow(
 			() -> new IllegalStateException("존재하지 않는 포스트입니다."));
 		List<PostTag> postTags = postTagRepository.findByPost(post);
 		return new PostLoadDTO(post, postTags);
@@ -209,12 +211,18 @@ public class PostService {
 
 	public Slice<SeriesDTO> findSeries(String nickname, Pageable pageable) {
 		Slice<Series> seriesList = seriesRepository.findPostBySeriesName(nickname, pageable);
-		return seriesList.map(SeriesDTO::new);
+		List<Long> seriesIds = seriesList.map(Series::getId).toList();
+		List<Post> postList = postRepository.findPostByIds(seriesIds);
+		return seriesList.map(series -> new SeriesDTO(series, postList));
 	}
 
-	public Slice<PostReadDTO> findMainPost(String nickname, String tagName, Pageable pageable) {
-		Slice<Post> posts = postRepository.findPost(nickname, tagName, pageable);
-		return posts.map(PostReadDTO::new);
+	public Slice<PostReadDTO> findMainPost(String nickname, String tagName, Pageable pageable, Long memberId) {
+		Member member = getMemberByNickname(nickname);
+		boolean checkOwner = isaBoolean(memberId, member);
+		Slice<Post> posts = postRepository.findPost(nickname, tagName, pageable, checkOwner);
+		List<Long> postIds = posts.map(Post::getId).toList();
+		List<PostTag> postTagList = postTagRepository.findByPostIds(postIds);
+		return posts.map(post -> new PostReadDTO(post, postTagList));
 	}
 
 	@Transactional
@@ -227,9 +235,11 @@ public class PostService {
 	}
 
 	@Transactional
-	public void look(Long postId, Long memberId) {
-		makeLook(memberId, postId);
-		postRepository.updateViewCount(postId);
+	public void look(Post post, Long memberId) {
+		if (memberId != null) {
+			Member member = memberRepository.findById(memberId).orElseThrow();
+			makeLook(member, post);
+		}
 	}
 
 	public Page<PostMainDTO> searchMain(SearchCondition searchCondition, Pageable pageable) {
@@ -282,9 +292,9 @@ public class PostService {
 		);
 	}
 
-	private void makeLook(Long memberId, Long postId) {
-		if (lookRepository.findByPostAndMember(postId, memberId).isEmpty()) {
-			lookRepository.saveLook(memberId, postId);
+	private void makeLook(Member member, Post post) {
+		if (lookRepository.findByPostAndMember(post.getId(), member.getId()).isEmpty()) {
+			lookRepository.save(Look.builder().member(member).post(post).build());
 		}
 	}
 
@@ -304,8 +314,11 @@ public class PostService {
 		return lookPosts.map(LookPostDTO::new);
 	}
 
-	public ReadDTO findPostDetails(Long postId, String nickname) {
+	@Transactional
+	public ReadDTO findPostDetails(Long postId, String nickname, Long memberId) {
 		Post findPost = postRepository.findPostMemberById(postId).orElseThrow();
+		findPost.addViewCount();
+		look(findPost, memberId);
 		checkOwner(findPost, nickname);
 		List<Post> pagePost = postRepository.findPrevNextPost(findPost);
 		List<PostTag> postTags = postTagRepository.findByPost(findPost);
@@ -314,7 +327,9 @@ public class PostService {
 
 	public Slice<SeriesPostSummaryDTO> findPostsInSeries(String nickname, String seriesName, PageRequest page) {
 		Slice<Post> seriesPosts = postRepository.findByJoinSeries(nickname, seriesName, page);
-		return seriesPosts.map(SeriesPostSummaryDTO::new);
+		List<Long> postIds = seriesPosts.map(Post::getId).toList();
+		List<PostTag> postTagList = postTagRepository.findByPostIds(postIds);
+		return seriesPosts.map(post -> new SeriesPostSummaryDTO(post, postTagList));
 	}
 
 	public List<SeriesReadDTO> findAllSeries(String nickname) {
@@ -326,5 +341,15 @@ public class PostService {
 		if (!findPost.getMember().getNickname().equals(nickname)) {
 			throw new IllegalStateException("비정상적인 접근입니다.");
 		}
+	}
+
+	private boolean isaBoolean(Long memberId, Member member) {
+		return Objects.equals(memberId, member.getId());
+	}
+
+	private Member getMemberByNickname(String nickname) {
+		return memberRepository.findByNickname(nickname).orElseThrow(
+			() -> {throw new IllegalStateException("존재하지 않는 회원입니다.");}
+		);
 	}
 }

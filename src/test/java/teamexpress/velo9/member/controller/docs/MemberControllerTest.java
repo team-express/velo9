@@ -184,6 +184,19 @@ class MemberControllerTest {
 	}
 
 	@Test
+	void sendMailByFindPw() throws Exception {
+		this.mockMvc.perform(post("/sendMailPw")
+				.content("{\"email\": \"jinwook628@nate.com\"}")
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andDo(document("PostSendMailByFindPw",
+				requestFields(
+					fieldWithPath("email").description("회원가입시 입력했던 이메일로 인증번호가 전송됩니다. DB에 이메일이 존재하지 않으면 예외를 던집니다.")
+				)
+			));
+	}
+
+	@Test
 	@Transactional
 	@Rollback
 	void findId() throws Exception {

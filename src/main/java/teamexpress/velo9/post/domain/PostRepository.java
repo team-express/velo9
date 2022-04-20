@@ -31,7 +31,7 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
 	@Modifying
 	void updateSeries(@Param("id") Long id);
 
-	@Query("select p from Post p join fetch p.member where p.id = :postId")
+	@Query("select p from Post p join fetch p.member m left join fetch m.memberThumbnail where p.id = :postId")
 	Optional<Post> findPostMemberById(@Param("postId") Long postId);
 
 	@Query("select p from Post p left join fetch p.postThumbnail left join fetch p.temporaryPost where p.id = :id")

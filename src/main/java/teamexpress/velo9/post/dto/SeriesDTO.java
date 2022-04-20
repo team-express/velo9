@@ -3,7 +3,7 @@ package teamexpress.velo9.post.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Data;
-import teamexpress.velo9.post.domain.PostStatus;
+import teamexpress.velo9.post.domain.Post;
 import teamexpress.velo9.post.domain.Series;
 
 @Data
@@ -15,12 +15,11 @@ public class SeriesDTO {
 	private String seriesName;
 	private List<PostSummaryDTO> posts;
 
-	public SeriesDTO(Series series) {
+	public SeriesDTO(Series series, List<Post> postList) {
 		seriesId = series.getId();
 		seriesName = series.getName();
-		posts = series.getPosts().stream()
-			.filter(p -> p.getStatus().equals(PostStatus.GENERAL))
-			.map(PostSummaryDTO::new).limit(SIZE)
+		posts = postList.stream()
+			.map(PostSummaryDTO::new)
 			.collect(Collectors.toList());
 	}
 }
