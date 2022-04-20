@@ -22,6 +22,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -34,6 +35,7 @@ import teamexpress.velo9.member.domain.Member;
 @NoArgsConstructor
 @EntityListeners(value = {AuditingEntityListener.class})
 @Builder
+@DynamicUpdate
 public class Post {
 
 	@Id
@@ -100,5 +102,9 @@ public class Post {
 
 	public void addViewCount() {
 		this.viewCount++;
+	}
+
+	public void updateTempPost(TemporaryPost temporaryPost) {
+		this.temporaryPost = temporaryPost;
 	}
 }

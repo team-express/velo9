@@ -188,7 +188,8 @@ public class PostService {
 
 		TemporaryPost temporaryPost = temporaryPostWriteDTO.toTemporaryPost();
 		temporaryPostRepository.save(temporaryPost);
-		postRepository.updateTempPost(post.getId(), temporaryPost);
+
+		post.updateTempPost(temporaryPost);
 
 		return post.getId();
 	}
