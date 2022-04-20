@@ -35,7 +35,6 @@ import teamexpress.velo9.member.domain.Member;
 @NoArgsConstructor
 @EntityListeners(value = {AuditingEntityListener.class})
 @Builder
-@DynamicUpdate
 public class Post {
 
 	@Id
