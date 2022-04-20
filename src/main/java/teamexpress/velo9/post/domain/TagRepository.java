@@ -6,10 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface TagRepository extends JpaRepository<Tag, Long>, TagRepositoryCustom {
-	@Query("select t.name from Tag t")
-	List<String> getTagNames();
-
-	Tag findByName(String name);
 
 	@Query("select distinct t from Tag t left join post_tag pt on t.id = pt.tag.id left join Member m on pt.post.member.id = m.id "
 		+ "where m.nickname = :nickname")
