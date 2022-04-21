@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import lombok.Data;
 import teamexpress.velo9.common.dto.ThumbnailResponseDTO;
 import teamexpress.velo9.post.domain.Post;
-import teamexpress.velo9.post.domain.PostTag;
 import teamexpress.velo9.post.domain.PostThumbnail;
 
 @Data
@@ -22,14 +21,14 @@ public class SeriesPostSummaryDTO {
 	private ThumbnailResponseDTO thumbnail;
 	private List<String> tags;
 
-	public SeriesPostSummaryDTO(Post post, List<PostTag> postTagList) {
+	public SeriesPostSummaryDTO(Post post) {
 		id = post.getId();
 		title = post.getTitle();
 		seriesName = post.getSeries().getName();
 		introduce = post.getIntroduce();
 		createdDate = post.getCreatedDate();
 		thumbnail = makeThumbnail(post.getPostThumbnail());
-		tags = postTagList.stream()
+		tags = post.getPostTags().stream()
 			.map(postTag -> postTag.getTag().getName())
 			.collect(Collectors.toList());
 	}
