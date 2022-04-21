@@ -132,7 +132,7 @@ public class PostService {
 		Post post = postRepository.findById(loveDTO.getPostId()).orElseThrow();
 
 		toggleLove(member, post);
-		postRepository.updateLoveCount(post, loveRepository.countByPost(post));
+		post.updateLoveCount(loveRepository.countByPost(post));
 	}
 
 	@Transactional
@@ -189,7 +189,8 @@ public class PostService {
 
 		TemporaryPost temporaryPost = temporaryPostWriteDTO.toTemporaryPost();
 		temporaryPostRepository.save(temporaryPost);
-		postRepository.updateTempPost(post.getId(), temporaryPost);
+
+		post.updateTempPost(temporaryPost);
 
 		return post.getId();
 	}

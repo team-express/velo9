@@ -22,6 +22,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -100,5 +101,13 @@ public class Post {
 
 	public void addViewCount() {
 		this.viewCount++;
+	}
+
+	public void updateTempPost(TemporaryPost temporaryPost) {
+		this.temporaryPost = temporaryPost;
+	}
+
+	public void updateLoveCount(int loveCount) {
+		this.loveCount = loveCount;
 	}
 }
