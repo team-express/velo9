@@ -80,7 +80,7 @@ public class PostControllerTest {
 	@Test
 	@Transactional
 	@Rollback
-	void 새글작성시_제목_내용_공개설정이_비어있으면_에러가_발생한다() {
+	void 새글작성시_제목_내용이_비어있으면_에러가_발생한다() {
 
 		//제목이 없는 경우
 		assertThatThrownBy(() ->
@@ -101,18 +101,6 @@ public class PostControllerTest {
 					.content("{"
 						+ "\n\"title\":\"testtest\","
 						+ "\n\"access\":\"PRIVATE\""
-						+ "\n}")
-					.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
-		).isInstanceOf(Error.class);
-
-		//공개설정이 없는 경우
-		assertThatThrownBy(() ->
-			mockMvc.perform(post("/write")
-					.sessionAttr(SessionConst.LOGIN_MEMBER, 2l)
-					.content("{"
-						+ "\n\"title\":\"testtest\","
-						+ "\n\"content\":\"333333\""
 						+ "\n}")
 					.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -394,19 +382,6 @@ public class PostControllerTest {
 						+ "\n\"postId\":\"1\","
 						+ "\n\"title\":\"testtest\","
 						+ "\n\"access\":\"PRIVATE\""
-						+ "\n}")
-					.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
-		).isInstanceOf(Error.class);
-
-		//공개설정이 없는 경우
-		assertThatThrownBy(() ->
-			mockMvc.perform(post("/write")
-					.sessionAttr(SessionConst.LOGIN_MEMBER, 2l)
-					.content("{"
-						+ "\n\"postId\":\"1\","
-						+ "\n\"title\":\"testtest\","
-						+ "\n\"content\":\"333333\""
 						+ "\n}")
 					.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -769,15 +744,9 @@ public class PostControllerTest {
 	@Transactional
 	@Rollback
 	void 글수정시_태그관련하여_일어날일들() throws Exception {
-		//태그 원래있던거 + 원래있던거 삭제 + 새로추가된 것 / null
-
-		//전 태그개수
-		Query query = em.createNativeQuery("select count(*) from tag");
-		Long tagCnt = ((BigInteger) query.getSingleResult()).longValue();
-
 		//있는 태그
 		String existTag = "tag1";
-		query = em.createNativeQuery("select count(*) from tag where name = ?").setParameter(1, existTag);
+		Query query = em.createNativeQuery("select count(*) from tag where name = ?").setParameter(1, existTag);
 		long cnt = ((BigInteger) query.getSingleResult()).longValue();
 		if (cnt != 1) {
 			throw new IllegalStateException("있어야 하는데 없거나, 중복되는 태그이름이 있습니다.");
@@ -810,12 +779,6 @@ public class PostControllerTest {
 					+ "\n}")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk());
-
-		//후 태그개수 - 전 태그개수
-		query = em.createNativeQuery("select count(*) from tag");
-		tagCnt = ((BigInteger) query.getSingleResult()).longValue() - tagCnt;
-
-		assertThat(tagCnt == 1).isTrue();
 
 		query = em.createNativeQuery("select distinct name from post_tag inner join tag on post_tag.tag_id = tag.tag_id where post_tag.post_id = " + 2);
 		assertThat(query.getResultList()).containsExactly("tag1", "sirius");

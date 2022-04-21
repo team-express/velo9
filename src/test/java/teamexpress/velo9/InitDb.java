@@ -104,8 +104,8 @@ public class InitDb {
 			seriesRepository.save(series9);
 			seriesRepository.save(series10);
 
-			Tag tag1 = new Tag("tag1");
-			Tag tag2 = new Tag("tag2");
+			Tag tag1 = Tag.builder().name("tag1").build();
+			Tag tag2 = Tag.builder().name("tag2").build();
 			tagRepository.save(tag1);
 			tagRepository.save(tag2);
 
@@ -119,6 +119,8 @@ public class InitDb {
 				.status(PostStatus.GENERAL)
 				.postThumbnail(postThumbnailRepository.save(new PostThumbnail().builder()
 						.uuid("uuid")
+						.name("name.png")
+						.path("2020/03/01")
 					.build()))
 				.temporaryPost(temporaryPostRepository.save(new TemporaryPost()))
 				.build()

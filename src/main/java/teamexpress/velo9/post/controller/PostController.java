@@ -18,12 +18,11 @@ import teamexpress.velo9.common.controller.BaseController;
 import teamexpress.velo9.common.domain.PostResult;
 import teamexpress.velo9.common.domain.Result;
 import teamexpress.velo9.member.security.oauth.SessionConst;
-import teamexpress.velo9.post.domain.Post;
 import teamexpress.velo9.post.dto.LookPostDTO;
 import teamexpress.velo9.post.dto.LoveDTO;
 import teamexpress.velo9.post.dto.LovePostDTO;
+import teamexpress.velo9.post.dto.PostLoadDTO;
 import teamexpress.velo9.post.dto.PostReadDTO;
-import teamexpress.velo9.post.dto.PostSaveDTO;
 import teamexpress.velo9.post.dto.PostWriteDTO;
 import teamexpress.velo9.post.dto.ReadDTO;
 import teamexpress.velo9.post.dto.SeriesDTO;
@@ -46,16 +45,14 @@ public class PostController extends BaseController {
 	private final TagService tagService;
 
 	@GetMapping("/write")
-	public PostWriteDTO write(@RequestParam(required = false) Long id) {
-		return id == null ? null : postService.findPostById(id);
+	public PostLoadDTO write(@RequestParam(required = false) Long id) {
+		return id != null ? postService.findPostById(id) : null;
 	}
 
 	@PostMapping("/write")
-	public Result write(@Valid @RequestBody PostSaveDTO postSaveDTO, HttpSession session) {
-		Post post = postService.write(postSaveDTO, getMemberId(session));
-		tagService.addTags(post, postSaveDTO.getTags());
-		tagService.removeUselessTags();
-		return new Result<>(post.getId());
+	public Result<Long> write(@Valid @RequestBody PostWriteDTO postWriteDTO, HttpSession session) {
+		Long postId = postService.write(postWriteDTO, getMemberId(session));
+		return new Result<>(postId);
 	}
 
 	@PostMapping("/writeTemporary")
@@ -66,7 +63,6 @@ public class PostController extends BaseController {
 	@PostMapping("/delete")
 	public void delete(@RequestParam Long id) {
 		postService.remove(id);
-		tagService.removeUselessTags();
 	}
 
 	@GetMapping("/{nickname}/series")

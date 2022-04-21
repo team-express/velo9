@@ -107,8 +107,7 @@ class PostControllerTest {
 					fieldWithPath("postId").description("해당 필드가 없으면(null) 새 글(또는 임시글)이 작성됩니다.\n"
 						+ "해당 필드가 있으면 기존에 존재하는 글(또는 임시글)의 수정(덮어쓰기)가 됩니다.").optional(),
 					fieldWithPath("title").description("제목"),
-					fieldWithPath("introduce").description("새 글작성일 때 introduce가 비어있을 경우 content의 150자 이내가 소개글이 됩니다.\n"
-						+ "수정의 경우 이전의 소개글이 유지됩니다.").optional(),
+					fieldWithPath("introduce").description("새 글작성일 때 introduce가 비어있을 경우 content의 150자 이내가 소개글이 됩니다.\n").optional(),
 					fieldWithPath("content").description("본문내용"),
 					fieldWithPath("access").description("PUBLIC(전체공개), PRIVATE(비공개) 중에서 적습니다.\n"
 						+ "적지 않으면 새 글의 경우 public이 들어가고, 수정의 경우 유지가 됩니다."),
