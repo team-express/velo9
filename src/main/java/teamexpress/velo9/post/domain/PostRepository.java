@@ -16,16 +16,8 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
 
 	int countByMemberAndStatus(Member member, PostStatus status);
 
-	@Query("update Post p set p.temporaryPost = :tmp where p.id = :id")
-	@Modifying
-	void updateTempPost(@Param("id") Long id, @Param("tmp") TemporaryPost temporaryPost);
-
 	@Query("select p from Post p where p.member.id = :id and p.status =:status")
 	List<Post> getTempSavedPost(@Param("id") Long id, @Param("status") PostStatus status);
-
-	@Query("update Post p set p.loveCount = :loveCount where p = :post")
-	@Modifying
-	void updateLoveCount(@Param("post") Post post, @Param("loveCount") int loveCount);
 
 	@Query("update Post p set p.series = null where p.series.id = :id")
 	@Modifying

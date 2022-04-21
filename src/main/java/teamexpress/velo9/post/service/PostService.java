@@ -217,9 +217,7 @@ public class PostService {
 		Member member = getMemberByNickname(nickname);
 		boolean checkOwner = isaBoolean(memberId, member);
 		Slice<Post> posts = postRepository.findPost(nickname, tagName, pageable, checkOwner);
-		List<Long> postIds = posts.map(Post::getId).toList();
-		List<PostTag> postTagList = postTagRepository.findByPostIds(postIds);
-		return posts.map(post -> new PostReadDTO(post, postTagList));
+		return posts.map(PostReadDTO::new);
 	}
 
 	@Transactional
@@ -228,7 +226,7 @@ public class PostService {
 		Post post = postRepository.findById(loveDTO.getPostId()).orElseThrow();
 
 		toggleLove(member, post);
-		postRepository.updateLoveCount(post, loveRepository.countByPost(post));
+		post.updateLoveCount(loveRepository.countByPost(post));
 	}
 
 	@Transactional
@@ -264,7 +262,8 @@ public class PostService {
 
 		TemporaryPost temporaryPost = temporaryPostWriteDTO.toTemporaryPost();
 		temporaryPostRepository.save(temporaryPost);
-		postRepository.updateTempPost(post.getId(), temporaryPost);
+
+		post.updateTempPost(temporaryPost);
 
 		return post.getId();
 	}
@@ -324,9 +323,7 @@ public class PostService {
 
 	public Slice<SeriesPostSummaryDTO> findPostsInSeries(String nickname, String seriesName, PageRequest page) {
 		Slice<Post> seriesPosts = postRepository.findByJoinSeries(nickname, seriesName, page);
-		List<Long> postIds = seriesPosts.map(Post::getId).toList();
-		List<PostTag> postTagList = postTagRepository.findByPostIds(postIds);
-		return seriesPosts.map(post -> new SeriesPostSummaryDTO(post, postTagList));
+		return seriesPosts.map(SeriesPostSummaryDTO::new);
 	}
 
 	public List<SeriesReadDTO> findAllSeries(String nickname) {
