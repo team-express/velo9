@@ -186,7 +186,7 @@ class MemberControllerTest {
 	@Test
 	void sendMailByFindPw() throws Exception {
 		this.mockMvc.perform(post("/sendMailPw")
-				.content("{\"email\": \"jinwook628@nate.com\"}")
+				.content("{\"email\": \"test1@nate.com\"}")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andDo(document("PostSendMailByFindPw",

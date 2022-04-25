@@ -94,6 +94,7 @@ public class PostService {
 			series,
 			updateThumbnail(post.getPostThumbnail(), postThumbnailToSave));
 
+		cleanTags(post);
 		updateTags(post, postWriteDTO.getTags());
 
 		return post.getId();
@@ -117,7 +118,6 @@ public class PostService {
 	}
 
 	private void updateTags(Post post, List<String> tagNames) {
-		cleanTagsIfNecessary(post);
 
 		if (isEmpty(tagNames)) {
 			return;
@@ -155,10 +155,8 @@ public class PostService {
 		));
 	}
 
-	private void cleanTagsIfNecessary(Post post) {
-		if (post.getId() != null) {
-			postTagRepository.deleteAllByPost(post);
-		}
+	private void cleanTags(Post post) {
+		postTagRepository.deleteAllByPost(post);
 	}
 
 	private void checkSameWriter(Post post, Long memberId) {
