@@ -18,9 +18,8 @@ import teamexpress.velo9.common.controller.BaseController;
 import teamexpress.velo9.common.domain.PostResult;
 import teamexpress.velo9.common.domain.Result;
 import teamexpress.velo9.member.security.oauth.SessionConst;
-import teamexpress.velo9.post.dto.LookPostDTO;
 import teamexpress.velo9.post.dto.LoveDTO;
-import teamexpress.velo9.post.dto.LovePostDTO;
+import teamexpress.velo9.post.dto.PostArchiveDTO;
 import teamexpress.velo9.post.dto.PostLoadDTO;
 import teamexpress.velo9.post.dto.PostReadDTO;
 import teamexpress.velo9.post.dto.PostWriteDTO;
@@ -110,13 +109,13 @@ public class PostController extends BaseController {
 	}
 
 	@GetMapping("/archive/like")
-	public Slice<LovePostDTO> lovePostRead(@RequestParam(defaultValue = "0") int page, HttpSession session) {
+	public Slice<PostArchiveDTO> lovePostRead(@RequestParam(defaultValue = "0") int page, HttpSession session) {
 		PageRequest pageRequest = PageRequest.of(page, ARCHIVE_SIZE, Sort.by(Direction.DESC, "createdDate"));
 		return postService.findLovePosts(getMemberId(session), pageRequest);
 	}
 
 	@GetMapping("/archive/recent")
-	public Slice<LookPostDTO> lookPostRead(@RequestParam(defaultValue = "0") int page, HttpSession session) {
+	public Slice<PostArchiveDTO> lookPostRead(@RequestParam(defaultValue = "0") int page, HttpSession session) {
 		PageRequest pageRequest = PageRequest.of(page, ARCHIVE_SIZE, Sort.by(Direction.DESC, "createdDate"));
 		return postService.findReadPost(getMemberId(session), pageRequest);
 	}
