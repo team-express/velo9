@@ -7,6 +7,7 @@ import teamexpress.velo9.post.domain.Post;
 
 @Data
 public class PostArchiveDTO {
+
 	private Long id;
 	private String title;
 	private String introduce;
