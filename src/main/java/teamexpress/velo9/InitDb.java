@@ -31,7 +31,7 @@ import teamexpress.velo9.post.domain.TagRepository;
 import teamexpress.velo9.post.domain.TemporaryPost;
 import teamexpress.velo9.post.domain.TemporaryPostRepository;
 
-@Profile("test")
+
 @Component
 @RequiredArgsConstructor
 public class InitDb {
