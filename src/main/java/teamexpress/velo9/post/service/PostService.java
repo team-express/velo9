@@ -133,25 +133,23 @@ public class PostService {
 		List<Tag> existingTags = tagRepository.findAll();
 
 		existingTags.addAll(
-			tagNames.stream(
-			).filter(name -> existingTags.stream().map(Tag::getName).noneMatch(name::equals)
-			).map(name -> tagRepository.save(Tag.builder().name(name).build())
-			).collect(Collectors.toList())
+			tagNames.stream()
+				.filter(name -> existingTags.stream().map(Tag::getName).noneMatch(name::equals))
+				.map(name -> tagRepository.save(Tag.builder().name(name).build()))
+				.collect(Collectors.toList())
 		);
 
 		return existingTags;
 	}
 
 	private void putPostTags(Post post, List<Tag> existingTags, List<String> tagNames) {
-		tagNames.stream(
-		).map(name ->
-			existingTags.stream().filter(tag -> tag.getName().equals(name)).findFirst().orElseThrow()
-		).forEach(tag -> postTagRepository.save(
-			PostTag.builder()
-				.tag(tag)
-				.post(post)
-				.build()
-		));
+		tagNames.stream().map(name -> existingTags.stream().filter(tag -> tag.getName().equals(name)).findFirst().orElseThrow())
+			.forEach(tag -> postTagRepository.save(
+				PostTag.builder()
+					.tag(tag)
+					.post(post)
+					.build()
+			));
 	}
 
 	private void cleanTags(Post post) {
@@ -214,7 +212,9 @@ public class PostService {
 		Member member = getMemberByNickname(nickname);
 		boolean checkOwner = isaBoolean(memberId, member);
 		Slice<Post> posts = postRepository.findPost(nickname, tagName, pageable, checkOwner);
-		return posts.map(PostReadDTO::new);
+		List<Long> postIds = posts.map(Post::getId).toList();
+		List<PostTag> postTagList = postTagRepository.findByPostIds(postIds);
+		return posts.map(post -> new PostReadDTO(post, postTagList));
 	}
 
 	@Transactional
@@ -320,7 +320,9 @@ public class PostService {
 
 	public Slice<SeriesPostSummaryDTO> findPostsInSeries(String nickname, String seriesName, PageRequest page) {
 		Slice<Post> seriesPosts = postRepository.findByJoinSeries(nickname, seriesName, page);
-		return seriesPosts.map(SeriesPostSummaryDTO::new);
+		List<Long> postIds = seriesPosts.map(Post::getId).toList();
+		List<PostTag> postTagList = postTagRepository.findByPostIds(postIds);
+		return seriesPosts.map(post -> new SeriesPostSummaryDTO(post, postTagList));
 	}
 
 	public List<SeriesReadDTO> findAllSeries(String nickname) {

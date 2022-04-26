@@ -53,6 +53,8 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 		JPAQuery<Post> query = queryFactory
 			.selectFrom(post)
 			.join(post.member).fetchJoin()
+			.join(postTag)
+			.on(post.id.eq(postTag.post.id))
 			.where(searchMain(condition))
 			.where(openPost())
 			.offset(pageable.getOffset())
