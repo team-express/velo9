@@ -71,6 +71,7 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
 	public Slice<Post> findByJoinLove(Long memberId, Pageable pageable) {
 		JPAQuery<Post> query = queryFactory
 			.selectFrom(post)
+			.join(post.member).fetchJoin()
 			.join(love)
 			.on(post.id.eq(love.post.id))
 			.join(post.member)

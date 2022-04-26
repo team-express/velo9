@@ -29,9 +29,8 @@ import teamexpress.velo9.post.domain.Tag;
 import teamexpress.velo9.post.domain.TagRepository;
 import teamexpress.velo9.post.domain.TemporaryPost;
 import teamexpress.velo9.post.domain.TemporaryPostRepository;
-import teamexpress.velo9.post.dto.LookPostDTO;
 import teamexpress.velo9.post.dto.LoveDTO;
-import teamexpress.velo9.post.dto.LovePostDTO;
+import teamexpress.velo9.post.dto.PostArchiveDTO;
 import teamexpress.velo9.post.dto.PostLoadDTO;
 import teamexpress.velo9.post.dto.PostMainDTO;
 import teamexpress.velo9.post.dto.PostReadDTO;
@@ -94,6 +93,7 @@ public class PostService {
 			series,
 			updateThumbnail(post.getPostThumbnail(), postThumbnailToSave));
 
+		cleanTags(post);
 		updateTags(post, postWriteDTO.getTags());
 
 		return post.getId();
@@ -117,7 +117,6 @@ public class PostService {
 	}
 
 	private void updateTags(Post post, List<String> tagNames) {
-		cleanTagsIfNecessary(post);
 
 		if (isEmpty(tagNames)) {
 			return;
@@ -153,10 +152,8 @@ public class PostService {
 			));
 	}
 
-	private void cleanTagsIfNecessary(Post post) {
-		if (post.getId() != null) {
-			postTagRepository.deleteAllByPost(post);
-		}
+	private void cleanTags(Post post) {
+		postTagRepository.deleteAllByPost(post);
 	}
 
 	private void checkSameWriter(Post post, Long memberId) {
@@ -300,14 +297,14 @@ public class PostService {
 		}
 	}
 
-	public Slice<LovePostDTO> findLovePosts(Long memberId, PageRequest page) {
+	public Slice<PostArchiveDTO> findLovePosts(Long memberId, PageRequest page) {
 		Slice<Post> lovePosts = postRepository.findByJoinLove(memberId, page);
-		return lovePosts.map(LovePostDTO::new);
+		return lovePosts.map(PostArchiveDTO::new);
 	}
 
-	public Slice<LookPostDTO> findReadPost(Long memberId, PageRequest page) {
+	public Slice<PostArchiveDTO> findReadPost(Long memberId, PageRequest page) {
 		Slice<Post> lookPosts = postRepository.findByJoinLook(memberId, page);
-		return lookPosts.map(LookPostDTO::new);
+		return lookPosts.map(PostArchiveDTO::new);
 	}
 
 	@Transactional
