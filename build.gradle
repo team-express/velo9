@@ -8,7 +8,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
     id 'java'
-    id "org.asciidoctor.jvm.convert" version "3.3.2"
+
 }
 
 group = 'teamexpress'
@@ -25,9 +25,7 @@ ext {
     snippetsDir = file('build/generated-snippets')
 }
 
-bootJar {
-    dependsOn asciidoctor
-}
+
 
 repositories {
     mavenCentral()
