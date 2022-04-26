@@ -6,9 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-//@RestControllerAdvice
-//배포시 풀어서 사용할 것
+@RestControllerAdvice
 public class Velo9ExceptionHandler {
 
 	@ExceptionHandler(Exception.class)

@@ -29,9 +29,8 @@ import teamexpress.velo9.post.domain.Tag;
 import teamexpress.velo9.post.domain.TagRepository;
 import teamexpress.velo9.post.domain.TemporaryPost;
 import teamexpress.velo9.post.domain.TemporaryPostRepository;
-import teamexpress.velo9.post.dto.LookPostDTO;
 import teamexpress.velo9.post.dto.LoveDTO;
-import teamexpress.velo9.post.dto.LovePostDTO;
+import teamexpress.velo9.post.dto.PostArchiveDTO;
 import teamexpress.velo9.post.dto.PostLoadDTO;
 import teamexpress.velo9.post.dto.PostMainDTO;
 import teamexpress.velo9.post.dto.PostReadDTO;
@@ -134,25 +133,23 @@ public class PostService {
 		List<Tag> existingTags = tagRepository.findAll();
 
 		existingTags.addAll(
-			tagNames.stream(
-			).filter(name -> existingTags.stream().map(Tag::getName).noneMatch(name::equals)
-			).map(name -> tagRepository.save(Tag.builder().name(name).build())
-			).collect(Collectors.toList())
+			tagNames.stream()
+				.filter(name -> existingTags.stream().map(Tag::getName).noneMatch(name::equals))
+				.map(name -> tagRepository.save(Tag.builder().name(name).build()))
+				.collect(Collectors.toList())
 		);
 
 		return existingTags;
 	}
 
 	private void putPostTags(Post post, List<Tag> existingTags, List<String> tagNames) {
-		tagNames.stream(
-		).map(name ->
-			existingTags.stream().filter(tag -> tag.getName().equals(name)).findFirst().orElseThrow()
-		).forEach(tag -> postTagRepository.save(
-			PostTag.builder()
-				.tag(tag)
-				.post(post)
-				.build()
-		));
+		tagNames.stream().map(name -> existingTags.stream().filter(tag -> tag.getName().equals(name)).findFirst().orElseThrow())
+			.forEach(tag -> postTagRepository.save(
+				PostTag.builder()
+					.tag(tag)
+					.post(post)
+					.build()
+			));
 	}
 
 	private void cleanTags(Post post) {
@@ -215,7 +212,9 @@ public class PostService {
 		Member member = getMemberByNickname(nickname);
 		boolean checkOwner = isaBoolean(memberId, member);
 		Slice<Post> posts = postRepository.findPost(nickname, tagName, pageable, checkOwner);
-		return posts.map(PostReadDTO::new);
+		List<Long> postIds = posts.map(Post::getId).toList();
+		List<PostTag> postTagList = postTagRepository.findByPostIds(postIds);
+		return posts.map(post -> new PostReadDTO(post, postTagList));
 	}
 
 	@Transactional
@@ -298,14 +297,14 @@ public class PostService {
 		}
 	}
 
-	public Slice<LovePostDTO> findLovePosts(Long memberId, PageRequest page) {
+	public Slice<PostArchiveDTO> findLovePosts(Long memberId, PageRequest page) {
 		Slice<Post> lovePosts = postRepository.findByJoinLove(memberId, page);
-		return lovePosts.map(LovePostDTO::new);
+		return lovePosts.map(PostArchiveDTO::new);
 	}
 
-	public Slice<LookPostDTO> findReadPost(Long memberId, PageRequest page) {
+	public Slice<PostArchiveDTO> findReadPost(Long memberId, PageRequest page) {
 		Slice<Post> lookPosts = postRepository.findByJoinLook(memberId, page);
-		return lookPosts.map(LookPostDTO::new);
+		return lookPosts.map(PostArchiveDTO::new);
 	}
 
 	@Transactional
@@ -321,7 +320,9 @@ public class PostService {
 
 	public Slice<SeriesPostSummaryDTO> findPostsInSeries(String nickname, String seriesName, PageRequest page) {
 		Slice<Post> seriesPosts = postRepository.findByJoinSeries(nickname, seriesName, page);
-		return seriesPosts.map(SeriesPostSummaryDTO::new);
+		List<Long> postIds = seriesPosts.map(Post::getId).toList();
+		List<PostTag> postTagList = postTagRepository.findByPostIds(postIds);
+		return seriesPosts.map(post -> new SeriesPostSummaryDTO(post, postTagList));
 	}
 
 	public List<SeriesReadDTO> findAllSeries(String nickname) {
