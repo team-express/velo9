@@ -67,11 +67,6 @@ test {
     outputs.dir snippetsDir
 }
 
-asciidoctor {
-    inputs.dir snippetsDir
-    dependsOn test
-}
-
 tasks.named('test') {
     useJUnitPlatform()
 }
