@@ -295,7 +295,7 @@ formLogin 방식은 Json 형태의 값을 받아오기 힘들다. 그렇기 때�
 
 ## 해결 2. 세션 저장 방식
 
-기존에 세션에 회원 정보를 저장하는 방식을 사용했다. 하지만 이 방식으로는 리액트를 사용하는 프론트쪽에서 세션에서 아무 정보도 꺼내 오지 못하는 방식입니다.
+기존에 세션에 회원 정보를 저장하는 방식을 사용했습니다. 하지만 이 방식으로는 리액트를 사용하는 프론트쪽에서 세션에서 아무 정보도 꺼내 오지 못하는 방식입니다.
 SSR(서버 사이드 렌더링)방식으로만 구현을 해봐서 생긴 허점이었습니다.
 
 JWT 토큰을 사용하는 방식으로 구현을 하려 했지만 세션에 저장한 정보는 우리가 사용하는 것으로 하고 프론트에서 사용자 정보가 필요할 때마다 백엔드에 호출하면 JSON 데이터로 보내주는 방식을 선택했습니다.
@@ -306,11 +306,11 @@ JWT 토큰을 사용하는 방식으로 구현을 하려 했지만 세션에 저
 
 리액트와의 연결을 너무 간단하게 생각했습니다.
 
-리액트에서 구글이나 깃헙으로 로그인하는 URL만 연결해 주면 백엔드 쪽에서 처리해주는 데이터가 프론트쪽으로 넘어갈 것이라고 생각했다. 하지만 이렇게 되면 로그인된 후 백엔드 서버 쪽의 URL로 넘어가게 됩니다.
+리액트에서 구글이나 깃헙으로 로그인하는 URL만 연결해 주면 백엔드 쪽에서 처리해주는 데이터가 프론트쪽으로 넘어갈 것이라고 생각했습니다다. 하지만 이렇게 되면 로그인된 후 백엔드 서버 쪽의 URL로 넘어가게 됩니다.
 
-리액트에서 백엔드 쪽의 소셜로그인을 호출하는 경우 Axios 나 Fetch 가 먹히지 않는다고 한다. 그렇기에 a태그로 호출을 해줘야 하는데 a태그로는 백엔드 쪽의 데이터를 그대로 받아오지 못하기 때문에 다른 처리가 필요했습니다.
+리액트에서 백엔드 쪽의 소셜로그인을 호출하는 경우 Axios 나 Fetch 가 먹히지 않는다고 합니다. 그렇기에 a태그로 호출을 해줘야 하는데 a태그로는 백엔드 쪽의 데이터를 그대로 받아오지 못하기 때문에 다른 처리가 필요했습니다.
 
-`OAuth2SuccessHandler` 가 해결책이었다. 로그인이 성공적으로 이루어질 경우 우리는 이미 회원가입이 된 사용자인지 아닌지의 판단이 필요했습니다. `OAuth2SuccessHandler` 에서 `MemberService` 를 호출해서 회원가입이 된 사용자인지 판단하도록 했습니다.
+`OAuth2SuccessHandler` 가 해결책이었습니다. 로그인이 성공적으로 이루어질 경우 우리는 이미 회원가입이 된 사용자인지 아닌지의 판단이 필요했습니다. `OAuth2SuccessHandler` 에서 `MemberService` 를 호출해서 회원가입이 된 사용자인지 판단하도록 했습니다.
 
 이미 회원가입이 된 사용자의 경우 `http://localhost:3000/success` 로 리다이렉트 되어 백엔드쪽으로 사용자 정보를 호출합니다.
 
@@ -409,10 +409,7 @@ The following parts of the payload were not documented:
 
 하지만 어떤 이유로 추가하고 싶지 않은 경우가 있습니다.
 
-원래는 이 문제 때문이 아니라 restController라 json으로 resp, req를 받아야 하는데,
-Object안에 Object가 있는 경우에 어떻게 표현해야하는지를 찾다가
-
-.을 찍고 들어가는 방법도 찾았고,
+원래는 이 문제 때문이 아니라 restController라 json으로 resp, req를 받아야 하는데, Object안에 Object가 있는 경우에 어떻게 표현해야하는지를 찾다가 .을 찍고 들어가는 방법도 찾았고,
 relaxed~를 이용하는 방법을 얻어 걸린 듯 찾은 것입니다.
 
 
@@ -458,11 +455,11 @@ requestFields(), responseFields() - fieldWithPath 에서
 
 ```java
 	pathParameters(
-    	parameterWithName("nickname").description("")
-	)
-    requestParameters(
-    	parameterWithName("id").description(").optional()
-	)
+        parameterWithName("nickname").description("")
+        )
+        requestParameters(
+        parameterWithName("id").description(").optional()
+        )
 ```
 
 ```snippet
