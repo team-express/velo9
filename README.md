@@ -1,30 +1,30 @@
 # :pushpin: velo9
-### `velo9`는 단순하고 직관적인 사용이 가능한 `웹 기반 블로그 서비스`입니다.  
+### `velo9`는 단순하고 직관적인 사용이 가능한 `웹 기반 블로그 서비스`입니다.
 >[데모 사이트 바로가기](www.naver.com)
 
 </br>
 
 ## 1. 제작 기간 & 참여 인원
 - 2022년 2월 21일 ~ 4월 16일
-- 팀 프로젝트(5명)  
-    - 백엔드: 김진욱 / 손찬우 / 김재민
-    - 프런트엔드: 조민수 / 박찬하 
+- 팀 프로젝트(5명)
+  - 백엔드: 김진욱 / 손찬우 / 김재민
+  - 프런트엔드: 조민수 / 박찬하
 
 </br>
 
 ## 2. 사용 기술
 #### `Back-end`
-  - Java 11
-  - Spring Boot 2.6.4
-  - Gradle
-  - Spring Data JPA
-  - QueryDSL
-  - MySQL 8.0
-  - Spring Security
+- Java 11
+- Spring Boot 2.6.4
+- Gradle
+- Spring Data JPA
+- QueryDSL
+- MySQL 8.0
+- Spring Security
 #### `Front-end`
-  - React
-  - SCSS
-  - ES6
+- React
+- SCSS
+- ES6
 
 </br>
 
@@ -74,7 +74,7 @@ velo9는 블로그 활동에 필요한 다양한 편의 기능을 제공합니�
 <br>
 
 > ### 4.1.2. 포스트용 섬네일 등록 :pushpin: [코드 확인](https://github.com/team-express/velo9/blob/fb2cdc52f5a47e4bb1afaa4b15ce39540d57f85c/src/main/java/teamexpress/velo9/post/api/PostThumbnailFileUploader.java#L37)
-  - 포스트에 대한 정보를 한 눈에 확인 할 수 있도록 섬네일 업로드를 지원합니다.<br>
+- 포스트에 대한 정보를 한 눈에 확인 할 수 있도록 섬네일 업로드를 지원합니다.<br>
 
 <details>
 <summary><b> 동작 구조도 펼치기</b></summary>
@@ -90,7 +90,7 @@ velo9는 블로그 활동에 필요한 다양한 편의 기능을 제공합니�
 
 
 > ### 4.1.3. 태그, 시리즈 등록 :pushpin: [태그 관련 코드 확인](https://github.com/team-express/velo9/blob/fb2cdc52f5a47e4bb1afaa4b15ce39540d57f85c/src/main/java/teamexpress/velo9/post/service/TagService.java#L26) / [시리즈 관련 코드 확인](https://github.com/team-express/velo9/blob/fb2cdc52f5a47e4bb1afaa4b15ce39540d57f85c/src/main/java/teamexpress/velo9/post/service/SeriesService.java#L32)
-  - 포스트 내용을 쉽게 파악하고, 조회할 수 있도록 태그와 시리즈를 추가할 수 있습니다<br>
+- 포스트 내용을 쉽게 파악하고, 조회할 수 있도록 태그와 시리즈를 추가할 수 있습니다<br>
 
 <details>
 <summary><b> 동작 구조도 펼치기</b></summary>
@@ -105,7 +105,7 @@ velo9는 블로그 활동에 필요한 다양한 편의 기능을 제공합니�
 <br>
 
 > ### 4.1.4. 포스트 소개글 자동 등록 :pushpin: [코드 확인](https://github.com/team-express/velo9/blob/fb2cdc52f5a47e4bb1afaa4b15ce39540d57f85c/src/main/java/teamexpress/velo9/post/dto/PostSaveDTO.java#L50)
-  - 포스트 소개글 미입력시, 본문 내용의 150자를 소개글로 자동 등록합니다.<br>
+- 포스트 소개글 미입력시, 본문 내용의 150자를 소개글로 자동 등록합니다.<br>
 
 <details>
 <summary><b> 동작 구조도 펼치기</b></summary>
@@ -120,7 +120,7 @@ velo9는 블로그 활동에 필요한 다양한 편의 기능을 제공합니�
 <br>
 
 > ### 4.1.5. 임시 저장 :pushpin: [코드 확인](https://github.com/team-express/velo9/blob/fb2cdc52f5a47e4bb1afaa4b15ce39540d57f85c/src/main/java/teamexpress/velo9/post/service/PostService.java#L169)
-  - 작성 중인 포스트는 x분 마다 자동 저장됩니다.<br>   
+- 작성 중인 포스트는 x분 마다 자동 저장됩니다.<br>
 
 <details>
 <summary><b> 동작 구조도 펼치기</b></summary>
@@ -135,7 +135,7 @@ velo9는 블로그 활동에 필요한 다양한 편의 기능을 제공합니�
 <br>
 
 > ### 4.1.6. MarkDown 미리보기 :pushpin: [코드 확인](www.naver.com)
-  - 글 작성 시, MarkDown 문법이 적용된 포스트 결과물 미리보기를 지원합니다.<br>
+- 글 작성 시, MarkDown 문법이 적용된 포스트 결과물 미리보기를 지원합니다.<br>
 
 <br>
 
@@ -144,7 +144,7 @@ velo9는 블로그 활동에 필요한 다양한 편의 기능을 제공합니�
 
 
 > ### 4.2.1. (메인 화면)멀티 검색 지원 :pushpin: [코드 확인](https://github.com/team-express/velo9/blob/fb2cdc52f5a47e4bb1afaa4b15ce39540d57f85c/src/main/java/teamexpress/velo9/post/domain/PostRepositoryCustomImpl.java#L50)
-  - 메인 화면에서 키워드 검색 시, 포스트 내용과 태그 내용을 선택하여 검색할 수 있습니다.<br>
+- 메인 화면에서 키워드 검색 시, 포스트 내용과 태그 내용을 선택하여 검색할 수 있습니다.<br>
 
 <details>
 <summary><b> 동작 구조도 펼치기</b></summary>
@@ -160,7 +160,7 @@ velo9는 블로그 활동에 필요한 다양한 편의 기능을 제공합니�
 
 
 > ### 4.2.2. (메인 화면)정렬 조건 지원 :pushpin: [코드 확인](https://github.com/team-express/velo9/blob/fb2cdc52f5a47e4bb1afaa4b15ce39540d57f85c/src/main/java/teamexpress/velo9/post/controller/MainController.java#L36)
-  - 메인 화면에서 포스트 조회 시, 원하는 정렬 조건을 설정하여 포스트 목록을 조회할 수 있습니다.<br>
+- 메인 화면에서 포스트 조회 시, 원하는 정렬 조건을 설정하여 포스트 목록을 조회할 수 있습니다.<br>
 
 <details>
 <summary><b> 동작 구조도 펼치기</b></summary>
@@ -176,14 +176,14 @@ velo9는 블로그 활동에 필요한 다양한 편의 기능을 제공합니�
 
 
 > ### 4.2.3. (사용자 글 목록 화면) 태그, 시리즈 정보 기반 포스트 탐색 :pushpin: [태그 활용 코드 확인](https://github.com/team-express/velo9/blob/fb2cdc52f5a47e4bb1afaa4b15ce39540d57f85c/src/main/java/teamexpress/velo9/post/domain/PostRepositoryCustomImpl.java#L34) / [시리즈 활용 코드 확인](https://github.com/team-express/velo9/blob/fb2cdc52f5a47e4bb1afaa4b15ce39540d57f85c/src/main/java/teamexpress/velo9/post/domain/PostRepositoryCustomImpl.java#L102)
-  - 포스트에 포함된 태그 정보와 시리즈 정보를 이용하여 관심있는 주제의 포스트를 탐색할 수 있습니다.<br>
+- 포스트에 포함된 태그 정보와 시리즈 정보를 이용하여 관심있는 주제의 포스트를 탐색할 수 있습니다.<br>
 
 <details>
 <summary><b> 동작 구조도 펼치기</b></summary>
 
 <div markdown="1">
 
- ![](https://velog.velcdn.com/images/woply/post/1bd41fef-c0ea-4f06-a44e-f6f78a58188f/image.jpg)
+![](https://velog.velcdn.com/images/woply/post/1bd41fef-c0ea-4f06-a44e-f6f78a58188f/image.jpg)
 
 </div>
 </details>
@@ -192,7 +192,7 @@ velo9는 블로그 활동에 필요한 다양한 편의 기능을 제공합니�
 
 
 > ### 4.2.4. (포스트 상세 화면) 이전 글, 다음 글 보기 지원  :pushpin: [코드 확인](https://github.com/team-express/velo9/blob/fb2cdc52f5a47e4bb1afaa4b15ce39540d57f85c/src/main/java/teamexpress/velo9/post/domain/PostRepositoryCustomImpl.java#L116)
-  - (동일한 시리즈 정보를 가지고 있거나, 등록된 순서를 기반으로) 현재 보고 있는 포스트의 이전 글과 다음 글을 보여 줍니다. <br>
+- (동일한 시리즈 정보를 가지고 있거나, 등록된 순서를 기반으로) 현재 보고 있는 포스트의 이전 글과 다음 글을 보여 줍니다. <br>
 
 <details>
 <summary><b> 동작 구조도 펼치기</b></summary>
@@ -208,7 +208,7 @@ velo9는 블로그 활동에 필요한 다양한 편의 기능을 제공합니�
 
 
 > ### 4.2.5. (사용자 아카이브) 좋아요, 최근 읽은 글 목록 지원 :pushpin: [좋아요 관련 코드 확인](https://github.com/team-express/velo9/blob/fb2cdc52f5a47e4bb1afaa4b15ce39540d57f85c/src/main/java/teamexpress/velo9/post/domain/PostRepositoryCustomImpl.java#L67) / [읽은 글 관련 코드 확인](https://github.com/team-express/velo9/blob/fb2cdc52f5a47e4bb1afaa4b15ce39540d57f85c/src/main/java/teamexpress/velo9/post/domain/PostRepositoryCustomImpl.java#L85)
-  - 사용자가 '읽은 적'이 있는 모든 포스트와 '좋아요'를 누른 모든 포스트를 별도로 보여줍니다. <br>
+- 사용자가 '읽은 적'이 있는 모든 포스트와 '좋아요'를 누른 모든 포스트를 별도로 보여줍니다. <br>
 
 <details>
 <summary><b> 동작 구조도 펼치기</b></summary>
@@ -295,7 +295,9 @@ formLogin 방식은 Json 형태의 값을 받아오기 힘들다. 그렇기 때�
 
 ## 해결 2. 세션 저장 방식
 
-기존에 세션에 회원 정보를 저장하는 방식을 사용했다. 하지만 이 방식으로는 리액트를 사용하는 프론트쪽에서 세션에서 아무 정보도 꺼내 오지 못하는 방식입니다.
+
+기존에 세션에 회원 정보를 저장하는 방식을 사용했습니다. 하지만 이 방식으로는 리액트를 사용하는 프론트쪽에서 세션에서 아무 정보도 꺼내 오지 못하는 방식입니다.
+
 SSR(서버 사이드 렌더링)방식으로만 구현을 해봐서 생긴 허점이었습니다.
 
 JWT 토큰을 사용하는 방식으로 구현을 하려 했지만 세션에 저장한 정보는 우리가 사용하는 것으로 하고 프론트에서 사용자 정보가 필요할 때마다 백엔드에 호출하면 JSON 데이터로 보내주는 방식을 선택했습니다.
@@ -306,11 +308,13 @@ JWT 토큰을 사용하는 방식으로 구현을 하려 했지만 세션에 저
 
 리액트와의 연결을 너무 간단하게 생각했습니다.
 
-리액트에서 구글이나 깃헙으로 로그인하는 URL만 연결해 주면 백엔드 쪽에서 처리해주는 데이터가 프론트쪽으로 넘어갈 것이라고 생각했다. 하지만 이렇게 되면 로그인된 후 백엔드 서버 쪽의 URL로 넘어가게 됩니다.
 
-리액트에서 백엔드 쪽의 소셜로그인을 호출하는 경우 Axios 나 Fetch 가 먹히지 않는다고 한다. 그렇기에 a태그로 호출을 해줘야 하는데 a태그로는 백엔드 쪽의 데이터를 그대로 받아오지 못하기 때문에 다른 처리가 필요했습니다.
+리액트에서 구글이나 깃헙으로 로그인하는 URL만 연결해 주면 백엔드 쪽에서 처리해주는 데이터가 프론트쪽으로 넘어갈 것이라고 생각했습니다. 하지만 이렇게 되면 로그인된 후 백엔드 서버 쪽의 URL로 넘어가게 됩니다.
 
-`OAuth2SuccessHandler` 가 해결책이었다. 로그인이 성공적으로 이루어질 경우 우리는 이미 회원가입이 된 사용자인지 아닌지의 판단이 필요했습니다. `OAuth2SuccessHandler` 에서 `MemberService` 를 호출해서 회원가입이 된 사용자인지 판단하도록 했습니다.
+리액트에서 백엔드 쪽의 소셜로그인을 호출하는 경우 Axios 나 Fetch 가 먹히지 않는다고 합니다. 그렇기에 a태그로 호출을 해줘야 하는데 a태그로는 백엔드 쪽의 데이터를 그대로 받아오지 못하기 때문에 다른 처리가 필요했습니다.
+
+`OAuth2SuccessHandler` 가 해결책이었습니다. 로그인이 성공적으로 이루어질 경우 우리는 이미 회원가입이 된 사용자인지 아닌지의 판단이 필요했습니다. `OAuth2SuccessHandler` 에서 `MemberService` 를 호출해서 회원가입이 된 사용자인지 판단하도록 했습니다.
+
 
 이미 회원가입이 된 사용자의 경우 `http://localhost:3000/success` 로 리다이렉트 되어 백엔드쪽으로 사용자 정보를 호출합니다.
 
@@ -374,8 +378,10 @@ to build the request?
 ```
 
 <br>
- 
- - 이슈 2: 문서에 굳이 넣고 싶지 않은 이들이 있을 때
+
+
+- 이슈 2: 문서에 굳이 넣고 싶지 않은 이들이 있을 때
+
 
 ```java
 	@Test
@@ -409,10 +415,9 @@ The following parts of the payload were not documented:
 
 하지만 어떤 이유로 추가하고 싶지 않은 경우가 있습니다.
 
-원래는 이 문제 때문이 아니라 restController라 json으로 resp, req를 받아야 하는데,
-Object안에 Object가 있는 경우에 어떻게 표현해야하는지를 찾다가
 
-.을 찍고 들어가는 방법도 찾았고,
+원래는 이 문제 때문이 아니라 restController라 json으로 resp, req를 받아야 하는데, Object안에 Object가 있는 경우에 어떻게 표현해야하는지를 찾다가 .을 찍고 들어가는 방법도 찾았고,
+
 relaxed~를 이용하는 방법을 얻어 걸린 듯 찾은 것입니다.
 
 
@@ -447,7 +452,9 @@ relaxed~를 이용하는 방법을 얻어 걸린 듯 찾은 것입니다.
 
 <br>
 
- - 이슈 3: field 아닌 parameter일 때 발생하는 문제
+
+- 이슈 3: field 아닌 parameter일 때 발생하는 문제
+
 
 
 requestFields(), responseFields() - fieldWithPath 에서
@@ -458,11 +465,11 @@ requestFields(), responseFields() - fieldWithPath 에서
 
 ```java
 	pathParameters(
-    	parameterWithName("nickname").description("")
-	)
-    requestParameters(
-    	parameterWithName("id").description(").optional()
-	)
+        parameterWithName("nickname").description("")
+        )
+        requestParameters(
+        parameterWithName("id").description(").optional()
+        )
 ```
 
 ```snippet
