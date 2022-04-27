@@ -132,10 +132,6 @@ velo9는 블로그 활동에 필요한 다양한 편의 기능을 제공합니�
 </div>
 </details>
 
-<br>
-
-> ### 4.1.6. MarkDown 미리보기 :pushpin: [코드 확인](www.naver.com)
-- 글 작성 시, MarkDown 문법이 적용된 포스트 결과물 미리보기를 지원합니다.<br>
 
 <br>
 
